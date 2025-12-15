@@ -54,6 +54,7 @@ dkms.conf
 # debug information files
 *.dwo
 
+# GHOST
 # MacOS junk
 .DS_Store
 
@@ -65,3 +66,5 @@ minishell
 
 # Readline history
 .history
+
+# Hugo
