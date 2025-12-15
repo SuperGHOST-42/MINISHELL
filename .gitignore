@@ -63,6 +63,7 @@ dkms.conf
 
 # Executable
 minishell
+a.out
 
 # Readline history
 .history
