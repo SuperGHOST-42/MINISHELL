@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:41 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/16 15:11:27 by hgutterr         ###   ########.fr       */
+/*   Updated: 2025/12/16 18:19:42 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,32 @@
 
 # include "minishell.h"
 
+typedef enum e_token_type
+{
+	WORD,
+	PIPE,
+	R_IN, 			// <
+	R_OUT,			// >
+	R_APP,			// >>
+	R_HEREDOC		// <<
+}	t_token_type;
+
 typedef struct s_cmd
 {
 	char 				**args;
-	t_redirs	 		*redirs;
+	struct s_redirs	 		*redirs;
 	// int					fd_in;
 	// int					fd_out;
 	// int					buitin_id;
 	struct s_cmd		*next;
 }	t_cmd;
 
-typedef struct s_redirs
+typedef struct s_token
 {
-	t_rtype				*type;
-	char				*target;
-}	t_redirs;
+	enum e_token_type		type;
+	char					value;
+	struct s_token			*next;
+}	t_token;
 
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:47 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/16 14:11:38 by hgutterr         ###   ########.fr       */
+/*   Updated: 2025/12/16 18:14:00 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
-# include "minishell_macros.h"
+# include "libft/libft.h"
 # include "minishell_structs.h"
 
 #endif

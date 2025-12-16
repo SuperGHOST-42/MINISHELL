@@ -1,26 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell_macros.h                                 :+:      :+:    :+:   */
+/*   ft_isempty.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/16 13:46:45 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/16 14:11:36 by hgutterr         ###   ########.fr       */
+/*   Created: 2025/02/16 19:42:39 by arpereir          #+#    #+#             */
+/*   Updated: 2025/12/16 17:55:17 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_MACROS_H
-# define MINISHELL_MACROS_H
+#include "libft.h"
 
-# include "minishell.h"
-
-typedef enum e_rtype
+int	ft_isempty(const char *line)
 {
-	R_IN, 			// <
-	R_OUT,			// >
-	R_APP,			// >>
-	R_HEREDOC		// <<
-} t_rtype;
+	int	i;
 
-#endif
+	if (!line)
+		return (1);
+	i = 0;
+	while (line[i] == ' ' || line[i] == '\t'
+		|| line[i] == '\n' || line[i] == '\r'
+		|| line[i] == '\v' || line[i] == '\f')
+		i++;
+	return (line[i] == '\0');
+}

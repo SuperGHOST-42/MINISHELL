@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 17:20:50 by arpereir          #+#    #+#             */
-/*   Updated: 2025/05/03 18:55:49 by arpereir         ###   ########.fr       */
+/*   Updated: 2025/12/16 17:55:01 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ int				ft_isdigit(int c);
 int				ft_isprint(int arg);
 int				ft_tolower(int arg);
 int				ft_toupper(int arg);
+
+int				ft_isempty(const char *line);
 
 /* ************************************************************************** */
 /*                                Memory Functions                            */
