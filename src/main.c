@@ -1,8 +1,7 @@
-#include "../includes/minishell.h"
+# include <stdio.h>
 
-int	main(int argc, char **argv)
+int	main(void)
 {
-	(void)argc;
-	printf("%s\n", argv[1]);
+	printf("A");
 	return (0);
 }
