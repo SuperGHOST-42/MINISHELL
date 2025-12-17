@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 17:20:50 by arpereir          #+#    #+#             */
-/*   Updated: 2025/12/16 17:55:01 by hgutterr         ###   ########.fr       */
+/*   Updated: 2025/12/16 23:32:37 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,15 @@ int				ft_isprint(int arg);
 int				ft_tolower(int arg);
 int				ft_toupper(int arg);
 
+/* ************************************************************************** */
+/*                              	MINISHELL  		                          */
+/* ************************************************************************** */
+
 int				ft_isempty(const char *line);
+int				ft_isspace(char c);
+int				ft_isoperator(char c);
+int				ft_isquote(char c);
+
 
 /* ************************************************************************** */
 /*                                Memory Functions                            */
