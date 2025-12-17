@@ -6,7 +6,7 @@
 #    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/12/16 15:51:41 by hgutterr          #+#    #+#              #
-#    Updated: 2025/12/16 16:49:00 by hgutterr         ###   ########.fr        #
+#    Updated: 2025/12/16 23:40:12 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,9 @@ RL_FLAGS = -lreadline -lhistory -lncurses
 
 OBJDIR = obj
 SRCDIR = src
-SRCS = $(SRCDIR)/main.c
+SRCS = \
+	$(SRCDIR)/main.c \
+	$(SRCDIR)/token.c
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 NAME = minishell

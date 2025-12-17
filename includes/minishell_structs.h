@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:41 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/16 18:19:42 by hgutterr         ###   ########.fr       */
+/*   Updated: 2025/12/16 23:41:38 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ typedef struct s_cmd
 
 typedef struct s_token
 {
-	enum e_token_type		type;
-	char					value;
+	t_token_type		type;
+	char					*value;
 	struct s_token			*next;
 }	t_token;
 
