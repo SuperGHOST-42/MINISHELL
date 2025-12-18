@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 14:11:50 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/16 23:53:16 by hgutterr         ###   ########.fr       */
+/*   Updated: 2025/12/18 14:27:40 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 const char *token_type_to_str(t_token_type type);
 
-void tokenization(char *line)
+t_token *tokenization(char *line)
 {
     int     i;
     t_token *tokens;
@@ -36,24 +36,36 @@ void tokenization(char *line)
         else
             handle_word(&tokens, line, &i);
     }
-
-	///// DEBUG /////
-
-    while (tokens)
-    {
-        printf("TOKEN [%s] : \"%s\"\n", token_type_to_str(tokens->type), tokens->value);
-        tokens = tokens->next;
-    }
-
+    return (tokens);
 }
 
 void	accept_line(char *line)
 {
+t_token *tokens;
+
 	if (ft_isempty(line))
 		return ;
 	add_history(line);
+
 	printf("%s\n", line);
-	tokenization(line);
+	
+	tokens = tokenization(line);
+	if (syntax_check(tokens) == 1) // syntax_check returns 1 on error
+	{
+		// TODO: free tokens
+		return ;
+	}
+
+	if (!tokens)
+		printf("No tokens generated.\n");
+	else
+	{
+	    while (tokens)
+	    {
+			printf("TOKEN [%s] : \"%s\"\n", token_type_to_str(tokens->type), tokens->value);
+			tokens = tokens->next;
+		}
+	}
 }
 void	minishell(char **env)
 {

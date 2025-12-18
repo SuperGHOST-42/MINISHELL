@@ -6,7 +6,7 @@
 #    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/12/16 15:51:41 by hgutterr          #+#    #+#              #
-#    Updated: 2025/12/16 23:40:12 by hgutterr         ###   ########.fr        #
+#    Updated: 2025/12/18 13:01:23 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,8 @@ OBJDIR = obj
 SRCDIR = src
 SRCS = \
 	$(SRCDIR)/main.c \
-	$(SRCDIR)/token.c
+	$(SRCDIR)/token.c \
+	$(SRCDIR)/syntax_checker.c
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 NAME = minishell
