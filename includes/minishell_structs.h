@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:41 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/16 23:41:38 by hgutterr         ###   ########.fr       */
+/*   Updated: 2025/12/19 12:42:35 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,9 @@ typedef struct s_token
 	char					*value;
 	struct s_token			*next;
 }	t_token;
-
-
+typedef struct s_shell
+{
+	char		**env;
+	/* future fields: exit_status, last_pid, jobs list, etc. */
+}	t_shell;
 #endif

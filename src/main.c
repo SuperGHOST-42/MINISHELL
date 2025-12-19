@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 14:11:50 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/18 14:27:40 by hgutterr         ###   ########.fr       */
+/*   Updated: 2025/12/19 12:58:31 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,13 @@ t_token *tokenization(char *line)
         if (ft_isspace(line[i]))
             i++;
         else if (ft_isquote(line[i]))
-            handle_quote(&tokens, line, &i); // send address of i to modify it and continue from there 🤓
+        {
+            if (handle_quote(&tokens, line, &i))
+            {
+                free_tokens(tokens);
+                return (NULL);
+            }
+        }
         else if (ft_isoperator(line[i]))
             handle_operator(&tokens, line, &i);
         else
@@ -39,20 +45,19 @@ t_token *tokenization(char *line)
     return (tokens);
 }
 
-void	accept_line(char *line)
+void	accept_line(t_shell *shell, char *line)
 {
-t_token *tokens;
+	t_token *tokens;
 
+	(void)shell; // currently not used
 	if (ft_isempty(line))
 		return ;
 	add_history(line);
-
 	printf("%s\n", line);
-	
 	tokens = tokenization(line);
 	if (syntax_check(tokens) == 1) // syntax_check returns 1 on error
 	{
-		// TODO: free tokens
+		exit_shell(tokens, 2);
 		return ;
 	}
 
@@ -60,14 +65,17 @@ t_token *tokens;
 		printf("No tokens generated.\n");
 	else
 	{
-	    while (tokens)
-	    {
-			printf("TOKEN [%s] : \"%s\"\n", token_type_to_str(tokens->type), tokens->value);
-			tokens = tokens->next;
+		t_token *tmp = tokens;
+		while (tmp)
+		{
+			printf("TOKEN [%s] : \"%s\"\n", token_type_to_str(tmp->type), tmp->value);
+			tmp = tmp->next;
 		}
+		execute_simple_command(tokens, shell);
+		free_tokens(tokens);
 	}
 }
-void	minishell(char **env)
+void	minishell(t_shell *shell)
 {
 	char *line;
 	while(1)
@@ -78,18 +86,21 @@ void	minishell(char **env)
 			rl_clear_history();
 			exit(0);
 		}
-		accept_line(line);
+		accept_line(shell, line);
 		free(line);
 	}
 }
 
 int	main(int argc, char **argv, char **env)
 {
+	t_shell shell;
+
 	if(argc != 1)
 		return (-1);
 	(void)argv;
 	(void)argc;
-	minishell(env);
+	shell.env = env;
+	minishell(&shell);
 	return (0);
 }
 

@@ -49,21 +49,24 @@ void handle_word(t_token **tokens, char *line, int *i)
 	(*i)++;
 	token_add_back(tokens, new_token(WORD, ft_substr(line, start, *i- start)));
 }
-void handle_quote(t_token **tokens, char *line, int *i)
+int handle_quote(t_token **tokens, char *line, int *i)
 {
     char quote;
     int  start;
 
     quote = line[*i];
-    (*i)++;
+    (*i)++;                // Skip the opening quote
     start = *i;
     while (line[*i] && line[*i] != quote)
         (*i)++;
+    if (line[*i] != quote)
+        return (1);
     token_add_back(tokens,
         new_token(WORD, ft_substr(line, start, *i - start)));
     if (line[*i] == quote)
         (*i)++;
-}
+    return (0);
+} 
 
 
 void handle_operator(t_token **tokens, char *line, int *i)
