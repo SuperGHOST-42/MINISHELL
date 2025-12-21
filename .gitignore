@@ -55,6 +55,8 @@ dkms.conf
 *.dwo
 
 # GHOST
+/test
+
 # MacOS junk
 .DS_Store
 
