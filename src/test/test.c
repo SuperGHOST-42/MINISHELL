@@ -1,45 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <string.h>
 
-static void perror_exit(const char *msg)
+// ./minishell echo |  wc -c
+//       0       1  2  3  4
+static  void  error_exit(const char *msg)
 {
-    perror(msg);
-    exit(1);
+  perror(msg);
+  exit(1);
 }
 
-int main(void)
+int main(int argc, char **argv) 
 {
-  int p[2];
+  int pipe_fd[2];
+  int pipe_control;
+  char *args[] = {"/bin/echo", "hello", NULL};
+  char *args2[] = {"/usr/bin/wc", "-c", NULL};
   pid_t pid1;
-  char *buf;
-  int bytes_read;
+  pid_t pid2;
 
-  if (pipe(p) == -1)
-    perror_exit("Pipe fail\n");
-  
+  if (pipe(pipe_fd) == -1)
+    error_exit("fd failed");
   pid1 = fork();
   if (pid1 == -1)
-    perror_exit("Fork fail");
+    error_exit("fork failed");
+  else if (pid1 == 0)
+  {
+    // child 1 || escrever (echo)
+    if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+      error_exit("dup2 'stdout' failed");
+    close(pipe_fd[0]);
+    close(pipe_fd[1]);
+    write(3, "ola do filho", strlen("ola do filho"));
+    execv(args[0], args);
+    error_exit("execev(1) failed");
+  }
+  pid2 = fork();
+  if (pid2 == -1)
+    error_exit("fork failed");
+  else if(pid2 == 0)
+  {
+    // child 2 || ler (wc)
+    dup2(pipe_fd[0], STDIN_FILENO);
+    close(pipe_fd[0]);
+    close(pipe_fd[1]);
+    execv(args2[0], args2);
+    error_exit("execv(2) failed");
+  }
+  //close(pipe_fd[0]);
+  close(pipe_fd[1]);
   
-  if (pid1 == 0)
-  {
-    close(p[0]);
-    dup2(p[1], 1);
-    write (1, "ABC", 3);
-    close (p[1]);
-    exit(0);
-  }
-  close (p[1]);
-
-  bytes_read = read(p[0], buf, 3);
-  if (bytes_read > 0 )
-  {
-    buf[bytes_read] = '\0';
-    write (1, buf, 3);
-    close(p[0]);
-  }
-  waitpid(pid1, 0, 0);
+  waitpid(pid1, NULL, 0);
+  waitpid(pid2, NULL, 0);
   return (0);
 }

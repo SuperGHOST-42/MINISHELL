@@ -9,7 +9,7 @@ static void	error_exit(const char *msg)
 	perror(msg);
 	exit(1);
 }
-
+ 
 int	main(void) //./a.out echo ola | wc -c 
 {
 	int		fd_p[2];
