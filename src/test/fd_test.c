@@ -10,13 +10,6 @@ void  func(int *a)
 
 int main(void)
 {
-   int fd1;
-
-   fd1 = open("note.txt", O_RDWR | O_APPEND);
-   
-   dup2(fd1, 1); //dup2(new_fd, old_fd);
-
-   printf("Hello World\n"); // write in note.txt
-
+   int fd = open("note.txt", O_RDONLY);
 
 }

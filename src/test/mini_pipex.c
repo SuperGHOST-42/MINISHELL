@@ -30,9 +30,9 @@ int	main(void) //./a.out echo ola | wc -c
 			error_exit("dup2 child1");
 		close(fd_p[0]);
 		close(fd_p[1]);
-		char *argv[] = {"echo", "ola", NULL};
+		char *argv[] = {"cat", "test.c", NULL};
 		execvp(argv[0], argv);
-		error_exit("execvp echo");
+		error_exit("execvp failed");
 	}
 	pid2 = fork();
 	if (pid2 == -1)
@@ -49,6 +49,9 @@ int	main(void) //./a.out echo ola | wc -c
 		error_exit("execvp wc");
 	}
 	/* PARENT: não usa o pipe, então fecha tudo */
+
+	
+
 	close(fd_p[0]);
 	close(fd_p[1]);
 
