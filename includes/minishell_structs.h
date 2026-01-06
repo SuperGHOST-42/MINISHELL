@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:41 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/19 12:42:35 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/06 16:52:42 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,15 @@ typedef struct s_cmd
 	struct s_cmd		*next;
 }	t_cmd;
 
+
 typedef struct s_token
 {
 	t_token_type		type;
 	char					*value;
 	struct s_token			*next;
 }	t_token;
+
+
 typedef struct s_shell
 {
 	char		**env;
