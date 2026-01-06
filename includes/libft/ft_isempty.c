@@ -1,25 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   ft_isempty.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/16 14:11:50 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/19 12:48:00 by hgutterr         ###   ########.fr       */
+/*   Created: 2025/02/16 19:42:39 by arpereir          #+#    #+#             */
+/*   Updated: 2025/12/16 17:55:17 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
+#include "libft.h"
 
-
-int	main(int argc, char **argv, char **env)
+int	ft_isempty(const char *line)
 {
-	if(argc != 1)
-		return (-1);
-	(void)argv;
-	(void)argc;
-	for (int i = 0; env[i]; i++)
-		printf("%s\n\n\n", env[i]);
-	return (0);
+	int	i;
+
+	if (!line)
+		return (1);
+	i = 0;
+	while (line[i] == ' ' || line[i] == '\t'
+		|| line[i] == '\n' || line[i] == '\r'
+		|| line[i] == '\v' || line[i] == '\f')
+		i++;
+	return (line[i] == '\0');
 }
