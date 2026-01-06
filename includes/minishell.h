@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:47 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/06 15:49:42 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/06 16:03:23 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void 		handle_operator(t_token **tokens, char *line, int *i);
 
 // parce_line.c
 
-void	accept_line(t_shell *shell, char *line);
+void	    accept_line(t_shell *shell, char *line);
 t_token 	*tokenization(char *line);
 
 // syntax_checker.c
