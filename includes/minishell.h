@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+<<<<<<< HEAD
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/types.h>
@@ -47,5 +48,11 @@ int 		ft_isredir(t_token_type type);
 
 int			exit_shell(t_token *tokens, int exit_code);
 void		free_tokens(t_token *tokens);
+=======
+# include <stdlib.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+
+>>>>>>> ghost
 
 #endif
