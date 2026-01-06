@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 14:11:50 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/19 12:58:31 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/06 12:20:36 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	accept_line(t_shell *shell, char *line)
 			printf("TOKEN [%s] : \"%s\"\n", token_type_to_str(tmp->type), tmp->value);
 			tmp = tmp->next;
 		}
-		execute_simple_command(tokens, shell);
+		// execute_simple_command(tokens, shell);
 		free_tokens(tokens);
 	}
 }

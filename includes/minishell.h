@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:47 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/19 13:03:12 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/06 12:19:54 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 t_token 	*new_token(t_token_type type, char *value);
 void 		token_add_back(t_token **lst, t_token *new);
 void 		handle_word(t_token **tokens, char *line, int *i);
-int		handle_quote(t_token **tokens, char *line, int *i);
+int			handle_quote(t_token **tokens, char *line, int *i);
 void 		handle_operator(t_token **tokens, char *line, int *i);
 
 // tokenization
