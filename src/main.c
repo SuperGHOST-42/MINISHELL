@@ -102,7 +102,7 @@ int	main(int argc, char **argv, char **env)
 	(void)argc;
 	shell.env = env;
 	minishell(&shell);
-
+}
 ///// DEBUG FUNCTION /////
 
 const char *token_type_to_str(t_token_type type)
