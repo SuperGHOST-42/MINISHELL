@@ -1,13 +1,12 @@
-<<<<<<< HEAD
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 14:11:50 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/06 12:20:36 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/06 14:32:40 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +17,6 @@
 #include "../includes/minishell.h"
 #include <readline/readline.h>
 
-<<<<<<< HEAD
 const char *token_type_to_str(t_token_type type);
 
 t_token *tokenization(char *line)
@@ -92,28 +90,10 @@ void	minishell(t_shell *shell)
 		accept_line(shell, line);
 		free(line);
 	}
-=======
-static void error_exit(const char *msg)
-{
-	perror(msg);
-	exit(1);
+
 }
-
-char	*ft_getline(void)
-{
-	char cwd[BUFSIZ];
-	char *buf;
-
-	getcwd(cwd, sizeof(cwd));
-	printf("%s", cwd);
-	buf = readline(" $> ");
-	return (buf);
->>>>>>> ghost
-}
-
 int	main(int argc, char **argv, char **env)
 {
-<<<<<<< HEAD
 	t_shell shell;
 
 	if(argc != 1)
@@ -140,17 +120,4 @@ const char *token_type_to_str(t_token_type type)
     if (type == R_APP)
         return ("R_APP");
     return ("UNKNOWN");
-=======
-	char *line;
-	
-	while (1)
-	{
-		line = ft_getline();
-		if (line == NULL)
-			break;
-		printf("%s\n", line);
-		// do stuff
-		free(line);
-	}
->>>>>>> ghost
 }
