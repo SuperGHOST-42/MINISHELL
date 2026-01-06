@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -101,9 +102,6 @@ int	main(int argc, char **argv, char **env)
 	(void)argc;
 	shell.env = env;
 	minishell(&shell);
-	return (0);
-}
-
 
 ///// DEBUG FUNCTION /////
 
