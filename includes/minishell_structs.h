@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_structs.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:41 by hgutterr          #+#    #+#             */
 /*   Updated: 2026/01/07 16:31:16 by hgutterr         ###   ########.fr       */
@@ -82,4 +82,70 @@ typedef struct s_shell
 	int 		should_exit;	// flag to indicate if shell should exit
 	int 		exit_code;		// exit code to use when exiting
 }	t_shell;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+typedef struct s_cmd
+{
+	char 				**args;
+	struct s_redirs	 		*redirs;
+	// int					fd_in;
+	// int					fd_out;
+	// int					buitin_id;
+	struct s_cmd		*next;
+}	t_cmd;
+*/
+
 #endif
