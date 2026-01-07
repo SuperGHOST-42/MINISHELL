@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:47 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/06 16:03:23 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:32:42 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/types.h>
@@ -35,7 +36,7 @@ void 		handle_word(t_token **tokens, char *line, int *i);
 int			handle_quote(t_token **tokens, char *line, int *i);
 void 		handle_operator(t_token **tokens, char *line, int *i);
 
-// parce_line.c
+// lex_line.c
 
 void	    accept_line(t_shell *shell, char *line);
 t_token 	*tokenization(char *line);

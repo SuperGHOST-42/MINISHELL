@@ -6,17 +6,16 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 14:11:50 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/06 16:05:52 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:33:13 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // TODO:
 // handle || && |(end) cases
 
-
 #include "../includes/minishell.h"
 
-const char *token_type_to_str(t_token_type type);
+volatile sig_atomic_t	g_sig;
 
 void	minishell(t_shell *shell)
 {
