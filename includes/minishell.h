@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:47 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/07 16:32:42 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/07 18:18:50 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,28 +27,7 @@
 
 # include "libft/libft.h"
 # include "minishell_structs.h"
-
-// token.c
-
-t_token 	*new_token(t_token_type type, char *value);
-void 		token_add_back(t_token **lst, t_token *new);
-void 		handle_word(t_token **tokens, char *line, int *i);
-int			handle_quote(t_token **tokens, char *line, int *i);
-void 		handle_operator(t_token **tokens, char *line, int *i);
-
-// lex_line.c
-
-void	    accept_line(t_shell *shell, char *line);
-t_token 	*tokenization(char *line);
-
-// syntax_checker.c
-
-int 		syntax_check(t_token *tokens);
-int 		ft_isredir(t_token_type type);
-
-// exit.c
-
-int			exit_shell(t_token *tokens, int exit_code);
-void		free_tokens(t_token *tokens);
+# include "minishell_parse.h"
+//# include "minishell_execute.h"
 
 #endif

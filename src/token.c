@@ -25,34 +25,46 @@ t_token *new_token(t_token_type type, char *value)
 	return (tok);
 }
 
-void token_add_back(t_token **lst, t_token *new)
+void token_add_back(t_token **lst, t_token *node)
 {
 	t_token *tmp;
 
+	/* Defensive: ignore NULL pointers */
+	if (!lst || !node)
+		return;
+
 	if (!*lst)
 	{
-		*lst = new;
+		*lst = node;
 		return;
 	}
 	tmp = *lst;
 	while (tmp->next)
 		tmp = tmp->next;
-	tmp->next = new;
+	tmp->next = node;
 }
 void handle_word(t_token **tokens, char *line, int *i)
 {
-	int	start;
+	int start;
+	t_token *tok;
 
 	start = *i;
 	while (line[*i] && !ft_isspace(line[*i]) && !ft_isoperator(line[*i])
 		&& !ft_isquote(line[*i]))
-	(*i)++;
-	token_add_back(tokens, new_token(WORD, ft_substr(line, start, *i- start)));
+		(*i)++;
+	tok = new_token(WORD, ft_substr(line, start, *i - start));
+	if (!tok)
+	{
+		/* Allocation failed; bail out safely (tokens unchanged) */
+		return;
+	}
+	token_add_back(tokens, tok);
 }
 int handle_quote(t_token **tokens, char *line, int *i)
 {
 	char quote;
 	int  start;
+	t_token *tok;
 
 	quote = line[*i];
 	(*i)++;
@@ -61,8 +73,10 @@ int handle_quote(t_token **tokens, char *line, int *i)
 		(*i)++;
 	if (line[*i] != quote)
 		return (1);
-	token_add_back(tokens,
-		new_token(WORD, ft_substr(line, start, *i - start)));
+	tok = new_token(WORD, ft_substr(line, start, *i - start));
+	if (!tok)
+		return (1); /* Treat allocation failure as error so tokenization frees tokens */
+	token_add_back(tokens, tok);
 	if (line[*i] == quote)
 		(*i)++;
 	return (0);
@@ -71,21 +85,39 @@ int handle_quote(t_token **tokens, char *line, int *i)
 
 void handle_operator(t_token **tokens, char *line, int *i)
 {
+	t_token *tok = NULL;
+
 	if (line[*i] == '|')
-		token_add_back(tokens, new_token(PIPE, ft_strdup("|")));
+	{
+		tok = new_token(PIPE, ft_strdup("|"));
+		if (!tok) return;
+		token_add_back(tokens, tok);
+	}
 	else if (line[*i] == '<' && line[*i + 1] == '<')
 	{
-		token_add_back(tokens, new_token(R_HEREDOC, ft_strdup("<<")));
+		tok = new_token(R_HEREDOC, ft_strdup("<<"));
+		if (!tok) return;
+		token_add_back(tokens, tok);
 		(*i)++;
 	}
 	else if (line[*i] == '>' && line[*i + 1] == '>')
 	{
-		token_add_back(tokens, new_token(R_APP, ft_strdup(">>")));
+		tok = new_token(R_APP, ft_strdup(">>"));
+		if (!tok) return;
+		token_add_back(tokens, tok);
 		(*i)++;
 	}
 	else if (line[*i] == '<')
-		token_add_back(tokens, new_token(R_IN, ft_strdup("<")));
+	{
+		tok = new_token(R_IN, ft_strdup("<"));
+		if (!tok) return;
+		token_add_back(tokens, tok);
+	}
 	else if (line[*i] == '>')
-		token_add_back(tokens, new_token(R_OUT, ft_strdup(">")));
+	{
+		tok = new_token(R_OUT, ft_strdup(">"));
+		if (!tok) return;
+		token_add_back(tokens, tok);
+	}
 	(*i)++;
 }

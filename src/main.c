@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 14:11:50 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/07 16:33:13 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/07 18:38:14 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,10 @@ int	main(int argc, char **argv, char **env)
 		return (-1);
 	(void)argv;
 	(void)argc;
-	shell.env = env;
+	/* Initialize shell state */
+	shell.env = NULL;
+	shell.last_status = 0;
+	shell.should_exit = 0;
+	shell.exit_code = 0;
 	minishell(&shell);
 }

@@ -63,4 +63,9 @@ pass "multiple lines processed"
 # We expect to see token for 'exit'
 run "exit" 'TOKEN [WORD] : "exit"'
 
+# Minimal unit test: make sure token_add_back handles NULL node without crashing
+cc tests/test_token_null.c src/token.c includes/libft/libft.a -Iincludes -o tests/test_token_null
+./tests/test_token_null || fail "token_add_back(NULL) crashed"
+pass "token_add_back handles NULL node"
+
 echo "All edge tests completed."

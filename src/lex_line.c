@@ -23,7 +23,6 @@ void	accept_line(t_shell *shell, char *line)
 	if (ft_isempty(line))
 		return ;
 	add_history(line);
-	printf("%s\n", line);
 	tokens = tokenization(line);
 	if (syntax_check(tokens) == 1) // syntax_check returns 1 on error
 	{
