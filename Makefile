@@ -1,7 +1,7 @@
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Wextra #-Werror
+CFLAGS = #-Wall -Wextra -Werror
 CFLAGS += -Iincludes -I$(LIBFT_DIR)
 CFLAGS += -I"$(shell brew --prefix readline)/include"
 
