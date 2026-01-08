@@ -50,7 +50,7 @@ typedef struct s_cmd
 {
 	char 					**args;
 	t_redirs		 		*redirs;
-	t_builtin				is_builtin;
+	t_builtin				builtin;
 	pid_t					pid;
 	struct s_cmd			*next;
 }	t_cmd;	
