@@ -17,6 +17,7 @@ void	free_cmd(t_cmd *cmd)
 		free(cmd->args[i]);
 		i++;
 	}
+	free(cmd->args);
 	free(cmd);
 }
 
@@ -46,9 +47,8 @@ char	*ft_readline(void)
 void	parser(t_cmd *cmd)
 {
 	cmd->args = malloc(sizeof(char *) * 3);
-	if(cmd == NULL)
+	if(cmd->args == NULL)
 		error_exit("Malloc failed");
-	
 	cmd->args[0] = ft_strdup("/bin/echo");
 	cmd->args[1] = ft_strdup("Hello World");
 	cmd->args[2] = NULL;
@@ -56,6 +56,13 @@ void	parser(t_cmd *cmd)
 	cmd->pid = -1;
 	cmd->redirs = NULL;
 	cmd->next = NULL;
+}
+
+int	is_parent_builtin(t_builtin bi)
+{
+	if (bi == BI_CD || bi == BI_UNSET ||bi == BI_EXIT || bi == BI_EXPORT)
+		return (1);
+	return (0);
 }
 int	main(int argc, char **argv, char **env)
 {
@@ -74,18 +81,32 @@ int	main(int argc, char **argv, char **env)
 		else
 			add_history(line);
 		free(line);
-		////////////////////////////
 		cmd = malloc(sizeof(t_cmd));
+		////////////////////////////
 		parser(cmd); // hugo
-		pid = fork();
-		if (pid == 0)
+		////////////////////////////
+		if (cmd->builtin != BI_NONE && is_parent_builtin(cmd->builtin))
 		{
-			execve(cmd->args[0], cmd->args, env);
-			error_exit("execv failed");
+			TODO:
+			exec_builtin(cmd);
 		}
-		free_cmd(cmd);
+		else
+		{
+			pid = fork();
+			if (pid == 0)
+			{
+				if (cmd->builtin != BI_NONE)
+				{
+					exec_builtin(cmd);
+				}
+				else
+				{	
+					TODO: 
+					exec_all();
+				}
+			}
+		}
 	}
-	waitpid(pid, NULL, 0);
 	perror("");
 	return (EXIT_SUCCESS);
 }
