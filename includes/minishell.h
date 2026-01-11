@@ -4,6 +4,7 @@
 # include "libft/libft.h"
 # include <unistd.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -72,5 +73,9 @@ typedef struct s_shell
 	int 		should_exit;	// flag to indicate if shell should exit
 	int 		exit_code;		// exit code to use when exiting
 }	t_shell;
+
+int	is_parent_needed(t_builtin bi);
+int exec_builtin(t_cmd *cmd);
+t_env	*env_from_array(char **envp);
 
 #endif

@@ -7,7 +7,7 @@ static	void error_exit(char *msg)
 	exit(EXIT_FAILURE);
 }
 
-void	free_cmd(t_cmd *cmd)
+void	free_cmds(t_cmd *cmd)
 {
 	int i;
 
@@ -28,6 +28,21 @@ static void print_args(t_cmd *cmd)
 		printf("%s\n", cmd->args[i]);
 	}
 }
+
+int	status_to_exitcode(int status)
+{
+	int	sig;
+
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+	{
+		sig = WTERMSIG(status);
+		return (128 + sig);
+	}
+	return (1);
+}
+
 char	*ft_readline(void)
 {
 	char	cwd[BUFSIZ];
@@ -52,26 +67,24 @@ void	parser(t_cmd *cmd)
 	cmd->args[0] = ft_strdup("/bin/echo");
 	cmd->args[1] = ft_strdup("Hello World");
 	cmd->args[2] = NULL;
-	cmd->builtin = 1;
+	cmd->builtin = BI_CD;
 	cmd->pid = -1;
 	cmd->redirs = NULL;
 	cmd->next = NULL;
 }
 
-int	is_parent_builtin(t_builtin bi)
-{
-	if (bi == BI_CD || bi == BI_UNSET ||bi == BI_EXIT || bi == BI_EXPORT)
-		return (1);
-	return (0);
-}
 int	main(int argc, char **argv, char **env)
 {
 	(void)argc;
 	(void)argv;
 
 	t_cmd	*cmd;
-	char *line;
-	pid_t pid;
+	//t_env	*env;
+	t_shell	*sh;
+	char	*line;
+	pid_t	pid;
+	int		ret;
+	int		status;
 	
 	while (1)
 	{
@@ -82,31 +95,39 @@ int	main(int argc, char **argv, char **env)
 			add_history(line);
 		free(line);
 		cmd = malloc(sizeof(t_cmd));
-		////////////////////////////
 		parser(cmd); // hugo
-		////////////////////////////
-		if (cmd->builtin != BI_NONE && is_parent_builtin(cmd->builtin))
-		{
+		////////////////////
+		if (cmd->builtin != BI_NONE && is_parent_needed(cmd->builtin))
+		{	
 			TODO:
-			exec_builtin(cmd);
+			ret = exec_builtin(cmd);
+			printf("entrou aqui\n");
 		}
 		else
 		{
 			pid = fork();
+			if (pid < 0)
+				error_exit("fork");
 			if (pid == 0)
 			{
 				if (cmd->builtin != BI_NONE)
 				{
-					exec_builtin(cmd);
+					ret = exec_builtin(cmd);
+					printf("entrou 1\n");
+					exit(ret);
 				}
-				else
-				{	
-					TODO: 
-					exec_all();
-				}
+				execve(cmd->args[0], cmd->args, env);
+				error_exit("execve");
+				exit(127);
+			}
+			else
+			{
+				waitpid(pid, &status, 0);
+				printf("pid = %i, status = %i\n", pid, status_to_exitcode(status));
 			}
 		}
+		free_cmds(cmd);
 	}
-	perror("");
+	perror(""); 
 	return (EXIT_SUCCESS);
 }
