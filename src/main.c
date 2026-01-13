@@ -21,9 +21,11 @@ void	parser(t_cmd *cmd)
 	cmd->args = malloc(sizeof(char *) * 3);
 	if(cmd->args == NULL)
 		error_exit("Malloc failed");
-	cmd->args[0] = ft_strdup("/bin/echo");
+	
+	cmd->args[0] = ft_strdup("echo");
 	cmd->args[1] = ft_strdup("Hello World");
 	cmd->args[2] = NULL;
+	
 	cmd->builtin = BI_NONE;
 	cmd->pid = -1;
 	cmd->redirs = NULL;
@@ -33,8 +35,8 @@ void	parser(t_cmd *cmd)
 void	create_process(t_cmd *cmd, t_shell *shell, char **env)
 {
 	pid_t	pid;
-	int		exit_code;
 	int		status;
+	int		exit_code;
 
 	pid = fork();
 	if (pid < 0)
@@ -44,10 +46,8 @@ void	create_process(t_cmd *cmd, t_shell *shell, char **env)
 		if (cmd->builtin != BI_NONE)
 		{
 			exit_code = exec_builtin(cmd);
-			printf("entrou 2\n");
 			exit(exit_code);
 		}
-		printf("entrou 3\n");
 		execve(cmd->args[0], cmd->args, env);
 		perror(cmd->args[0]);
 		exit(127); //command not found
@@ -104,6 +104,7 @@ void	init_shell(char **env)
 		////////////////////
 		exec_cmd(cmd, shell, env);
 		free_cmd(cmd);
+		printf("last status = %i\n", shell->last_status);
 	}
 	free(shell);
 }
