@@ -1,7 +1,7 @@
 NAME = minishell
 
 CC = cc
-CFLAGS = #-Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra #-Werror
 CFLAGS += -Iincludes -I$(LIBFT_DIR)
 CFLAGS += -I"$(shell brew --prefix readline)/include"
 
@@ -12,7 +12,8 @@ LIBFT_DIR = includes/libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRCS = src/main.c \
-	src/execute_single.c
+	src/execute_single.c \
+	src/helpers.c
 
 OBJDIR = obj
 OBJS = $(patsubst src/%.c,$(OBJDIR)/%.o,$(SRCS))

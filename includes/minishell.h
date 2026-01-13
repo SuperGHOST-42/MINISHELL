@@ -74,8 +74,15 @@ typedef struct s_shell
 	int 		exit_code;		// exit code to use when exiting
 }	t_shell;
 
-int	is_parent_needed(t_builtin bi);
-int exec_builtin(t_cmd *cmd);
+//ghost
+int		is_parent_needed(t_builtin bi);
+int		exec_builtin(t_cmd *cmd);
 t_env	*env_from_array(char **envp);
+int		status_to_exit_code(int status);
+
+//helpers
+void 	print_args(t_cmd *cmd);
+void	free_cmd(t_cmd *cmd);
+void 	error_exit(char *msg);
 
 #endif

@@ -1,47 +1,4 @@
 #include "../includes/minishell.h"
-#include <string.h>
-
-static	void error_exit(char *msg)
-{
-	perror(msg);
-	exit(EXIT_FAILURE);
-}
-
-void	free_cmds(t_cmd *cmd)
-{
-	int i;
-
-	i = 0;
-	while (cmd->args[i])
-	{
-		free(cmd->args[i]);
-		i++;
-	}
-	free(cmd->args);
-	free(cmd);
-}
-
-static void print_args(t_cmd *cmd)
-{
-	for(int i = 0; cmd->args[i] != NULL; i++)
-	{
-		printf("%s\n", cmd->args[i]);
-	}
-}
-
-int	status_to_exitcode(int status)
-{
-	int	sig;
-
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	if (WIFSIGNALED(status))
-	{
-		sig = WTERMSIG(status);
-		return (128 + sig);
-	}
-	return (1);
-}
 
 char	*ft_readline(void)
 {
@@ -67,25 +24,68 @@ void	parser(t_cmd *cmd)
 	cmd->args[0] = ft_strdup("/bin/echo");
 	cmd->args[1] = ft_strdup("Hello World");
 	cmd->args[2] = NULL;
-	cmd->builtin = BI_CD;
+	cmd->builtin = BI_ECHO;
 	cmd->pid = -1;
 	cmd->redirs = NULL;
 	cmd->next = NULL;
 }
 
-int	main(int argc, char **argv, char **env)
+void	create_process(t_cmd *cmd, t_shell *shell, char **env)
 {
-	(void)argc;
-	(void)argv;
-
-	t_cmd	*cmd;
-	//t_env	*env;
-	t_shell	*sh;
-	char	*line;
 	pid_t	pid;
 	int		ret;
 	int		status;
-	
+
+	pid = fork();
+	if (pid < 0)
+		error_exit("fork");
+	if (pid == 0)
+	{
+		if (cmd->builtin != BI_NONE)
+		{
+			ret = exec_builtin(cmd);
+			printf("entrou 2\n");
+			exit(ret);
+		}
+		printf("entrou 3\n");
+		execve(cmd->args[0], cmd->args, env);
+		error_exit("execve");
+		exit(127);
+	}
+	else
+	{
+		waitpid(pid, &status, 0);
+		shell->exit_code = status_to_exit_code(status);
+	}
+}
+
+int	exec_cmd(t_cmd *cmd, t_shell *shell, char **env)
+{
+	pid_t	pid;
+	int		ret;
+
+	if (cmd->builtin != BI_NONE && is_parent_needed(cmd->builtin))
+	{
+		ret = exec_builtin(cmd);
+		printf("entrou 1\n");
+	}
+	else
+	{
+		printf("create process\n");
+		create_process(cmd, shell, env);
+	}
+	return (0);
+}
+
+void	init_shell(char **env)
+{
+	char	*line;
+	t_cmd	*cmd;
+	t_shell *shell;
+
+	shell = malloc(sizeof(t_shell));
+	if (!shell)
+		error_exit("malloc");
 	while (1)
 	{
 		line = ft_readline();
@@ -95,39 +95,26 @@ int	main(int argc, char **argv, char **env)
 			add_history(line);
 		free(line);
 		cmd = malloc(sizeof(t_cmd));
+		if (!cmd)
+			error_exit("malloc");
 		parser(cmd); // hugo
 		////////////////////
-		if (cmd->builtin != BI_NONE && is_parent_needed(cmd->builtin))
-		{	
-			TODO:
-			ret = exec_builtin(cmd);
-			printf("entrou aqui\n");
-		}
-		else
-		{
-			pid = fork();
-			if (pid < 0)
-				error_exit("fork");
-			if (pid == 0)
-			{
-				if (cmd->builtin != BI_NONE)
-				{
-					ret = exec_builtin(cmd);
-					printf("entrou 1\n");
-					exit(ret);
-				}
-				execve(cmd->args[0], cmd->args, env);
-				error_exit("execve");
-				exit(127);
-			}
-			else
-			{
-				waitpid(pid, &status, 0);
-				printf("pid = %i, status = %i\n", pid, status_to_exitcode(status));
-			}
-		}
-		free_cmds(cmd);
+		exec_cmd(cmd, shell, env);
+		free_cmd(cmd);
 	}
+}
+
+int	main(int argc, char **argv, char **env)
+{
+	t_cmd	*cmd;
+	t_env	*envp;
+	t_shell	*shell = NULL;
+
+	(void)argc;
+	(void)argv;
+	(void)envp;
+	
+	init_shell(env);
 	perror(""); 
 	return (EXIT_SUCCESS);
 }
