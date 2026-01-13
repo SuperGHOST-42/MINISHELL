@@ -34,7 +34,12 @@ run() {
 run "echo hello world" 'TOKEN [WORD] : "echo"'
 run "echo 'hello world'" 'TOKEN [WORD] : "hello world"'
 run 'echo "hello world"' 'TOKEN [WORD] : "hello world"'
-
+# Check simple command parsing into t_cmd args
+run "echo hello world" 'CMD ARGS: "echo" "hello" "world"'
+# Check parsing of commands with redirection and pipe
+run "echo \"hello world!\" > text.txt | cat -e" 'CMD ARGS: "echo" "hello world!"'
+run "echo \"hello world!\" > text.txt | cat -e" 'REDIRS: > "text.txt"'
+run "echo \"hello world!\" > text.txt | cat -e" 'CMD ARGS: "cat" "-e"'
 # Test operators
 run "ls | wc" 'TOKEN [PIPE] : "|"'
 run "echo hi > out.txt" 'TOKEN [R_OUT] : ">"'

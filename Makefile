@@ -6,7 +6,7 @@
 #    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/07 18:02:43 by hgutterr          #+#    #+#              #
-#    Updated: 2026/01/07 18:37:08 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/01/07 18:58:35 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ SRCS = \
 	$(SRCDIR)/syntax_checker.c \
 	$(SRCDIR)/exit.c \
 	$(SRCDIR)/lex_line.c \
+	$(SRCDIR)/parse_cmd.c \
 	$(SRCDIR)/builtins.c
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)

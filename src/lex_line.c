@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_line.c                                       :+:      :+:    :+:   */
+/*   lex_line.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 15:48:26 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/06 16:06:26 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/07 19:05:09 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,7 @@ void	accept_line(t_shell *shell, char *line)
 		printf("No tokens generated.\n");
 	else
 	{
-		test(tokens);
-		// execute_simple_command(tokens, shell);
+		execute_simple_command(tokens, shell);
 		free_tokens(tokens);
 	}
 }

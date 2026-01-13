@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:47 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/07 18:18:50 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/10 01:59:41 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <fcntl.h>
 # include <string.h>
 # include <errno.h>
+# include <fcntl.h>
 
 # include "libft/libft.h"
 # include "minishell_structs.h"
