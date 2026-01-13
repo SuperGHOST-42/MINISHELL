@@ -24,7 +24,7 @@ void	parser(t_cmd *cmd)
 	cmd->args[0] = ft_strdup("/bin/echo");
 	cmd->args[1] = ft_strdup("Hello World");
 	cmd->args[2] = NULL;
-	cmd->builtin = BI_ECHO;
+	cmd->builtin = BI_NONE;
 	cmd->pid = -1;
 	cmd->redirs = NULL;
 	cmd->next = NULL;
@@ -33,7 +33,7 @@ void	parser(t_cmd *cmd)
 void	create_process(t_cmd *cmd, t_shell *shell, char **env)
 {
 	pid_t	pid;
-	int		ret;
+	int		exit_code;
 	int		status;
 
 	pid = fork();
@@ -43,30 +43,32 @@ void	create_process(t_cmd *cmd, t_shell *shell, char **env)
 	{
 		if (cmd->builtin != BI_NONE)
 		{
-			ret = exec_builtin(cmd);
+			exit_code = exec_builtin(cmd);
 			printf("entrou 2\n");
-			exit(ret);
+			exit(exit_code);
 		}
 		printf("entrou 3\n");
 		execve(cmd->args[0], cmd->args, env);
-		error_exit("execve");
-		exit(127);
+		perror(cmd->args[0]);
+		exit(127); //command not found
 	}
 	else
 	{
-		waitpid(pid, &status, 0);
-		shell->exit_code = status_to_exit_code(status);
+		if (waitpid(pid, &status, 0) < 0)
+		{
+			perror("waitpid");
+			shell->last_status = 1;
+			return ;
+		}
+		shell->last_status = status_to_exit_code(status);
 	}
 }
 
-int	exec_cmd(t_cmd *cmd, t_shell *shell, char **env)
+void	exec_cmd(t_cmd *cmd, t_shell *shell, char **env)
 {
-	pid_t	pid;
-	int		ret;
-
 	if (cmd->builtin != BI_NONE && is_parent_needed(cmd->builtin))
 	{
-		ret = exec_builtin(cmd);
+		shell->last_status = exec_builtin(cmd);
 		printf("entrou 1\n");
 	}
 	else
@@ -74,7 +76,7 @@ int	exec_cmd(t_cmd *cmd, t_shell *shell, char **env)
 		printf("create process\n");
 		create_process(cmd, shell, env);
 	}
-	return (0);
+	return ;
 }
 
 void	init_shell(char **env)
@@ -86,6 +88,7 @@ void	init_shell(char **env)
 	shell = malloc(sizeof(t_shell));
 	if (!shell)
 		error_exit("malloc");
+	ft_bzero(shell, sizeof(t_shell));
 	while (1)
 	{
 		line = ft_readline();
@@ -102,13 +105,12 @@ void	init_shell(char **env)
 		exec_cmd(cmd, shell, env);
 		free_cmd(cmd);
 	}
+	free(shell);
 }
 
 int	main(int argc, char **argv, char **env)
 {
-	t_cmd	*cmd;
 	t_env	*envp;
-	t_shell	*shell = NULL;
 
 	(void)argc;
 	(void)argv;
