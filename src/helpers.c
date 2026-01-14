@@ -2,16 +2,36 @@
 
 void	free_cmd(t_cmd *cmd)
 {
-	int i;
+	int	i;
 
-	i = 0;
-	while (cmd->args[i])
+	if (!cmd)
+		return ;
+	if (cmd->args)
 	{
-		free(cmd->args[i]);
-		i++;
+		i = 0;
+		while (cmd->args[i])
+			free(cmd->args[i++]);
+		free(cmd->args);
 	}
-	free(cmd->args);
+	// TODO: free redirs depois
 	free(cmd);
+}
+
+char	*ft_readline(void)
+{
+	char	cwd[BUFSIZ];
+	char	*prompt;
+	char	*line;
+
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		printf("error getcwd ");
+		return (readline(" > "));
+	}
+	prompt = ft_strjoin(cwd, " > ");
+	line = readline(prompt);
+	free(prompt);
+	return (line);
 }
 
 void error_exit(char *msg)

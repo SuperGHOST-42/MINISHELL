@@ -7,6 +7,7 @@
 # include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <sys/wait.h>
 
 typedef enum e_token_type
 {
@@ -69,6 +70,7 @@ typedef struct s_env
 typedef struct s_shell
 {
 	t_env		*env;			// linked list of environment variables
+	char 		**envp;
 	int			last_status;	// $? (0..255)
 	int 		should_exit;	// flag to indicate if shell should exit
 	int 		exit_code;		// exit code to use when exiting
@@ -76,13 +78,29 @@ typedef struct s_shell
 
 //ghost
 int		is_parent_needed(t_builtin bi);
-int		exec_builtin(t_cmd *cmd);
-t_env	*env_from_array(char **envp);
+int		exec_builtin(t_cmd *cmd, t_shell *shell);
 int		status_to_exit_code(int status);
 
 //helpers
 void 	print_args(t_cmd *cmd);
 void	free_cmd(t_cmd *cmd);
 void 	error_exit(char *msg);
+char	*ft_readline(void);
+
+//env
+char	*get_envp_value(char **envp, const char *key);
+char	*resolve_path(char **envp, char *cmd);
+
+//exec
+void	create_process(t_cmd *cmd, t_shell *shell);
+int		exec_pipeline(t_cmd *cmds, t_shell *shell);
+
+//list helpers
+int		stack_size(t_cmd *stack);
+t_cmd	*ft_new_node(void);
+void	ft_lstadd_front(t_cmd **list, t_cmd *new);
+void	ft_lstadd_back(t_cmd **list, t_cmd *new);
+
+
 
 #endif

@@ -11,9 +11,13 @@ LDLIBS = -lreadline -lhistory -lncurses
 LIBFT_DIR = includes/libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRCS = src/main.c \
+SRCS = src/env.c \
+	src/execute_pipeline.c \
 	src/execute_single.c \
-	src/helpers.c
+	src/helpers.c \
+	src/main.c \
+	src/resolve_path.c \
+	src/list_utils.c
 
 OBJDIR = obj
 OBJS = $(patsubst src/%.c,$(OBJDIR)/%.o,$(SRCS))

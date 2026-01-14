@@ -1,29 +1,13 @@
 #include "../includes/minishell.h"
 
-char	*ft_readline(void)
-{
-	char	cwd[BUFSIZ];
-	char	*prompt;
-	char	*line;
-
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-	{
-		printf("error getcwd\n");
-		return (readline(" > "));
-	}
-	prompt = ft_strjoin(cwd, " > ");
-	line = readline(prompt);
-	free(prompt);
-	return (line);
-}
 void	parser(t_cmd *cmd)
 {
 	cmd->args = malloc(sizeof(char *) * 3);
 	if(cmd->args == NULL)
 		error_exit("Malloc failed");
 	
-	cmd->args[0] = ft_strdup("echo");
-	cmd->args[1] = ft_strdup("Hello World");
+	cmd->args[0] = ft_strdup("/bin/ls");
+	cmd->args[1] = ft_strdup("Makefile");
 	cmd->args[2] = NULL;
 	
 	cmd->builtin = BI_NONE;
@@ -32,63 +16,28 @@ void	parser(t_cmd *cmd)
 	cmd->next = NULL;
 }
 
-void	create_process(t_cmd *cmd, t_shell *shell, char **env)
+void	exec_cmd(t_cmd *cmd, t_shell *shell)
 {
-	pid_t	pid;
-	int		status;
-	int		exit_code;
-
-	pid = fork();
-	if (pid < 0)
-		error_exit("fork");
-	if (pid == 0)
+	if (cmd->next != NULL) //caso há pipe
 	{
-		if (cmd->builtin != BI_NONE)
-		{
-			exit_code = exec_builtin(cmd);
-			exit(exit_code);
-		}
-		execve(cmd->args[0], cmd->args, env);
-		perror(cmd->args[0]);
-		exit(127); //command not found
+		exec_pipeline(cmd, shell);
+	}
+	else if (cmd->builtin != BI_NONE && is_parent_needed(cmd->builtin))
+	{
+		shell->last_status = exec_builtin(cmd, shell);
 	}
 	else
 	{
-		if (waitpid(pid, &status, 0) < 0)
-		{
-			perror("waitpid");
-			shell->last_status = 1;
-			return ;
-		}
-		shell->last_status = status_to_exit_code(status);
-	}
-}
-
-void	exec_cmd(t_cmd *cmd, t_shell *shell, char **env)
-{
-	if (cmd->builtin != BI_NONE && is_parent_needed(cmd->builtin))
-	{
-		shell->last_status = exec_builtin(cmd);
-		printf("entrou 1\n");
-	}
-	else
-	{
-		printf("create process\n");
-		create_process(cmd, shell, env);
+		create_process(cmd, shell);
 	}
 	return ;
 }
 
-void	init_shell(char **env)
+void	init_shell(t_shell *shell)
 {
 	char	*line;
 	t_cmd	*cmd;
-	t_shell *shell;
-
-	shell = malloc(sizeof(t_shell));
-	if (!shell)
-		error_exit("malloc");
-	ft_bzero(shell, sizeof(t_shell));
+	
 	while (1)
 	{
 		line = ft_readline();
@@ -100,24 +49,30 @@ void	init_shell(char **env)
 		cmd = malloc(sizeof(t_cmd));
 		if (!cmd)
 			error_exit("malloc");
+		ft_bzero(cmd, sizeof(t_cmd));
 		parser(cmd); // hugo
-		////////////////////
-		exec_cmd(cmd, shell, env);
+		exec_cmd(cmd, shell);
 		free_cmd(cmd);
 		printf("last status = %i\n", shell->last_status);
 	}
-	free(shell);
 }
 
-int	main(int argc, char **argv, char **env)
+int	main(int argc, char **argv, char **envp)
 {
-	t_env	*envp;
-
 	(void)argc;
 	(void)argv;
-	(void)envp;
+	t_shell	*shell;
+
+	shell = malloc(sizeof(t_shell));
+	if (!shell)
+		error_exit("malloc");
 	
-	init_shell(env);
-	perror(""); 
+	ft_bzero(shell, sizeof(t_shell));
+	
+	shell->envp = envp;
+
+	init_shell(shell);
+	
+	free(shell);
 	return (EXIT_SUCCESS);
 }

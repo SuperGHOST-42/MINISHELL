@@ -27,9 +27,46 @@ int	is_parent_needed(t_builtin bi)
 	return (0);
 }
 
-int exec_builtin(t_cmd *cmd)
+int exec_builtin(t_cmd *cmd, t_shell *shell)
 {
+	(void)cmd;
+	(void)shell;
 	printf("exec_builtin executed\n");
 	return (77);
 }
 
+void	create_process(t_cmd *cmd, t_shell *shell)
+{
+	char	*path;
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid < 0)
+		error_exit("fork");
+	if (pid == 0)
+	{
+		if (cmd->builtin != BI_NONE)
+			exit(exec_builtin(cmd));
+		path = resolve_path(shell->envp, cmd->args[0]);
+		if (!path)
+		{
+			perror(cmd->args[0]);
+			exit(127); //command not found
+		}
+		execve(path, cmd->args, shell->envp);
+		perror(path);
+		free(path);
+		exit(126); //command found, permission denied
+	}
+	else
+	{
+		if (waitpid(pid, &status, 0) < 0)
+		{
+			perror("waitpid");
+			shell->last_status = 1;
+			return ;
+		}
+		shell->last_status = status_to_exit_code(status);
+	}
+}
