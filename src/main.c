@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 14:11:50 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/16 17:20:52 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/16 17:32:10 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ volatile sig_atomic_t	g_sig;
 void	minishell(t_shell *shell)
 {
 	char *line;
-	while(1)
+	while(shell->should_exit == 0)
 	{
 		line = readline("$> ");
 		if (!line)
