@@ -290,7 +290,16 @@ void execute_simple_command(t_token *tokens, t_shell *shell)
 		printf("CMD ARGS: (parse/alloc error)\n");
 		return;
 	}
-	print_cmds(cmds);
+	
+	/* For now, execute only the first command (no piping yet) */
+	if (cmds && cmds->args && cmds->args[0])
+	{
+		if (execute_builtin(cmds, shell) != 0)
+		{
+			/* Not a builtin, would be external command */
+			printf("CMD ARGS: \"%s\"\n", cmds->args[0]);
+		}
+	}
+	
 	free_cmds(cmds);
-	(void)shell;
 }

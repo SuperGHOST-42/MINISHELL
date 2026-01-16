@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_structs.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 13:46:41 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/07 16:31:16 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/16 17:20:52 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ typedef struct s_env
 typedef struct s_shell
 {
 	t_env		*env;			// linked list of environment variables
+	t_env		*env_backup;	// backup of original environment
 	int			last_status;	// $? (0..255)
 	int 		should_exit;	// flag to indicate if shell should exit
 	int 		exit_code;		// exit code to use when exiting

@@ -33,13 +33,10 @@ t_token 	*tokenization(char *line);
 t_cmd	*create_cmd_from_tokens(t_token *tokens);
 void	execute_simple_command(t_token *tokens, t_shell *shell);
 
-/* parsing helpers */
+// parse_cmd.c
 
 int		append_arg(t_cmd *cmd, char *arg);
 int		add_redir(t_redirs **list, t_token_type type, char *target);
-
-/* build list of commands from tokens */
-
 t_cmd	*parse_tokens_to_cmds(t_token *tokens);
 void	free_cmds(t_cmd *cmds);
 void	print_cmds(t_cmd *cmds);
@@ -54,5 +51,16 @@ int 		ft_isredir(t_token_type type);
 int			exit_shell(t_token *tokens, int exit_code);
 void		free_tokens(t_token *tokens);
 
+// builtins.c
+
+t_builtin	get_builtin_type(const char *cmd);
+int	execute_builtin(t_cmd *cmd, t_shell *shell);
+
+// env.c
+
+t_env	*env_init(char **envp);
+t_env	*env_dup(t_env *env);
+char	*env_get(t_env *env, const char *key);
+void	env_free(t_env *env);
 
 #endif

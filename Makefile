@@ -6,7 +6,7 @@
 #    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/07 18:02:43 by hgutterr          #+#    #+#              #
-#    Updated: 2026/01/07 18:58:35 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/01/16 17:20:52 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ OBJDIR = obj
 SRCDIR = src
 SRCS = \
 	$(SRCDIR)/main.c \
+	$(SRCDIR)/env.c \
 	$(SRCDIR)/token.c \
 	$(SRCDIR)/syntax_checker.c \
 	$(SRCDIR)/exit.c \

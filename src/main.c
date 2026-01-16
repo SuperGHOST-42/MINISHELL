@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 14:11:50 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/10 02:01:57 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/16 17:20:52 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,13 @@ int	main(int argc, char **argv, char **env)
 		return (-1);
 	(void)argv;
 	(void)argc;
-	shell.env = NULL;
+	shell.env = env_init(env);
+	shell.env_backup = env_dup(shell.env);
 	shell.last_status = 0;
 	shell.should_exit = 0;
 	shell.exit_code = 0;
 	minishell(&shell);
+	env_free(shell.env);
+	env_free(shell.env_backup);
+	return (shell.exit_code);
 }
