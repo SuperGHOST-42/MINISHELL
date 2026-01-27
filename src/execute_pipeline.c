@@ -54,7 +54,6 @@ static void	parent_keep_fds(int *prev_read, int fd[2], int has_next)
 		close_fd(fd[0]);
 }
 
-/* Ajusta esta função aos teus nomes/estruturas */
 static void	run_child(t_cmd *cmd, t_shell *shell)
 {
 	char	*path;
