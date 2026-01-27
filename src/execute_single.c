@@ -47,7 +47,7 @@ void	create_process(t_cmd *cmd, t_shell *shell)
 	if (pid == 0)
 	{
 		if (cmd->builtin != BI_NONE)
-			exit(exec_builtin(cmd));
+			exit(exec_builtin(cmd, shell));
 		path = resolve_path(shell->envp, cmd->args[0]);
 		if (!path)
 		{
