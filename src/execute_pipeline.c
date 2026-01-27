@@ -63,7 +63,7 @@ static void	run_child(t_cmd *cmd, t_shell *shell)
 		exit(0);
 	if (cmd->builtin != BI_NONE)
 		exit(exec_builtin(cmd, shell));
-	path = resolve_path(shell->envp, cmd->args[0]);
+	path = resolve_path(shell->env, cmd->args[0]);
 	if (!path)
 		exit(127);
 	execve(path, cmd->args, shell->envp);
@@ -91,7 +91,7 @@ static int	wait_all(t_cmd *cmds, pid_t last_pid)
 	return (1);
 }
 
-void	execute_pipeline(t_cmd *cmds, t_shell *shell)
+void	exec_pipeline(t_cmd *cmds, t_shell *shell)
 {
 	int		prev_read;
 	int		fd[2];

@@ -6,8 +6,8 @@ void	parser(t_cmd *cmd)
 	if(cmd->args == NULL)
 		error_exit("Malloc failed");
 	
-	cmd->args[0] = ft_strdup("/bin/ls");
-	cmd->args[1] = ft_strdup("Makefile");
+	cmd->args[0] = ft_strdup("ls");
+	cmd->args[1] = ft_strdup("test");
 	cmd->args[2] = NULL;
 	
 	cmd->builtin = BI_NONE;
@@ -20,15 +20,18 @@ void	exec_cmd(t_cmd *cmd, t_shell *shell)
 {
 	if (cmd->next != NULL) //caso há pipe
 	{
+		printf("entrou 1\n");
 		exec_pipeline(cmd, shell);
 	}
-	else if (cmd->builtin != BI_NONE && is_parent_needed(cmd->builtin))
+	else if (is_builtin(cmd) && is_parent_needed(cmd))
 	{
+		printf("entrou 2\n");
 		shell->last_status = exec_builtin(cmd, shell);
 	}
 	else
 	{
-		create_process(cmd, shell);
+		printf("entrou 3\n");
+		exec_child(cmd, shell);
 	}
 	return ;
 }
@@ -66,13 +69,12 @@ int	main(int argc, char **argv, char **envp)
 	shell = malloc(sizeof(t_shell));
 	if (!shell)
 		error_exit("malloc");
-	
 	ft_bzero(shell, sizeof(t_shell));
-	
-	shell->envp = envp;
-
-	init_shell(shell);
-	
-	free(shell);
+	shell->env = env_init(envp);
+	if (!shell->env)
+		error_exit("env_init");
+	init_shell(shell);	
+	env_free(shell->env);
+	free(shell); // TODO: free_shell();
 	return (EXIT_SUCCESS);
 }

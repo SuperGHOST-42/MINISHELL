@@ -8,6 +8,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/wait.h>
+# include <errno.h>
 
 typedef enum e_token_type
 {
@@ -77,29 +78,41 @@ typedef struct s_shell
 }	t_shell;
 
 //ghost
-int		is_parent_needed(t_builtin bi);
+int		is_parent_needed(t_cmd *cmd);
 int		exec_builtin(t_cmd *cmd, t_shell *shell);
 int		status_to_exit_code(int status);
+int		is_builtin(t_cmd *cmd);
+char	**env_to_envp(t_env *env);
 
 //helpers
 void 	print_args(t_cmd *cmd);
 void	free_cmd(t_cmd *cmd);
 void 	error_exit(char *msg);
 char	*ft_readline(void);
+void	ft_putstr(char *str);
 
 //env
 char	*get_envp_value(char **envp, const char *key);
-char	*resolve_path(char **envp, char *cmd);
+char	*resolve_path(t_env *env, char *cmd);
 
 //exec
-void	create_process(t_cmd *cmd, t_shell *shell);
-int		exec_pipeline(t_cmd *cmds, t_shell *shell);
+void	exec_child(t_cmd *cmd, t_shell *shell);
+void	exec_pipeline(t_cmd *cmds, t_shell *shell);
 
 //list helpers
 int		stack_size(t_cmd *stack);
 t_cmd	*ft_new_node(void);
 void	ft_lstadd_front(t_cmd **list, t_cmd *new);
 void	ft_lstadd_back(t_cmd **list, t_cmd *new);
+void	print_env_list(t_shell *shell);
+
+
+
+//hugo
+t_env	*env_init(char **envp); //env.c
+char	*get_env(t_env *env, const char *key); //env.c
+void	env_free(t_env *env); //env.c
+
 
 
 

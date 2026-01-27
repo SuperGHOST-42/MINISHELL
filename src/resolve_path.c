@@ -3,9 +3,27 @@
 static int	has_slash(const char *s)
 {
 	while (*s)
-		if (*s++ == '/')
+	{
+		if (*s == '/')
 			return (1);
+		s++;
+	}
 	return (0);
+}
+
+static void	free_split(char **arr)
+{
+	int	i;
+
+	if (!arr)
+		return ;
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
 }
 
 static char	*join_path(const char *dir, const char *cmd)
@@ -21,7 +39,7 @@ static char	*join_path(const char *dir, const char *cmd)
 	return (full);
 }
 
-char	*resolve_path(char **envp, char *cmd)
+char	*resolve_path(t_env *env, char *cmd)
 {
 	char	*path;
 	char	**dirs;
@@ -32,27 +50,27 @@ char	*resolve_path(char **envp, char *cmd)
 		return (NULL);
 	if (has_slash(cmd))
 		return (ft_strdup(cmd));
-	path = get_envp_value(envp, "PATH");
+
+	path = get_env(env, "PATH");
 	if (!path)
 		return (NULL);
+
 	dirs = ft_split(path, ':');
 	if (!dirs)
 		return (NULL);
+
 	i = 0;
 	while (dirs[i])
 	{
 		full = join_path(dirs[i], cmd);
 		if (full && access(full, X_OK) == 0)
 		{
-			// limpa dirs
-			for (int j = 0; dirs[j]; j++) free(dirs[j]);
-			free(dirs);
+			free_split(dirs);
 			return (full);
 		}
 		free(full);
 		i++;
 	}
-	for (int j = 0; dirs[j]; j++) free(dirs[j]);
-	free(dirs);
+	free_split(dirs);
 	return (NULL);
 }

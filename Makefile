@@ -17,7 +17,9 @@ SRCS = src/env.c \
 	src/helpers.c \
 	src/main.c \
 	src/resolve_path.c \
-	src/list_utils.c
+	src/list_utils.c \
+	src/my_env.c \
+	src/env_to_envp.c
 
 OBJDIR = obj
 OBJS = $(patsubst src/%.c,$(OBJDIR)/%.o,$(SRCS))
