@@ -14,14 +14,6 @@ int	status_to_exit_code(int status)
 	return (1);
 }
 
-int exec_builtin(t_cmd *cmd, t_shell *shell)
-{
-	(void)cmd;
-	(void)shell;
-	printf("exec_builtin executed\n");
-	return (77);
-}
-
 static void	run_child(t_cmd *cmd, t_shell *shell)
 {
 	char	*path;

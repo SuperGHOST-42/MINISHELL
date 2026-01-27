@@ -106,6 +106,11 @@ void	ft_lstadd_front(t_cmd **list, t_cmd *new);
 void	ft_lstadd_back(t_cmd **list, t_cmd *new);
 void	print_env_list(t_shell *shell);
 
+//builtins
+void	ft_pwd(void);
+void	ft_env(t_shell *shell);
+void	ft_exit(t_shell *shell, char *exit_code_str);
+
 
 
 //hugo
