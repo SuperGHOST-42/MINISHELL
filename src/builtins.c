@@ -30,11 +30,12 @@ void	ft_exit(t_shell *shell, char *exit_code_str)
 	int	exit_code;
 
 	exit_code = 0;
-	if (exit_code_str)
+	if (exit_code_str != 0)
 		exit_code = ft_atoi(exit_code_str);
 	if (shell)
 	{
 		shell->should_exit = 1;
 		shell->exit_code = exit_code;
 	}
+	exit(exit_code);
 }
