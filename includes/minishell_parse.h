@@ -25,7 +25,7 @@ void 		handle_operator(t_token **tokens, char *line, int *i);
 
 // lex_line.c
 
-void	    accept_line(t_shell *shell, char *line);
+t_cmd		*parse(t_shell *shell, char *line);
 t_token 	*tokenization(char *line);
 
 // exec.c

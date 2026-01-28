@@ -282,24 +282,24 @@ t_cmd *parse_tokens_to_cmds(t_token *tokens)
 	return (head);
 }
 
-void execute_simple_command(t_token *tokens, t_shell *shell)
-{
-	t_cmd *cmds = parse_tokens_to_cmds(tokens);
-	if (!cmds)
-	{
-		printf("CMD ARGS: (parse/alloc error)\n");
-		return;
-	}
+// void execute_simple_command(t_token *tokens, t_shell *shell)
+// {
+// 	t_cmd *cmds = parse_tokens_to_cmds(tokens);
+// 	if (!cmds)
+// 	{
+// 		printf("CMD ARGS: (parse/alloc error)\n");
+// 		return;
+// 	}
 	
-	/* For now, execute only the first command (no piping yet) */
-	if (cmds && cmds->args && cmds->args[0])
-	{
-		if (execute_builtin(cmds, shell) != 0)
-		{
-			/* Not a builtin, would be external command */
-			printf("CMD ARGS: \"%s\"\n", cmds->args[0]);
-		}
-	}
+// 	/* For now, execute only the first command (no piping yet) */
+// 	if (cmds && cmds->args && cmds->args[0])
+// 	{
+// 		if (execute_builtin(cmds, shell) != 0)
+// 		{
+// 			/* Not a builtin, would be external command */
+// 			printf("CMD ARGS: \"%s\"\n", cmds->args[0]);
+// 		}
+// 	}
 	
-	free_cmds(cmds);
-}
+// 	free_cmds(cmds);
+// }

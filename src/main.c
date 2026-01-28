@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 14:11:50 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/16 17:32:10 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/28 12:34:04 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ volatile sig_atomic_t	g_sig;
 void	minishell(t_shell *shell)
 {
 	char *line;
+	t_cmd *cmds;
+
 	while(shell->should_exit == 0)
 	{
 		line = readline("$> ");
@@ -28,7 +30,7 @@ void	minishell(t_shell *shell)
 			rl_clear_history();
 			exit(0);
 		}
-		accept_line(shell, line);
+		cmds = parse(shell, line);
 		free(line);
 	}
 
