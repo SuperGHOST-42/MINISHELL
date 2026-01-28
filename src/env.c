@@ -112,7 +112,7 @@ char	*get_env(t_env *env, const char *key)
 	return (NULL);
 }
 
-void	env_free(t_env *env)
+void	free_env(t_env *env)
 {
 	t_env	*current;
 	t_env	*temp;

@@ -1,20 +1,37 @@
 #include "../includes/minishell.h"
 
-void	free_cmd(t_cmd *cmd)
+static void	free_redirs(t_redirs *r)
 {
-	int	i;
+	t_redirs	*next;
 
-	if (!cmd)
-		return ;
-	if (cmd->args)
+	while (r)
 	{
-		i = 0;
-		while (cmd->args[i])
-			free(cmd->args[i++]);
-		free(cmd->args);
+		next = r->next;
+		free(r->target);
+		free(r);
+		r = next;
 	}
-	// TODO: free redirs depois
-	free(cmd);
+}
+
+void	free_tcmd(t_cmd *cmd)
+{
+	t_cmd	*next;
+	int		i;
+
+	while (cmd)
+	{
+		next = cmd->next;
+		if (cmd->args)
+		{
+			i = 0;
+			while (cmd->args[i])
+				free(cmd->args[i++]);
+			free(cmd->args);
+		}
+		free_redirs(cmd->redirs);
+		free(cmd);
+		cmd = next;
+	}
 }
 
 char	*ft_readline(void)
@@ -24,11 +41,10 @@ char	*ft_readline(void)
 	char	*line;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
-	{
-		printf("error getcwd ");
 		return (readline(" > "));
-	}
 	prompt = ft_strjoin(cwd, " > ");
+	if (!prompt)
+		return (readline(" > "));
 	line = readline(prompt);
 	free(prompt);
 	return (line);
@@ -40,11 +56,17 @@ void error_exit(char *msg)
 	exit(EXIT_FAILURE);
 }
 
-void print_args(t_cmd *cmd)
+void	print_args(t_cmd *cmd)
 {
-	for(int i = 0; cmd->args[i] != NULL; i++)
+	int	i;
+
+	if (!cmd || !cmd->args)
+		return ;
+	i = 0;
+	while (cmd->args[i])
 	{
 		printf("%s\n", cmd->args[i]);
+		i++;
 	}
 }
 
@@ -68,6 +90,8 @@ void	print_env_list(t_shell *shell)
 
 int	is_parent_needed(t_cmd *cmd)
 {
+	if (!cmd)
+		return (0);
 	if (cmd->builtin == BI_CD)
 		return (1);
 	if (cmd->builtin == BI_EXIT)
@@ -81,18 +105,17 @@ int	is_parent_needed(t_cmd *cmd)
 
 int	is_builtin(t_cmd *cmd)
 {
-	if (cmd->builtin != BI_NONE)
+	if (cmd && cmd->builtin != BI_NONE)
 		return (1);
-	else
-		return (0);
+	return (0);
 }
 
 void	ft_putstr(char *str)
 {
+	if (!str)
+		return ;
 	while (*str)
-	{
 		write(1, str++, 1);
-	}
 	write(1, "\n", 1);
 }
 

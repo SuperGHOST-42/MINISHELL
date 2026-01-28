@@ -1,12 +1,14 @@
 #include "../includes/minishell.h"
 
-int exec_builtin(t_cmd *cmd, t_shell *shell)
+int	exec_builtin(t_cmd *cmd, t_shell *shell)
 {
+	if (!cmd)
+		return (1);
 	if (cmd->builtin == BI_PWD)
-		ft_pwd();
-	else if (cmd->builtin == BI_ENV)
-		ft_env(shell);
-	else if (cmd->builtin == BI_EXIT)
-		ft_exit(shell, cmd->args[1]);
+		return (ft_pwd());
+	if (cmd->builtin == BI_ENV)
+		return (ft_env(shell));
+	if (cmd->builtin == BI_EXIT)
+		return (ft_exit(shell, cmd->args[1]));
 	return (0);
 }

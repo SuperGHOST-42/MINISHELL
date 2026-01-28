@@ -1,41 +1,45 @@
 #include "../includes/minishell.h"
 
-void ft_pwd(void)
+int	ft_pwd(void)
 {
-	char cwd[1024];
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("%s\n", cwd);
-	else
-		perror("getcwd() error");
+	char	cwd[BUFSIZ];
 
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+	{
+		printf("%s\n", cwd);
+		return (0);
+	}
+	perror("getcwd");
+	return (1);
 }
 
-void ft_env(t_shell *shell)
+int	ft_env(t_shell *shell)
 {
 	t_env	*current;
 
 	if (!shell || !shell->env)
-		return ;
+		return (0);
 	current = shell->env;
 	while (current)
 	{
-		if (current->has_value)
+		if (current->key && current->has_value)
 			printf("%s=%s\n", current->key, current->value);
 		current = current->next;
 	}
+	return (0);
 }
 
-void	ft_exit(t_shell *shell, char *exit_code_str)
+int	ft_exit(t_shell *shell, char *exit_code_str)
 {
 	int	exit_code;
 
-	exit_code = 0;
-	if (exit_code_str != 0)
+	if (!shell)
+		return (1);
+	if (!exit_code_str)
+		exit_code = shell->last_status;
+	else
 		exit_code = ft_atoi(exit_code_str);
-	if (shell)
-	{
-		shell->should_exit = 1;
-		shell->exit_code = exit_code;
-	}
-	exit(exit_code);
+	shell->should_exit = 1;
+	shell->exit_code = exit_code;
+	return (exit_code);
 }

@@ -1,40 +1,9 @@
 #include "../includes/minishell.h"
+#include "../../includes/minishell_parse.h"
 
 void	hardcode(t_cmd *cmd);
-
-void	exec_cmd(t_cmd *cmd, t_shell *shell)
-{
-	if (cmd->next != NULL)
-		exec_pipeline(cmd, shell);
-	else if (is_builtin(cmd) && is_parent_needed(cmd))
-		shell->last_status = exec_builtin(cmd, shell);
-	else
-		exec_child(cmd, shell);
-	return ;
-}
-
-void	init_shell(t_shell *shell)
-{
-	char	*line;
-	t_cmd	*cmd;
-	
-	while (1)
-	{
-		line = ft_readline();
-		if (line == NULL)
-			break;
-		else
-			add_history(line);
-		free(line);
-		cmd = malloc(sizeof(t_cmd));
-		if (!cmd)
-			error_exit("malloc");
-		ft_bzero(cmd, sizeof(t_cmd));
-		hardcode(cmd); //hugo
-		exec_cmd(cmd, shell);
-		free_cmd(cmd);
-	}
-}
+static void	exec_cmd(t_cmd *cmd, t_shell *shell);
+static void	init_shell(t_shell *shell);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -54,12 +23,51 @@ int	main(int argc, char **argv, char **envp)
 	
 	init_shell(shell);	
 	
-	env_free(shell->env);
+	free_env(shell->env);
 	free(shell); // fazer: free_shell();
 	
-	return (EXIT_SUCCESS);
+	return (shell->exit_code);
 }
 
+static void	init_shell(t_shell *shell)
+{
+	char	*line;
+	t_cmd	*cmd;
+	
+	while (1)
+	{
+		line = ft_readline();
+		if (line == NULL)
+			break;
+		else
+			add_history(line);
+		free(line);
+		cmd = malloc(sizeof(t_cmd));
+		if (!cmd)
+			error_exit("malloc");
+		ft_bzero(cmd, sizeof(t_cmd));
+		//hardcode(cmd); //hugo
+		
+		cmd = parse(shell, line);
+		print_cmds(cmd);
+		
+		//exec_cmd(cmd, shell);
+		free_cmds(cmd);
+		if (shell->should_exit != 0)
+			break ;
+	}
+}
+
+static void	exec_cmd(t_cmd *cmd, t_shell *shell)
+{
+	if (cmd->next != NULL)
+		exec_pipeline(cmd, shell);
+	else if (is_builtin(cmd) && is_parent_needed(cmd))
+		shell->last_status = exec_builtin(cmd, shell);
+	else
+		exec_child(cmd, shell);
+	return ;
+}
 
 void	hardcode(t_cmd *cmd)
 {
@@ -93,7 +101,4 @@ void	hardcode(t_cmd *cmd)
 	cmd->pid = -1;
 	cmd->redirs = NULL;
 	cmd->next = cmd2;
-
-	
-	
 }

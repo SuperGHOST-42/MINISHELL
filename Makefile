@@ -21,7 +21,12 @@ SRCS = src/env.c \
 	src/my_env.c \
 	src/env_to_envp.c \
 	src/builtins.c \
-	src/execute_builtin.c
+	src/execute_builtin.c \
+	src/parsing/exit.c \
+	src/parsing/lex_line.c \
+	src/parsing/parse_cmd.c \
+	src/parsing/syntax_checker.c \
+	src/parsing/token.c
 
 OBJDIR = obj
 OBJS = $(patsubst src/%.c,$(OBJDIR)/%.o,$(SRCS))

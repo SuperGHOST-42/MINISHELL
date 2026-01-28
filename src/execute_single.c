@@ -5,16 +5,14 @@ static void	run_child(t_cmd *cmd, t_shell *shell);
 void	exec_child(t_cmd *cmd, t_shell *shell)
 {
 	pid_t	pid;
-	int		status;
-	int		wait_pid;
+	int		status;	
 
 	pid = fork();
 	if (pid < 0)
 		error_exit("fork");
 	if (pid == 0)
 		run_child(cmd, shell);
-	wait_pid = waitpid(pid, &status, 0);
-	if (wait_pid < 0)
+	if (waitpid(pid, &status, 0) < 0)
 	{
 		perror("waitpid");
 		shell->last_status = 1;

@@ -85,7 +85,7 @@ char	**env_to_envp(t_env *env);
 
 //helpers
 void 	print_args(t_cmd *cmd);
-void	free_cmd(t_cmd *cmd);
+void	free_tcmd(t_cmd *cmd);
 void 	error_exit(char *msg);
 char	*ft_readline(void);
 void	ft_putstr(char *str);
@@ -106,18 +106,14 @@ void	ft_lstadd_back(t_cmd **list, t_cmd *new);
 void	print_env_list(t_shell *shell);
 
 //builtins
-void	ft_pwd(void);
-void	ft_env(t_shell *shell);
-void	ft_exit(t_shell *shell, char *exit_code_str);
+int		ft_pwd(void);
+int		ft_env(t_shell *shell);
+int		ft_exit(t_shell *shell, char *exit_code_str);
 
-
-
-//hugo
+//env
 t_env	*env_init(char **envp); //env.c
 char	*get_env(t_env *env, const char *key); //env.c
-void	env_free(t_env *env); //env.c
-
-
-
+void	free_env(t_env *env);
+void	free_envp(char **envp);
 
 #endif
