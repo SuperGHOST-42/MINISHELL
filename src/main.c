@@ -41,7 +41,6 @@ static void	init_shell(t_shell *shell)
 			break;
 		else
 			add_history(line);
-		free(line);
 		cmd = malloc(sizeof(t_cmd));
 		if (!cmd)
 			error_exit("malloc");
@@ -49,10 +48,11 @@ static void	init_shell(t_shell *shell)
 		//hardcode(cmd); //hugo
 		
 		cmd = parse(shell, line);
+		free(line);
 		print_cmds(cmd);
 		
-		//exec_cmd(cmd, shell);
-		//free_cmds(cmd);
+		exec_cmd(cmd, shell);
+		free_cmds(cmd);
 		if (shell->should_exit != 0)
 			break ;
 	}
