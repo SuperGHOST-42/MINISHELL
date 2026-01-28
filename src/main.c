@@ -1,24 +1,10 @@
 #include "../includes/minishell.h"
 
-void	parser(t_cmd *cmd)
-{
-	cmd->args = malloc(sizeof(char *) * 3);
-	if(cmd->args == NULL)
-		error_exit("Malloc failed");
-	
-	cmd->args[0] = ft_strdup("ls");
-	cmd->args[1] = ft_strdup("test");
-	cmd->args[2] = NULL;
-	
-	cmd->builtin = BI_ENV;
-	cmd->pid = -1;
-	cmd->redirs = NULL;
-	cmd->next = NULL;
-}
+void	hardcode(t_cmd *cmd);
 
 void	exec_cmd(t_cmd *cmd, t_shell *shell)
 {
-	if (cmd->next != NULL) //caso há pipe
+	if (cmd->next != NULL)
 		exec_pipeline(cmd, shell);
 	else if (is_builtin(cmd) && is_parent_needed(cmd))
 		shell->last_status = exec_builtin(cmd, shell);
@@ -44,7 +30,7 @@ void	init_shell(t_shell *shell)
 		if (!cmd)
 			error_exit("malloc");
 		ft_bzero(cmd, sizeof(t_cmd));
-		parser(cmd); // hugo
+		hardcode(cmd); //hugo
 		exec_cmd(cmd, shell);
 		free_cmd(cmd);
 	}
@@ -59,12 +45,55 @@ int	main(int argc, char **argv, char **envp)
 	shell = malloc(sizeof(t_shell));
 	if (!shell)
 		error_exit("malloc");
+	
 	ft_bzero(shell, sizeof(t_shell));
+
 	shell->env = env_init(envp);
 	if (!shell->env)
 		error_exit("env_init");
+	
 	init_shell(shell);	
+	
 	env_free(shell->env);
-	free(shell); // TODO: free_shell();
+	free(shell); // fazer: free_shell();
+	
 	return (EXIT_SUCCESS);
+}
+
+
+void	hardcode(t_cmd *cmd)
+{
+	t_cmd *cmd2;
+	
+	cmd2 = malloc(sizeof(t_cmd));
+		if (!cmd2)
+			error_exit("malloc");
+	ft_bzero(cmd2, sizeof(t_cmd));
+
+	//cmd2
+	cmd2->args = malloc(sizeof(char *) * 3);
+	if (!cmd2->args)
+		error_exit("malloc");
+	cmd2->args[0] = ft_strdup("wc");
+	cmd2->args[1] = ft_strdup("-c");
+	cmd2->args[2] = NULL;
+	cmd2->builtin = BI_NONE;
+	cmd2->pid = -1;
+	cmd2->redirs = NULL;
+	cmd2->next = NULL;
+
+	//cmd
+	cmd->args = malloc(sizeof(char *) * 3);
+	if (!cmd->args)
+		error_exit("malloc");
+	cmd->args[0] = ft_strdup("echo");
+	cmd->args[1] = ft_strdup("hello");
+	cmd->args[2] = NULL;
+	cmd->builtin = BI_NONE;
+	cmd->pid = -1;
+	cmd->redirs = NULL;
+	cmd->next = cmd2;
+
+	
+	
 }

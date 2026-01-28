@@ -71,7 +71,6 @@ typedef struct s_env
 typedef struct s_shell
 {
 	t_env		*env;			// linked list of environment variables
-	char 		**envp;
 	int			last_status;	// $? (0..255)
 	int 		should_exit;	// flag to indicate if shell should exit
 	int 		exit_code;		// exit code to use when exiting

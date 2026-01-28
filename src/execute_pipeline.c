@@ -57,15 +57,19 @@ static void	parent_keep_fds(int *prev_read, int fd[2], int has_next)
 static void	run_child(t_cmd *cmd, t_shell *shell)
 {
 	char	*path;
+	char	**envp;
 
 	if (!cmd || !cmd->args || !cmd->args[0])
 		exit(0);
 	if (cmd->builtin != BI_NONE)
 		exit(exec_builtin(cmd, shell));
+	envp = env_to_envp(shell->env);
+	if (!envp)
+		exit(1);
 	path = resolve_path(shell->env, cmd->args[0]);
 	if (!path)
 		exit(127);
-	execve(path, cmd->args, shell->envp);
+	execve(path, cmd->args, envp);
 	free(path);
 	exit(126);
 }

@@ -8,5 +8,5 @@ int exec_builtin(t_cmd *cmd, t_shell *shell)
 		ft_env(shell);
 	else if (cmd->builtin == BI_EXIT)
 		ft_exit(shell, cmd->args[1]);
-	return (77);
+	return (0);
 }
