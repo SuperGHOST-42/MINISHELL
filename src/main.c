@@ -52,7 +52,7 @@ static void	init_shell(t_shell *shell)
 		print_cmds(cmd);
 		
 		//exec_cmd(cmd, shell);
-		free_cmds(cmd);
+		//free_cmds(cmd);
 		if (shell->should_exit != 0)
 			break ;
 	}
