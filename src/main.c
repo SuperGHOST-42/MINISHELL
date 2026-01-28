@@ -1,9 +1,9 @@
 #include "../includes/minishell.h"
 #include "../../includes/minishell_parse.h"
 
-void	hardcode(t_cmd *cmd);
 static void	exec_cmd(t_cmd *cmd, t_shell *shell);
 static void	init_shell(t_shell *shell);
+static void	hardcode(t_cmd *cmd);
 
 int	main(int argc, char **argv, char **envp)
 {
