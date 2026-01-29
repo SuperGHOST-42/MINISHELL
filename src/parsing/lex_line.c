@@ -6,7 +6,7 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 15:48:26 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/28 20:02:12 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/01/28 22:28:38 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ t_cmd 	*parse(t_shell *shell, char *line)
 		return (NULL);
 	add_history(line);
 	tokens = tokenization(line);
-    if (tokens == NULL)
-        printf("hugo burro\n");
 	if (syntax_check(tokens) == 1) // syntax_check returns 1 on error
 	{
 		exit_shell(tokens, 2);

@@ -6,7 +6,7 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 18:58:12 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/28 19:39:39 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/01/29 21:43:46 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,6 +216,7 @@ void print_cmds(t_cmd *cmds)
 			}
 			printf("\n");
 		}
+		printf("builtin = %i\n", cmds->builtin);
 		cmds = cmds->next;
 	}
 }

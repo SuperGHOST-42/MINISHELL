@@ -3,7 +3,7 @@
 
 static void	exec_cmd(t_cmd *cmd, t_shell *shell);
 static void	init_shell(t_shell *shell);
-static void	hardcode(t_cmd *cmd);
+//static void	hardcode(t_cmd *cmd);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -49,7 +49,7 @@ static void	init_shell(t_shell *shell)
 		
 		cmd = parse(shell, line);
 		free(line);
-		print_cmds(cmd);
+		//print_cmds(cmd);
 		
 		exec_cmd(cmd, shell);
 		free_cmds(cmd);
