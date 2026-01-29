@@ -35,8 +35,6 @@ int	execute_builtin(t_cmd *cmd, t_shell *shell)
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (-1);
 	
-	cmd->builtin = get_builtin_type(cmd->args[0]);
-	
 	if (cmd->builtin == BI_NONE)
 		return (-1);
 	

@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 15:48:26 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/28 12:37:28 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/28 22:14:58 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ t_cmd 	*parse(t_shell *shell, char *line)
 	{
 		cmds = parse_tokens_to_cmds(tokens);
 		free_tokens(tokens);
+		cmds->builtin = get_builtin_type(cmds->args[0]);
 		return (cmds);
 	}
 }
