@@ -6,7 +6,7 @@
 #    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/07 18:02:43 by hgutterr          #+#    #+#              #
-#    Updated: 2026/01/16 17:20:52 by hgutterr         ###   ########.fr        #
+#    Updated: 2026/01/30 22:38:05 by hgutterr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,12 +19,16 @@ SRCDIR = src
 SRCS = \
 	$(SRCDIR)/main.c \
 	$(SRCDIR)/env.c \
+	$(SRCDIR)/env_parse.c \
+	$(SRCDIR)/env_utils.c \
 	$(SRCDIR)/token.c \
 	$(SRCDIR)/syntax_checker.c \
 	$(SRCDIR)/exit.c \
 	$(SRCDIR)/lex_line.c \
 	$(SRCDIR)/parse_cmd.c \
-	$(SRCDIR)/builtins.c
+	$(SRCDIR)/builtins.c \
+	$(SRCDIR)/builtins_impl.c \
+	$(SRCDIR)/cmd_utils.c
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 NAME = minishell

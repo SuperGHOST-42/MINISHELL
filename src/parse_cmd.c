@@ -1,16 +1,78 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec.c                                             :+:      :+:    :+:   */
+/*   parse_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/07 18:58:12 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/07 18:58:12 by hgutterr         ###   ########.fr       */
+/*   Created: 2026/01/30 18:50:27 by hgutterr          #+#    #+#             */
+/*   Updated: 2026/01/31 12:04:50 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+static intappend_arg(t_cmd *cmd, char *arg)
+{
+	char**new_args;
+	int	count;
+	int	i;
+
+	count = 0;
+	if (cmd->args)
+	{
+		while (cmd->args[count])
+		count++;
+	}
+	new_args = malloc((count + 2) * sizeof(char *));
+	if (!new_args)
+		return (1);
+	i = 0;
+	while (i < count)
+	{
+		new_args[i] = cmd->args[i];
+		i++;
+	}
+	new_args[i] = ft_strdup(arg);
+	if (!new_args[i])
+	{
+		free(new_args);
+		return (1);
+	}
+	new_args[i + 1] = NULL;
+	if (cmd->args)
+		free(cmd->args);
+	cmd->args = new_args;
+	return (0);
+}
+
+static char	**create_args_from_tokens(t_token *tokens, int count)
+{
+	char	**args;
+	int		i;
+	t_token	*tmp;
+
+	args = malloc((count + 1) * sizeof(char *));
+	if (!args)
+		return (NULL);
+	i = 0;
+	tmp = tokens;
+	while (tmp && tmp->type == WORD)
+	{
+		args[i] = ft_strdup(tmp->value);
+		if (!args[i])
+		{
+			while (i-- > 0)
+				free(args[i]);
+			free(args);
+			return (NULL);
+		}
+		i++;
+		tmp = tmp->next;
+	}
+	args[i] = NULL;
+	return (args);
+}
 
 t_cmd	*create_cmd_from_tokens(t_token *tokens)
 {
@@ -27,29 +89,13 @@ t_cmd	*create_cmd_from_tokens(t_token *tokens)
 		count++;
 		tmp = tmp->next;
 	}
-	args = malloc((count + 1) * sizeof(char *));
+	args = create_args_from_tokens(tokens, count);
 	if (!args)
 		return (NULL);
-	i = 0;
-	tmp = tokens;
-	while (tmp && tmp->type == WORD)
-	{
-		args[i] = ft_strdup(tmp->value);
-		if (!args[i])
-		{
-			/* free previously allocated strings */
-			while (i-- > 0)
-				free(args[i]);
-			free(args);
-			return (NULL);
-		}
-		i++;
-		tmp = tmp->next;
-	}
-	args[i] = NULL;
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
 	{
+		i = count;
 		while (i-- > 0)
 			free(args[i]);
 		free(args);
@@ -63,9 +109,11 @@ t_cmd	*create_cmd_from_tokens(t_token *tokens)
 	return (cmd);
 }
 
-static t_redirs *new_redir(t_token_type type, char *target)
+static t_redirs	*new_redir(t_token_type type, char *target)
 {
-	t_redirs *r = malloc(sizeof(t_redirs));
+	t_redirs	*r;
+
+	r = malloc(sizeof(t_redirs));
 	if (!r)
 		return (NULL);
 	r->type = type;
@@ -75,15 +123,18 @@ static t_redirs *new_redir(t_token_type type, char *target)
 		free(r);
 		return (NULL);
 	}
-	r->expand = (type == R_HEREDOC) ? 0 : 1;
+	if (type == R_HEREDOC)
+		r->expand = 0;
+	else
+		r->expand = 1;
 	r->heredoc_fd = -1;
 	r->next = NULL;
 	return (r);
 }
 
-int add_redir(t_redirs **list, t_token_type type, char *target)
+int	add_redir(t_redirs **list, t_token_type type, char *target)
 {
-	t_redirs *r;
+	t_redirs	*r;
 
 	if (!list || !target)
 		return (1);
@@ -100,142 +151,21 @@ int add_redir(t_redirs **list, t_token_type type, char *target)
 	return (0);
 }
 
-int append_arg(t_cmd *cmd, char *arg)
+t_cmd	*parse_tokens_to_cmds(t_token *tokens)
 {
-	char **new_args;
-	int i = 0;
+	t_cmd	*head;
+	t_cmd	*cur;
 
-	if (!cmd)
-		return (1);
-	while (cmd->args && cmd->args[i])
-		i++;
-	new_args = malloc((i + 2) * sizeof(char *));
-	if (!new_args)
-		return (1);
-	for (int j = 0; j < i; j++)
-		new_args[j] = cmd->args[j];
-	new_args[i] = ft_strdup(arg);
-	if (!new_args[i])
-	{
-		free(new_args);
-		return (1);
-	}
-	new_args[i + 1] = NULL;
-	if (cmd->args)
-		free(cmd->args);
-	cmd->args = new_args;
-	return (0);
-}
-
-static t_cmd *new_cmd(void)
-{
-	t_cmd *cmd = malloc(sizeof(t_cmd));
-	if (!cmd)
-		return (NULL);
-	cmd->args = NULL;
-	cmd->redirs = NULL;
-	cmd->builtin = BI_NONE;
-	cmd->pid = -1;
-	cmd->next = NULL;
-	return (cmd);
-}
-
-static void add_cmd(t_cmd **list, t_cmd *cmd)
-{
-	if (!list || !cmd)
-		return;
-	if (!*list)
-	{
-		*list = cmd;
-		return;
-	}
-	cmd->next = *list;
-	*list = cmd;
-}
-
-static void free_cmd(t_cmd *cmd)
-{
-	int i = 0;
-
-	if (!cmd)
-		return;
-	if (cmd->args)
-	{
-		while (cmd->args[i])
-		{
-			free(cmd->args[i]);
-			i++;
-		}
-		free(cmd->args);
-	}
-	while (cmd->redirs)
-	{
-		t_redirs *tmp = cmd->redirs;
-		cmd->redirs = cmd->redirs->next;
-		free(tmp->target);
-		free(tmp);
-	}
-	free(cmd);
-}
-
-void free_cmds(t_cmd *cmds)
-{
-	while (cmds)
-	{
-		t_cmd *tmp = cmds;
-		cmds = cmds->next;
-		free_cmd(tmp);
-	}
-}
-
-void print_cmds(t_cmd *cmds)
-{
-	while (cmds)
-	{
-		printf("CMD ARGS:");
-		if (cmds->args)
-		{
-			int i = 0;
-			while (cmds->args[i])
-			{
-				printf(" \"%s\"", cmds->args[i]);
-				i++;
-			}
-		}
-		printf("\n");
-		if (cmds->redirs)
-		{
-			printf("REDIRS:");
-			t_redirs *r = cmds->redirs;
-			while (r)
-			{
-				const char *s = (r->type == R_IN) ? "<" : (r->type == R_OUT) ? ">" : (r->type == R_APP) ? ">>" : "<<";
-				printf(" %s \"%s\"", s, r->target);
-				r = r->next;
-			}
-			printf("\n");
-		}
-		cmds = cmds->next;
-	}
-}
-
-
-t_cmd *parse_tokens_to_cmds(t_token *tokens)
-{
-	t_cmd *head = NULL;
-	t_cmd *cur = NULL;
-
+	head = NULL;
+	cur = NULL;
 	while (tokens)
 	{
 		if (tokens->type == PIPE)
 		{
-			/* finish current command and prepare for next */
 			cur = NULL;
 			tokens = tokens->next;
-			continue;
 		}
-		/* start a new command if needed */
-		if (!cur)
+		else if (!cur)
 		{
 			cur = new_cmd();
 			if (!cur)
@@ -244,62 +174,29 @@ t_cmd *parse_tokens_to_cmds(t_token *tokens)
 				return (NULL);
 			}
 			add_cmd(&head, cur);
+			tokens = tokens;
 		}
-		if (tokens->type == WORD)
+		if (cur && tokens && tokens->type == WORD)
 		{
 			if (append_arg(cur, tokens->value))
 			{
 				free_cmds(head);
 				return (NULL);
 			}
-			tokens = tokens->next;
 		}
-		else if (ft_isredir(tokens->type))
+		if (cur && tokens && ft_isredir(tokens->type))
 		{
-			t_token_type type = tokens->type;
-			tokens = tokens->next; /* syntax_check ensures this exists and is WORD */
-			if (!tokens || tokens->type != WORD)
-			{
-				free_cmds(head);
-				return (NULL);
-			}
-			if (add_redir(&cur->redirs, type, tokens->value))
+			if (add_redir(&cur->redirs, tokens->type, tokens->next->value))
 			{
 				free_cmds(head);
 				return (NULL);
 			}
 			tokens = tokens->next;
 		}
-		else if (tokens->type == PIPE)
-		{
-			/* next iteration will handle creating next command */
-			cur = NULL;
+		if (tokens && tokens->type != PIPE)
 			tokens = tokens->next;
-		}
-		else
+		else if (tokens && tokens->type == PIPE)
 			tokens = tokens->next;
 	}
 	return (head);
 }
-
-// void execute_simple_command(t_token *tokens, t_shell *shell)
-// {
-// 	t_cmd *cmds = parse_tokens_to_cmds(tokens);
-// 	if (!cmds)
-// 	{
-// 		printf("CMD ARGS: (parse/alloc error)\n");
-// 		return;
-// 	}
-	
-// 	/* For now, execute only the first command (no piping yet) */
-// 	if (cmds && cmds->args && cmds->args[0])
-// 	{
-// 		if (execute_builtin(cmds, shell) != 0)
-// 		{
-// 			/* Not a builtin, would be external command */
-// 			printf("CMD ARGS: \"%s\"\n", cmds->args[0]);
-// 		}
-// 	}
-	
-// 	free_cmds(cmds);
-// }

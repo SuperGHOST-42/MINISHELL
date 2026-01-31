@@ -1,13 +1,16 @@
-#include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/30 18:49:52 by hgutterr          #+#    #+#             */
+/*   Updated: 2026/01/30 19:02:14 by hgutterr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// Forward declarations
-void	ft_echo(char *str);
-void	ft_cd(char *path);
-void	ft_pwd(void);
-void	ft_export(char *key, char *value);
-void	ft_unset(char *key);
-void	ft_env(t_shell *shell);
-void	ft_exit(t_shell *shell, char *exit_code_str);
+#include "../includes/minishell.h"
 
 t_builtin	get_builtin_type(const char *cmd)
 {
@@ -34,10 +37,8 @@ int	execute_builtin(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (-1);
-	
 	if (cmd->builtin == BI_NONE)
 		return (-1);
-	
 	if (cmd->builtin == BI_ECHO)
 		ft_echo(cmd->args[1]);
 	else if (cmd->builtin == BI_CD)
@@ -52,46 +53,15 @@ int	execute_builtin(t_cmd *cmd, t_shell *shell)
 		ft_env(shell);
 	else if (cmd->builtin == BI_EXIT)
 		ft_exit(shell, cmd->args[1]);
-	
 	return (0);
 }
 
-void ft_echo(char *str)
-{
-	;
-}
-
-void ft_cd(char *path)
-{
-	;
-}
-
-void ft_pwd(void)
-{
-	char cwd[1024];
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("%s\n", cwd);
-	else
-		perror("getcwd() error");
-
-}
-
-void ft_export(char *key, char *value)
-{
-	;
-}
-
-void ft_unset(char *key)
-{
-	;
-}
-
-void ft_env(t_shell *shell)
+void	ft_env(t_shell *shell)
 {
 	t_env	*current;
 
 	if (!shell || !shell->env)
-		return ;
+		return;
 	current = shell->env;
 	while (current)
 	{

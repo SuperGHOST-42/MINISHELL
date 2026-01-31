@@ -1,40 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   cmd_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/30 18:50:46 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/30 18:50:46 by hgutterr         ###   ########.fr       */
+/*   Created: 2026/01/30 18:55:20 by hgutterr          #+#    #+#             */
+/*   Updated: 2026/01/30 18:55:20 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	exit_shell(t_token *tokens, int exit_code)
+t_cmd	*new_cmd(void)
 {
-	free_tokens(tokens);
-	printf("Exiting shell with code %d\n", exit_code);
-	return (exit_code);
+	t_cmd	*cmd;
+
+	cmd = malloc(sizeof(t_cmd));
+	if (!cmd)
+		return (NULL);
+	cmd->args = NULL;
+	cmd->redirs = NULL;
+	cmd->builtin = BI_NONE;
+	cmd->pid = -1;
+	cmd->next = NULL;
+	return (cmd);
 }
 
-void	free_tokens(t_token *tokens)
+void	add_cmd(t_cmd **list, t_cmd *cmd)
 {
-	t_token	*tmp;
-
-	while (tokens)
+	if (!list || !cmd)
+		return;
+	if (!*list)
 	{
-		tmp = tokens;
-		tokens = tokens->next;
-		free(tmp->value);
-		free(tmp);
+		*list = cmd;
+		return;
 	}
+	cmd->next = *list;
+	*list = cmd;
 }
 
 void	free_cmd(t_cmd *cmd)
 {
-	int	i;
+	t_redirs	*tmp;
+	int			i;
 
 	if (!cmd)
 		return;
@@ -48,5 +57,24 @@ void	free_cmd(t_cmd *cmd)
 		}
 		free(cmd->args);
 	}
+	while (cmd->redirs)
+	{
+		tmp = cmd->redirs;
+		cmd->redirs = cmd->redirs->next;
+		free(tmp->target);
+		free(tmp);
+	}
 	free(cmd);
+}
+
+void	free_cmds(t_cmd *cmds)
+{
+	t_cmd	*tmp;
+
+	while (cmds)
+	{
+		tmp = cmds;
+		cmds = cmds->next;
+		free_cmd(tmp);
+	}
 }

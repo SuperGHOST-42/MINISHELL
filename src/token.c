@@ -5,16 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/16 23:12:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2025/12/16 23:12:06 by hgutterr         ###   ########.fr       */
+/*   Created: 2026/01/30 18:50:14 by hgutterr          #+#    #+#             */
+/*   Updated: 2026/01/30 18:50:14 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_token *new_token(t_token_type type, char *value)
+t_token	*new_token(t_token_type type, char *value)
 {
-	t_token *tok;
+	t_token	*tok;
 
 	tok = malloc(sizeof(t_token));
 	if (!tok)
@@ -25,14 +25,12 @@ t_token *new_token(t_token_type type, char *value)
 	return (tok);
 }
 
-void token_add_back(t_token **lst, t_token *node)
+void	token_add_back(t_token **lst, t_token *node)
 {
-	t_token *tmp;
+	t_token	*tmp;
 
-	/* Defensive: ignore NULL pointers */
 	if (!lst || !node)
 		return;
-
 	if (!*lst)
 	{
 		*lst = node;
@@ -43,10 +41,11 @@ void token_add_back(t_token **lst, t_token *node)
 		tmp = tmp->next;
 	tmp->next = node;
 }
-void handle_word(t_token **tokens, char *line, int *i)
+
+void	handle_word(t_token **tokens, char *line, int *i)
 {
-	int start;
-	t_token *tok;
+	int		start;
+	t_token	*tok;
 
 	start = *i;
 	while (line[*i] && !ft_isspace(line[*i]) && !ft_isoperator(line[*i])
@@ -54,17 +53,15 @@ void handle_word(t_token **tokens, char *line, int *i)
 		(*i)++;
 	tok = new_token(WORD, ft_substr(line, start, *i - start));
 	if (!tok)
-	{
-		/* Allocation failed; bail out safely (tokens unchanged) */
 		return;
-	}
 	token_add_back(tokens, tok);
 }
-int handle_quote(t_token **tokens, char *line, int *i)
+
+int	handle_quote(t_token **tokens, char *line, int *i)
 {
-	char quote;
-	int  start;
-	t_token *tok;
+	char	quote;
+	int		start;
+	t_token	*tok;
 
 	quote = line[*i];
 	(*i)++;
@@ -75,49 +72,50 @@ int handle_quote(t_token **tokens, char *line, int *i)
 		return (1);
 	tok = new_token(WORD, ft_substr(line, start, *i - start));
 	if (!tok)
-		return (1); /* Treat allocation failure as error so tokenization frees tokens */
+		return (1);
 	token_add_back(tokens, tok);
 	if (line[*i] == quote)
 		(*i)++;
 	return (0);
-} 
+}
 
-
-void handle_operator(t_token **tokens, char *line, int *i)
+void	handle_operator(t_token **tokens, char *line, int *i)
 {
-	t_token *tok = NULL;
+	t_token	*tok;
+	char	*op;
 
+	tok = NULL;
+	op = NULL;
 	if (line[*i] == '|')
-	{
-		tok = new_token(PIPE, ft_strdup("|"));
-		if (!tok) return;
-		token_add_back(tokens, tok);
-	}
+		op = "|";
 	else if (line[*i] == '<' && line[*i + 1] == '<')
 	{
-		tok = new_token(R_HEREDOC, ft_strdup("<<"));
-		if (!tok) return;
-		token_add_back(tokens, tok);
+		op = "<<";
 		(*i)++;
 	}
 	else if (line[*i] == '>' && line[*i + 1] == '>')
 	{
-		tok = new_token(R_APP, ft_strdup(">>"));
-		if (!tok) return;
-		token_add_back(tokens, tok);
+		op = ">>";
 		(*i)++;
 	}
 	else if (line[*i] == '<')
-	{
-		tok = new_token(R_IN, ft_strdup("<"));
-		if (!tok) return;
-		token_add_back(tokens, tok);
-	}
+		op = "<";
 	else if (line[*i] == '>')
+		op = ">";
+	if (op)
 	{
-		tok = new_token(R_OUT, ft_strdup(">"));
-		if (!tok) return;
-		token_add_back(tokens, tok);
+		if (line[*i] == '|')
+			tok = new_token(PIPE, ft_strdup(op));
+		else if (op[0] == '<' && op[1] == '<')
+			tok = new_token(R_HEREDOC, ft_strdup(op));
+		else if (op[0] == '>' && op[1] == '>')
+			tok = new_token(R_APP, ft_strdup(op));
+		else if (op[0] == '<')
+			tok = new_token(R_IN, ft_strdup(op));
+		else if (op[0] == '>')
+			tok = new_token(R_OUT, ft_strdup(op));
+		if (tok)
+			token_add_back(tokens, tok);
 	}
 	(*i)++;
 }
