@@ -29,6 +29,8 @@ t_cmd	*new_cmd(void)
 
 void	add_cmd(t_cmd **list, t_cmd *cmd)
 {
+	t_cmd	*tmp;
+
 	if (!list || !cmd)
 		return;
 	if (!*list)
@@ -36,8 +38,10 @@ void	add_cmd(t_cmd **list, t_cmd *cmd)
 		*list = cmd;
 		return;
 	}
-	cmd->next = *list;
-	*list = cmd;
+	tmp = *list;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = cmd;
 }
 
 void	free_cmd(t_cmd *cmd)
