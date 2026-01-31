@@ -6,13 +6,13 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:27 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/31 12:04:50 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/31 18:12:12 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static intappend_arg(t_cmd *cmd, char *arg)
+int append_arg(t_cmd *cmd, char *arg)
 {
 	char**new_args;
 	int	count;
@@ -164,8 +164,9 @@ t_cmd	*parse_tokens_to_cmds(t_token *tokens)
 		{
 			cur = NULL;
 			tokens = tokens->next;
+			continue ;
 		}
-		else if (!cur)
+		if (!cur)
 		{
 			cur = new_cmd();
 			if (!cur)
@@ -174,9 +175,8 @@ t_cmd	*parse_tokens_to_cmds(t_token *tokens)
 				return (NULL);
 			}
 			add_cmd(&head, cur);
-			tokens = tokens;
 		}
-		if (cur && tokens && tokens->type == WORD)
+		if (tokens->type == WORD)
 		{
 			if (append_arg(cur, tokens->value))
 			{
@@ -184,7 +184,7 @@ t_cmd	*parse_tokens_to_cmds(t_token *tokens)
 				return (NULL);
 			}
 		}
-		if (cur && tokens && ft_isredir(tokens->type))
+		if (ft_isredir(tokens->type))
 		{
 			if (add_redir(&cur->redirs, tokens->type, tokens->next->value))
 			{
@@ -193,10 +193,7 @@ t_cmd	*parse_tokens_to_cmds(t_token *tokens)
 			}
 			tokens = tokens->next;
 		}
-		if (tokens && tokens->type != PIPE)
-			tokens = tokens->next;
-		else if (tokens && tokens->type == PIPE)
-			tokens = tokens->next;
+		tokens = tokens->next;
 	}
 	return (head);
 }

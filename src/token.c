@@ -119,3 +119,35 @@ void	handle_operator(t_token **tokens, char *line, int *i)
 	}
 	(*i)++;
 }
+
+t_token	*tokenization(char *line)
+{
+	t_token	*tokens;
+	int		i;
+
+	if (!line)
+		return (NULL);
+	tokens = NULL;
+	i = 0;
+	while (line[i])
+	{
+		if (ft_isspace(line[i]))
+		{
+			i++;
+		}
+		else if (ft_isquote(line[i]))
+		{
+			if (handle_quote(&tokens, line, &i))
+				return (NULL);
+		}
+		else if (ft_isoperator(line[i]))
+		{
+			handle_operator(&tokens, line, &i);
+		}
+		else
+		{
+			handle_word(&tokens, line, &i);
+		}
+	}
+	return (tokens);
+}

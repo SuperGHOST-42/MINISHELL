@@ -6,13 +6,60 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:32 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/30 18:50:34 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/31 18:10:23 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 volatile sig_atomic_t	g_sig;
+
+char	*builtin_to_str(t_builtin builtin);
+
+void	test(t_cmd *cmds)
+{
+	int	cmd_num;
+
+	cmd_num = 0;
+	while(cmds)
+	{
+		printf("Command %d:\n", cmd_num);
+		if (cmds->args)
+		{
+			int i = 0;
+			while (cmds->args[i])
+			{
+				printf("  Arg[%d]: %s\n", i, cmds->args[i]);
+				i++;
+			}
+			printf("  Builtin: %s\n", builtin_to_str(cmds->builtin));
+		}
+		else
+			printf("  No arguments.\n");
+		printf("\n");
+		cmds = cmds->next;
+		cmd_num++;
+	}
+}
+char	*builtin_to_str(t_builtin builtin)
+{
+	if (builtin == BI_ECHO)
+		return ("BI_ECHO");
+	if (builtin == BI_CD)
+		return ("BI_CD");
+	if (builtin == BI_PWD)
+		return ("BI_PWD");
+	if (builtin == BI_EXPORT)
+		return ("BI_EXPORT");
+	if (builtin == BI_UNSET)
+		return ("BI_UNSET");
+	if (builtin == BI_ENV)
+		return ("BI_ENV");
+	if (builtin == BI_EXIT)
+		return ("BI_EXIT");
+	return ("BI_NONE");
+}
+/*--------------------------------------------------------------------------------*/
 
 void	minishell(t_shell *shell)
 {
@@ -28,6 +75,7 @@ void	minishell(t_shell *shell)
 			exit(0);
 		}
 		cmds = parse(shell, line);
+		test(cmds);
 		free(line);
 	}
 }
