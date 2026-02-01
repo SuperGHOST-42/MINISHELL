@@ -6,7 +6,7 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:37 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/01 19:37:13 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/02/01 22:01:31 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_cmd	*parse(t_shell *shell, char *line)
 	(void)shell;
 	if (ft_isempty(line))
 		return (NULL);
-	add_history(line);
+	//add_history(line);
 	tokens = tokenization(line);
 	if (syntax_check(tokens) == 1)
 	{
