@@ -114,11 +114,11 @@ void	print_env_list(t_shell *shell);
 //builtins
 int		ft_pwd(void);
 int		ft_env(t_shell *shell);
-uint		ft_exit(t_shell *shell, char *exit_code_str);
+int		ft_exit(t_shell *shell, char *exit_code_str);
 
 //env
-t_env	*env_init_exec(char **envp); //env.c
-char	*get_env_exec(t_env *env, const char *key); //env.c
+t_env	*env_init_exec(char **envp);
+char	*get_env_exec(t_env *env, const char *key);
 void	free_env_exec(t_env *env);
 void	free_envp(char **envp);
 
