@@ -16,8 +16,6 @@
 # include <fcntl.h>
 # include <string.h>
 
-//# include "minishell_parse.h"
-
 typedef enum e_token_type
 {
 	WORD,
