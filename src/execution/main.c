@@ -76,9 +76,11 @@ static void	init_shell(t_shell *shell)
 		if (!cmd)
 			error_exit("malloc");
 		ft_bzero(cmd, sizeof(t_cmd));
+		
 		cmd = parse(shell, line);
 		free(line);
 		//print_cmds(cmd);
+		
 		exec_cmd(cmd, shell);
 		free_cmds(cmd);
 		if (shell->should_exit != 0)

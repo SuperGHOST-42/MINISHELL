@@ -1,0 +1,66 @@
+Relatorio tecnico - minishell (42)
+Data: 2026-02-01
+
+Escopo
+- Analise estatica do codigo-fonte em src/ e includes/ (sem executar nem alterar logica).
+
+Visao geral da arquitetura
+- Parsing: tokenizacao basica (espacos, operadores, quotes), validacao de sintaxe e construcao de lista de comandos + redirecoes.
+- Execucao: execucao simples e pipeline (fork/execve), conversao de env linked-list para envp, resolucao de PATH.
+- Builtins: mapeamento de builtin, mas implementacoes parciais.
+- Historico: readline + add_history.
+
+Estado funcional atual (alto nivel)
+- O fluxo de execucao principal esta desativado: em src/execution/main.c a chamada a exec_cmd esta comentada, e existe print_cmds de debug ativo.
+- Ha uma funcao hardcode() no fim de main.c (nao usada) com comandos de exemplo.
+- Redirecoes sao parseadas, mas nunca aplicadas na execucao.
+- Heredoc so e reconhecido como token; nao ha implementacao.
+- Expansao de variaveis e tratamento de quotes/escapes nao existem.
+
+Principais problemas/risco de conformidade com a spec da 42
+1) Builtins incompletos
+   - Implementados: pwd, env, exit.
+   - Ausentes: echo, cd, export, unset (apesar do enum e do parser).
+   - Consequencia: comandos obrigatorios da spec nao funcionam.
+
+2) Execucao desativada no loop principal
+   - main.c: exec_cmd esta comentada; o shell nao executa comandos.
+
+3) Redirecoes e heredoc nao aplicados
+   - parse_tokens_to_cmds guarda redirs, mas exec_child/exec_pipeline ignoram-nos.
+   - Sem open/dup2/close para <, >, >>, <<.
+
+4) Parsing de quotes incompleto
+   - handle_quote cria token com o conteudo interno, mas nao preserva informacao de quote.
+   - Nao ha concatenacao de tokens adjacentes (ex: echo "a"b -> deve ser "ab").
+   - Nao ha escape (\) nem regras diferentes para single vs double quotes.
+
+5) Expansao de variaveis ausente
+   - Nao existe expansao de $VAR, $? nem regras de quotes.
+
+6) Saida/erros do builtin exit nao seguem a spec
+   - ft_exit usa ft_atoi sem validar argumentos (ex: nao imprime "numeric argument required").
+   - Nao ha tratamento de "too many arguments".
+   - exit_shell imprime "Exiting shell...", mensagem nao prevista pela spec.
+
+7) Sinais nao tratados
+   - Nao ha handlers para SIGINT/SIGQUIT em modo interativo nem durante heredoc.
+
+8) Historico duplicado
+   - add_history e chamado em main.c e novamente em parse(), duplicando entradas.
+
+9) Mensagens de erro e codes
+   - resolve_path: quando cmd nao existe, run_child no pipeline sai 127 sem perror (sem mensagem).
+   - exec_child usa perror(cmd->args[0]) mas nao uniformiza prefixo "minishell".
+
+Observacoes adicionais
+- Ha duas implementacoes de ambiente (parsing/env_* e execution/env_*). Isso duplica logica e pode divergir.
+- syntax_check cobre pipelines e redirecoes basicas, mas nao trata casos como operadores consecutivos com palavras vazias resultantes de quotes/expansoes.
+- tokenization retorna NULL em quote nao fechado sem mensagem especifica.
+
+Resumo de maturidade
+- Parsing: fase inicial (tokens + sintaxe minima), sem expansao/quotes completos.
+- Execucao: pipeline e execve basicos, sem redirecoes, sem sinais.
+- Builtins: apenas 3/7.
+- Estado atual: mais proximo de um "parser+mock" do que um minishell funcional.
+
