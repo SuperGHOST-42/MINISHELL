@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:32 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/31 18:10:23 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/01/31 18:40:37 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 volatile sig_atomic_t	g_sig;
 
 char	*builtin_to_str(t_builtin builtin);
+char	*token_to_str(t_token_type type);
 
 void	test(t_cmd *cmds)
 {
@@ -33,6 +34,17 @@ void	test(t_cmd *cmds)
 				i++;
 			}
 			printf("  Builtin: %s\n", builtin_to_str(cmds->builtin));
+			if (cmds->redirs)
+			{
+				t_redirs *redir = cmds->redirs;
+				while (redir)
+				{
+					printf("  Redir: Type %s, Target %s\n", token_to_str(redir->type), redir->target);
+					redir = redir->next;
+				}
+			}
+			else
+				printf("  No redirections.\n");
 		}
 		else
 			printf("  No arguments.\n");
@@ -58,6 +70,23 @@ char	*builtin_to_str(t_builtin builtin)
 	if (builtin == BI_EXIT)
 		return ("BI_EXIT");
 	return ("BI_NONE");
+}
+
+char	*token_to_str(t_token_type type)
+{
+	if (type == WORD)
+		return ("WORD");
+	if (type == PIPE)
+		return ("PIPE");
+	if (type == R_IN)
+		return ("R_IN");
+	if (type == R_OUT)
+		return ("R_OUT");
+	if (type == R_APP)
+		return ("R_APP");
+	if (type == R_HEREDOC)
+		return ("R_HEREDOC");
+	return ("UNKNOWN");
 }
 /*--------------------------------------------------------------------------------*/
 
