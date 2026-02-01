@@ -1,4 +1,4 @@
-# include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 static void	run_child(t_cmd *cmd, t_shell *shell);
 

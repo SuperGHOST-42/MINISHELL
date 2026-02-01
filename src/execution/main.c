@@ -1,9 +1,40 @@
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 #include "../../includes/minishell_parse.h"
 
 static void	exec_cmd(t_cmd *cmd, t_shell *shell);
 static void	init_shell(t_shell *shell);
-//static void	hardcode(t_cmd *cmd);
+
+static void print_cmds(t_cmd *cmds)
+{
+	while (cmds)
+	{
+		printf("CMD ARGS:");
+		if (cmds->args)
+		{
+			int i = 0;
+			while (cmds->args[i])
+			{
+				printf(" \"%s\"", cmds->args[i]);
+				i++;
+			}
+		}
+		printf("\n");
+		if (cmds->redirs)
+		{
+			printf("REDIRS:");
+			t_redirs *r = cmds->redirs;
+			while (r)
+			{
+				const char *s = (r->type == R_IN) ? "<" : (r->type == R_OUT) ? ">" : (r->type == R_APP) ? ">>" : "<<";
+				printf(" %s \"%s\"", s, r->target);
+				r = r->next;
+			}
+			printf("\n");
+		}
+		printf("builtin = %i\n", cmds->builtin);
+		cmds = cmds->next;
+	}
+}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -17,13 +48,13 @@ int	main(int argc, char **argv, char **envp)
 	
 	ft_bzero(shell, sizeof(t_shell));
 
-	shell->env = env_init(envp);
+	shell->env = env_init_exec(envp);
 	if (!shell->env)
 		error_exit("env_init");
 	
 	init_shell(shell);	
 	
-	free_env(shell->env);
+	free_env_exec(shell->env);
 	free(shell); // fazer: free_shell();
 	
 	return (shell->exit_code);
@@ -49,9 +80,9 @@ static void	init_shell(t_shell *shell)
 		
 		cmd = parse(shell, line);
 		free(line);
-		//print_cmds(cmd);
+		print_cmds(cmd);
 		
-		exec_cmd(cmd, shell);
+		//exec_cmd(cmd, shell);
 		free_cmds(cmd);
 		if (shell->should_exit != 0)
 			break ;
@@ -68,6 +99,39 @@ static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 		exec_child(cmd, shell);
 	return ;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void	hardcode(t_cmd *cmd)
 {

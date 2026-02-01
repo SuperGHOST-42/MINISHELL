@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 static int	has_slash(const char *s)
 {
@@ -51,7 +51,7 @@ char	*resolve_path(t_env *env, char *cmd)
 	if (has_slash(cmd))
 		return (ft_strdup(cmd));
 
-	path = get_env(env, "PATH");
+	path = get_env_exec(env, "PATH");
 	if (!path)
 		return (NULL);
 

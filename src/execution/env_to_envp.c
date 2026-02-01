@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 static int	should_export(t_env *node)
 {
@@ -21,21 +21,6 @@ static int	env_count(t_env *env)
 		env = env->next;
 	}
 	return (n);
-}
-
-void	free_envp(char **envp)
-{
-	int	i;
-
-	if (!envp)
-		return ;
-	i = 0;
-	while (envp[i])
-	{
-		free(envp[i]);
-		i++;
-	}
-	free(envp);
 }
 
 static char	*join_kv(t_env *node)

@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 char	*get_envp_value(char **envp, const char *key)
 {
@@ -16,4 +16,19 @@ char	*get_envp_value(char **envp, const char *key)
 		i++;
 	}
 	return (NULL);
+}
+
+void	free_envp(char **envp)
+{
+	int	i;
+
+	if (!envp)
+		return ;
+	i = 0;
+	while (envp[i])
+	{
+		free(envp[i]);
+		i++;
+	}
+	free(envp);
 }

@@ -11,22 +11,28 @@ LDLIBS = -lreadline -lhistory -lncurses
 LIBFT_DIR = includes/libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRCS = src/env.c \
-	src/execute_pipeline.c \
-	src/execute_single.c \
-	src/helpers.c \
-	src/main.c \
-	src/resolve_path.c \
-	src/list_utils.c \
-	src/my_env.c \
-	src/env_to_envp.c \
-	src/builtins.c \
-	src/execute_builtin.c \
+SRCS = src/execution/env_exec.c \
+	src/execution/execute_pipeline.c \
+	src/execution/execute_single.c \
+	src/execution/helpers.c \
+	src/execution/main.c \
+	src/execution/resolve_path.c \
+	src/execution/list_utils.c \
+	src/execution/envp.c \
+	src/execution/env_to_envp.c \
+	src/execution/builtins.c \
+	src/execution/execute_builtin.c \
 	src/parsing/exit.c \
 	src/parsing/lex_line.c \
 	src/parsing/parse_cmd.c \
 	src/parsing/syntax_checker.c \
-	src/parsing/token.c
+	src/parsing/token.c \
+	src/parsing/builtin.c \
+	src/parsing/cmd_utils.c \
+	src/parsing/env_parse.c \
+	src/parsing/env_utils.c \
+	src/parsing/env.c
+	
 
 OBJDIR = obj
 OBJS = $(patsubst src/%.c,$(OBJDIR)/%.o,$(SRCS))

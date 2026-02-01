@@ -9,6 +9,14 @@
 # include <readline/history.h>
 # include <sys/wait.h>
 # include <errno.h>
+//hugo
+# include <signal.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <string.h>
+
+//# include "minishell_parse.h"
 
 typedef enum e_token_type
 {
@@ -108,12 +116,12 @@ void	print_env_list(t_shell *shell);
 //builtins
 int		ft_pwd(void);
 int		ft_env(t_shell *shell);
-int		ft_exit(t_shell *shell, char *exit_code_str);
+uint		ft_exit(t_shell *shell, char *exit_code_str);
 
 //env
-t_env	*env_init(char **envp); //env.c
-char	*get_env(t_env *env, const char *key); //env.c
-void	free_env(t_env *env);
+t_env	*env_init_exec(char **envp); //env.c
+char	*get_env_exec(t_env *env, const char *key); //env.c
+void	free_env_exec(t_env *env);
 void	free_envp(char **envp);
 
 #endif

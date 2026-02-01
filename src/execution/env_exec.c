@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 static t_env	*env_new(char *key, char *value)
 {
@@ -62,7 +62,7 @@ static void	env_add_back(t_env **env, t_env *new)
 	current->next = new;
 }
 
-t_env	*env_init(char **envp)
+t_env	*env_init_exec(char **envp)
 {
 	t_env	*env;
 	char	*equal;
@@ -92,7 +92,7 @@ t_env	*env_init(char **envp)
 	return (env);
 }
 
-char	*get_env(t_env *env, const char *key)
+char	*get_env_exec(t_env *env, const char *key)
 {
 	t_env	*cur;
 
@@ -112,7 +112,7 @@ char	*get_env(t_env *env, const char *key)
 	return (NULL);
 }
 
-void	free_env(t_env *env)
+void	free_env_exec(t_env *env)
 {
 	t_env	*current;
 	t_env	*temp;
