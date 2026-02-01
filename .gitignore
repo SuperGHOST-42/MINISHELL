@@ -57,6 +57,7 @@ dkms.conf
 # GHOST
 /src/test/
 /minishell_tester
+minishell_report.txt
 
 # MacOS junk
 .DS_Store
