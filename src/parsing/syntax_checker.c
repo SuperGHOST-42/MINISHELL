@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
+#include "../../includes/minishell_parse.h"
 
 static int	check_pipe(t_token *tokens)
 {

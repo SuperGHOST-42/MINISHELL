@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
+#include "../../includes/minishell_parse.h"
 
 static int	set_env_key(t_env *new, char *key)
 {
@@ -75,5 +76,3 @@ void	env_add_back(t_env **env, t_env *new)
 		current = current->next;
 	current->next = new;
 }
-
-

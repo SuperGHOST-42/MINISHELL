@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
+#include "../../includes/minishell_parse.h"
 
 t_env	*env_dup(t_env *env)
 {

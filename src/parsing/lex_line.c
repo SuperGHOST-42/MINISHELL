@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   lex_line.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:37 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/31 18:01:43 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/02/01 22:27:14 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
+#include "../../includes/minishell_parse.h"
 
 t_cmd	*parse(t_shell *shell, char *line)
 {
@@ -21,7 +22,7 @@ t_cmd	*parse(t_shell *shell, char *line)
 	(void)shell;
 	if (ft_isempty(line))
 		return (NULL);
-	add_history(line);
+	//add_history(line);
 	tokens = tokenization(line);
 	if (syntax_check(tokens) == 1)
 	{
