@@ -46,7 +46,7 @@ Principais problemas/risco de conformidade com a spec da 42
 7) Sinais nao tratados
    - Nao ha handlers para SIGINT/SIGQUIT em modo interativo nem durante heredoc.
 
-8) Historico duplicado
+8) Historico duplicado (done)
    - add_history e chamado em main.c e novamente em parse(), duplicando entradas.
 
 9) Mensagens de erro e codes
