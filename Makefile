@@ -21,13 +21,13 @@ SRCS = src/execution/env_exec.c \
 	src/execution/envp.c \
 	src/execution/env_to_envp.c \
 	src/execution/builtins.c \
+	src/execution/builtins2.c \
 	src/execution/execute_builtin.c \
 	src/parsing/exit.c \
 	src/parsing/lex_line.c \
 	src/parsing/parse_cmd.c \
 	src/parsing/syntax_checker.c \
 	src/parsing/token.c \
-	src/parsing/builtin.c \
 	src/parsing/cmd_utils.c \
 	src/parsing/env_parse.c \
 	src/parsing/env_utils.c \
