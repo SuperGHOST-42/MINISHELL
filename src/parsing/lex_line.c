@@ -6,7 +6,7 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:37 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/01 22:27:14 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/02/03 15:24:58 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,11 @@ t_cmd	*parse(t_shell *shell, char *line)
 	tokens = tokenization(line);
 	if (syntax_check(tokens) == 1)
 	{
-		exit_shell(tokens, 2);
+		free_tokens(tokens);
+		shell->last_status = 2;
 		return (NULL);
 	}
+
 	if (!tokens)
 		printf("No tokens generated.\n");
 	else
