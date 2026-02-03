@@ -1,0 +1,104 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins2.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/30 18:55:00 by hgutterr          #+#    #+#             */
+/*   Updated: 2026/02/03 13:48:42 by arpereir         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../includes/minishell.h"
+
+int	ft_exit(t_shell *shell, char *exit_code_str)
+{
+	int	exit_code;
+
+	exit_code = 0;
+	if (exit_code_str)
+		exit_code = ft_atoi(exit_code_str);
+	if (shell)
+	{
+		shell->should_exit = 1;
+		shell->exit_code = exit_code;
+	}
+	return (exit_code);
+}
+
+int	ft_echo(char **args)
+{
+	int i;
+	int print_newline;
+
+	if (!args || !args[0])
+	{
+		printf("\n");
+		return (1);
+	}
+	i = 1;
+	print_newline = 1;
+	while (args[i] && args[i][0] == '-' && args[i][1])
+	{
+		int j = 1;
+		int all_n = 1;
+
+		while (args[i][j])
+		{
+			if (args[i][j] != 'n')
+			{
+				all_n = 0;
+				break ;
+			}
+			j++;
+		}
+		if (!all_n)
+			break ;
+		print_newline = 0;
+		i++;
+	}
+	while (args[i])
+	{
+		if (i > 1)
+			printf(" ");
+		printf("%s", args[i]);
+		i++;
+	}
+	if (print_newline)
+		printf("\n");
+	return (0);
+}
+
+int	ft_cd(char *path)
+{
+	(void)path;
+	return (0);
+}
+
+int	ft_pwd(void)
+{
+	char	cwd[1024];
+
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+		printf("%s\n", cwd);
+	else
+	{
+		perror("getcwd() error");
+		return (1);
+	}
+	return (0);
+}
+
+int	ft_export(char *key, char *value)
+{
+	(void)key;
+	(void)value;
+	return (0);
+}
+
+int	ft_unset(char *key)
+{
+	(void)key;
+	return (0);
+}
