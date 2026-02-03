@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:32 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/31 18:40:37 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/02/03 11:46:59 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ volatile sig_atomic_t	g_sig;
 char	*builtin_to_str(t_builtin builtin);
 char	*token_to_str(t_token_type type);
 
-void	test(t_cmd *cmds)
+void	test_args_builtins_env(t_cmd *cmds, t_shell *shell)
 {
 	int	cmd_num;
 
@@ -30,6 +30,24 @@ void	test(t_cmd *cmds)
 			int i = 0;
 			while (cmds->args[i])
 			{
+				
+				/*-------------------CHECK EXPANSION-------------------*/
+				if (cmds->args[i][0] == '$')
+				{
+					t_env *env = shell->env;
+					while (env)
+					{
+						if (strcmp(cmds->args[i] + 1, env->key) == 0)
+						{
+							printf("2  Arg[%d]: %s=%s\n", i, cmds->args[i], env->value);
+							break ;
+						}
+						env = env->next;
+					}
+				}
+				/*------------------------------------------------------*/
+
+				else
 				printf("  Arg[%d]: %s\n", i, cmds->args[i]);
 				i++;
 			}
@@ -104,7 +122,7 @@ void	minishell(t_shell *shell)
 			exit(0);
 		}
 		cmds = parse(shell, line);
-		test(cmds);
+		//test_args_builtins_env(cmds, shell);
 		free(line);
 	}
 }

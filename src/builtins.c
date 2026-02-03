@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:49:52 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/30 19:02:14 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/02/03 11:45:04 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	execute_builtin(t_cmd *cmd, t_shell *shell)
 	if (cmd->builtin == BI_NONE)
 		return (-1);
 	if (cmd->builtin == BI_ECHO)
-		ft_echo(cmd->args[1]);
+		ft_echo(cmd->args);
 	else if (cmd->builtin == BI_CD)
 		ft_cd(cmd->args[1]);
 	else if (cmd->builtin == BI_PWD)

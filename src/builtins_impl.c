@@ -12,9 +12,46 @@
 
 #include "../includes/minishell.h"
 
-void	ft_echo(char *str)
+void	ft_echo(char **args)
 {
-	(void)str;
+	int i;
+	int print_newline;
+
+	if (!args || !args[0])
+	{
+		printf("\n");
+		return;
+	}
+	i = 1;
+	print_newline = 1;
+	while (args[i] && args[i][0] == '-' && args[i][1])
+	{
+		int j = 1;
+		int all_n = 1;
+
+		while (args[i][j])
+		{
+			if (args[i][j] != 'n')
+			{
+				all_n = 0;
+				break ;
+			}
+			j++;
+		}
+		if (!all_n)
+			break ;
+		print_newline = 0;
+		i++;
+	}
+	while (args[i])
+	{
+		if (i > 1)
+			printf(" ");
+		printf("%s", args[i]);
+		i++;
+	}
+	if (print_newline)
+		printf("\n");
 }
 
 void	ft_cd(char *path)

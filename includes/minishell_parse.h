@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 17:00:34 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/01/31 18:02:43 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/02/03 11:45:38 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void free_tokens(t_token *tokens);
 t_builtin get_builtin_type(const char *cmd);
 int execute_builtin(t_cmd *cmd, t_shell *shell);
 
-void ft_echo(char *str);
+void ft_echo(char **args);
 void ft_cd(char *path);
 void ft_pwd(void);
 void ft_export(char *key, char *value);
