@@ -112,9 +112,13 @@ void	ft_lstadd_back(t_cmd **list, t_cmd *new);
 void	print_env_list(t_shell *shell);
 
 //builtins
-int		ft_pwd(void);
-int		ft_env(t_shell *shell);
-int		ft_exit(t_shell *shell, char *exit_code_str);
+int	ft_echo(char **args);
+int	ft_cd(char *path);
+int	ft_pwd(void);
+int	ft_export(char *key, char *value);
+int	ft_unset(char *key);
+int	ft_env(t_shell *shell);
+int	ft_exit(t_shell *shell, char *exit_code_str);
 
 //env
 t_env	*env_init_exec(char **envp);
