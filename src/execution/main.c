@@ -26,7 +26,7 @@ static void print_cmds(t_cmd *cmds, t_shell *shell)
 					{
 						if (strcmp(cmds->args[i] + 1, env->key) == 0)
 						{
-							printf("2  Arg[%d]: %s=%s\n", i, cmds->args[i], env->value);
+							printf("  Arg[%d]: %s=%s\n", i, cmds->args[i], env->value);
 							break ;
 						}
 						env = env->next;
@@ -127,8 +127,8 @@ static void	init_shell(t_shell *shell)
 		cmd = parse(shell, line);
 		free(line);
 		
-		//print_cmds(cmd, shell);
-		exec_cmd(cmd, shell);
+		print_cmds(cmd, shell);
+		//exec_cmd(cmd, shell);
 		
 		free_cmds(cmd);
 		if (shell->should_exit != 0)

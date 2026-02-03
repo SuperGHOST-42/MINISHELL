@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:49:52 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/03 12:00:43 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/02/03 12:27:48 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,35 +33,12 @@ t_builtin	get_builtin_type(const char *cmd)
 	return (BI_NONE);
 }
 
-int	execute_builtin(t_cmd *cmd, t_shell *shell)
-{
-	if (!cmd || !cmd->args || !cmd->args[0])
-		return (-1);
-	if (cmd->builtin == BI_NONE)
-		return (-1);
-	if (cmd->builtin == BI_ECHO)
-		ft_echo(cmd->args);
-	else if (cmd->builtin == BI_CD)
-		ft_cd(cmd->args[1]);
-	else if (cmd->builtin == BI_PWD)
-		ft_pwd();
-	else if (cmd->builtin == BI_EXPORT)
-		ft_export(cmd->args[1], cmd->args[2]);
-	else if (cmd->builtin == BI_UNSET)
-		ft_unset(cmd->args[1]);
-	else if (cmd->builtin == BI_ENV)
-		ft_env(shell);
-	else if (cmd->builtin == BI_EXIT)
-		ft_exit(shell, cmd->args[1]);
-	return (0);
-}
-
-void	ft_env(t_shell *shell)
+int	ft_env(t_shell *shell)
 {
 	t_env	*current;
 
 	if (!shell || !shell->env)
-		return;
+		return (1);
 	current = shell->env;
 	while (current)
 	{
@@ -69,9 +46,10 @@ void	ft_env(t_shell *shell)
 			printf("%s=%s\n", current->key, current->value);
 		current = current->next;
 	}
+	return (0);
 }
 
-void	ft_exit(t_shell *shell, char *exit_code_str)
+int	ft_exit(t_shell *shell, char *exit_code_str)
 {
 	int	exit_code;
 
@@ -83,4 +61,5 @@ void	ft_exit(t_shell *shell, char *exit_code_str)
 		shell->should_exit = 1;
 		shell->exit_code = exit_code;
 	}
+	return (exit_code);
 }

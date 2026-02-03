@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	ft_echo(char **args)
+int	ft_echo(char **args)
 {
 	int i;
 	int print_newline;
@@ -20,7 +20,7 @@ void	ft_echo(char **args)
 	if (!args || !args[0])
 	{
 		printf("\n");
-		return;
+		return (1);
 	}
 	i = 1;
 	print_newline = 1;
@@ -52,30 +52,38 @@ void	ft_echo(char **args)
 	}
 	if (print_newline)
 		printf("\n");
+	return (0);
 }
 
-void	ft_cd(char *path)
+int	ft_cd(char *path)
 {
 	(void)path;
+	return (0);
 }
 
-void	ft_pwd(void)
+int	ft_pwd(void)
 {
 	char	cwd[1024];
 
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		printf("%s\n", cwd);
 	else
+	{
 		perror("getcwd() error");
+		return (1);
+	}
+	return (0);
 }
 
-void	ft_export(char *key, char *value)
+int	ft_export(char *key, char *value)
 {
 	(void)key;
 	(void)value;
+	return (0);
 }
 
-void	ft_unset(char *key)
+int	ft_unset(char *key)
 {
 	(void)key;
+	return (0);
 }

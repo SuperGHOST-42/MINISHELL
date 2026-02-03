@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 11:58:35 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/03 12:07:54 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/02/03 12:35:16 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,14 +124,13 @@ void	ft_lstadd_back(t_cmd **list, t_cmd *new);
 void	print_env_list(t_shell *shell);
 
 //builtins
-void ft_echo(char **args);
-void ft_cd(char *path);
-void ft_pwd(void);
-void ft_export(char *key, char *value);
-void ft_unset(char *key);
-void ft_env(t_shell *shell);
-void ft_exit(t_shell *shell, char *exit_code_str);
-
+int	ft_echo(char **args);
+int	ft_cd(char *path);
+int	ft_pwd(void);
+int	ft_export(char *key, char *value);
+int	ft_unset(char *key);
+int	ft_env(t_shell *shell);
+int	ft_exit(t_shell *shell, char *exit_code_str);
 
 //env
 t_env	*env_init_exec(char **envp);
