@@ -1,50 +1,61 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    MAKEFILE                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/12/16 15:51:41 by hgutterr          #+#    #+#              #
-#    Updated: 2025/12/31 02:18:13 by arpereir         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
-CC = cc
-CFLAGS = -g
-RL_FLAGS = -lreadline -lhistory -lncurses
-
-OBJDIR = obj
-SRCDIR = src
-SRCS = \
-	$(SRCDIR)/main.c \
-
-OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 NAME = minishell
 
+CC = cc
+CFLAGS = -Wall -Wextra #-Werror
+CFLAGS += -Iincludes -I$(LIBFT_DIR)
+CFLAGS += -I"$(shell brew --prefix readline)/include"
+
+LDFLAGS = -L"$(shell brew --prefix readline)/lib"
+LDLIBS = -lreadline -lhistory -lncurses
+
 LIBFT_DIR = includes/libft
-LIBFT_LIB = $(LIBFT_DIR)/libft.a
-LIBFT_INC = -I$(LIBFT_DIR)
+LIBFT = $(LIBFT_DIR)/libft.a
 
-all: $(LIBFT_LIB) $(NAME)
+SRCS = src/execution/env_exec.c \
+	src/execution/execute_pipeline.c \
+	src/execution/execute_single.c \
+	src/execution/helpers.c \
+	src/execution/main.c \
+	src/execution/resolve_path.c \
+	src/execution/list_utils.c \
+	src/execution/envp.c \
+	src/execution/env_to_envp.c \
+	src/execution/builtins.c \
+	src/execution/execute_builtin.c \
+	src/parsing/exit.c \
+	src/parsing/lex_line.c \
+	src/parsing/parse_cmd.c \
+	src/parsing/syntax_checker.c \
+	src/parsing/token.c \
+	src/parsing/builtin.c \
+	src/parsing/cmd_utils.c \
+	src/parsing/env_parse.c \
+	src/parsing/env_utils.c \
+	src/parsing/env.c
+	
 
-$(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT_LIB) $(RL_FLAGS) -o $(NAME)
+OBJDIR = obj
+OBJS = $(patsubst src/%.c,$(OBJDIR)/%.o,$(SRCS))
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
+all: $(NAME)
+
+$(NAME): $(LIBFT) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) $(LDLIBS) -o $(NAME)
+
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
+
+$(OBJDIR)/%.o: src/%.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) $(LIBFT_INC) -c $< -o $@
-
-$(LIBFT_LIB):
-	@$(MAKE) -C $(LIBFT_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@rm -rf $(OBJDIR)
-	@$(MAKE) -C $(LIBFT_DIR) clean
+	rm -rf $(OBJDIR)
+	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
-	@rm -f $(NAME)
-	@$(MAKE) -C $(LIBFT_DIR) fclean
+	rm -f $(NAME)
+	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
