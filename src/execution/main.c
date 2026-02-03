@@ -4,7 +4,7 @@
 static void	exec_cmd(t_cmd *cmd, t_shell *shell);
 static void	init_shell(t_shell *shell);
 
-static void print_cmds(t_cmd *cmds)
+/*static void print_cmds(t_cmd *cmds)
 {
 	while (cmds)
 	{
@@ -34,7 +34,7 @@ static void print_cmds(t_cmd *cmds)
 		printf("builtin = %i\n", cmds->builtin);
 		cmds = cmds->next;
 	}
-}
+}*/
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -68,28 +68,32 @@ static void	init_shell(t_shell *shell)
 	while (1)
 	{
 		line = ft_readline();
-		if (line == NULL)
+		if (line == NULL || *line == '\n')
 			break;
-		else
-			add_history(line);
+		add_history(line);
 		cmd = malloc(sizeof(t_cmd));
 		if (!cmd)
 			error_exit("malloc");
 		ft_bzero(cmd, sizeof(t_cmd));
-		
 		cmd = parse(shell, line);
 		free(line);
-		//print_cmds(cmd);
-		
 		exec_cmd(cmd, shell);
 		free_cmds(cmd);
 		if (shell->should_exit != 0)
+		{
+			//free_all(); por fazer
 			break ;
+		}
 	}
 }
 
 static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 {
+	if (cmd == NULL)
+	{
+		shell->should_exit = 1;
+		return ;
+	}
 	if (cmd->next != NULL)
 		exec_pipeline(cmd, shell);
 	else if (is_builtin(cmd) && is_parent_needed(cmd))
