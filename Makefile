@@ -1,12 +1,12 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
+#    MAKEFILE                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/12/16 15:51:41 by hgutterr          #+#    #+#              #
-#    Updated: 2026/01/06 16:03:40 by hgutterr         ###   ########.fr        #
+#    Updated: 2025/12/31 02:18:13 by arpereir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,10 +18,6 @@ OBJDIR = obj
 SRCDIR = src
 SRCS = \
 	$(SRCDIR)/main.c \
-	$(SRCDIR)/token.c \
-	$(SRCDIR)/syntax_checker.c \
-	$(SRCDIR)/parse_line.c \
-	$(SRCDIR)/exit.c
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 NAME = minishell
