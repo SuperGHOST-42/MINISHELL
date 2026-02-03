@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_parse.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 17:00:34 by hgutterr          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2026/02/03 11:45:38 by hgutterr         ###   ########.fr       */
-=======
-/*   Updated: 2026/02/01 21:27:46 by arpereir         ###   ########.fr       */
->>>>>>> main
+/*   Updated: 2026/02/03 12:07:41 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,18 +43,7 @@ int exit_shell(t_token *tokens, int exit_code);
 void free_tokens(t_token *tokens);
 
 t_builtin get_builtin_type(const char *cmd);
-<<<<<<< HEAD
 int execute_builtin(t_cmd *cmd, t_shell *shell);
-
-void ft_echo(char **args);
-void ft_cd(char *path);
-void ft_pwd(void);
-void ft_export(char *key, char *value);
-void ft_unset(char *key);
-void ft_env(t_shell *shell);
-void ft_exit(t_shell *shell, char *exit_code_str);
-=======
->>>>>>> main
 
 t_env* env_new(char *key, char *value);
 void env_add_back(t_env **env, t_env *new);
