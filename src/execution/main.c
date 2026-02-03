@@ -4,96 +4,62 @@
 static void	exec_cmd(t_cmd *cmd, t_shell *shell);
 static void	init_shell(t_shell *shell);
 
-/*static void print_cmds(t_cmd *cmds)
-{
-	while (cmds)
-	{
-		printf("CMD ARGS:");
-		if (cmds->args)
-		{
-			int i = 0;
-			while (cmds->args[i])
-			{
-				printf(" \"%s\"", cmds->args[i]);
-				i++;
-			}
-		}
-		printf("\n");
-		if (cmds->redirs)
-		{
-			printf("REDIRS:");
-			t_redirs *r = cmds->redirs;
-			while (r)
-			{
-				const char *s = (r->type == R_IN) ? "<" : (r->type == R_OUT) ? ">" : (r->type == R_APP) ? ">>" : "<<";
-				printf(" %s \"%s\"", s, r->target);
-				r = r->next;
-			}
-			printf("\n");
-		}
-		printf("builtin = %i\n", cmds->builtin);
-		cmds = cmds->next;
-	}
-}*/
-
 int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
 	t_shell	*shell;
+	int	exit_code;
 
 	shell = malloc(sizeof(t_shell));
 	if (!shell)
 		error_exit("malloc");
-	
 	ft_bzero(shell, sizeof(t_shell));
-
 	shell->env = env_init_exec(envp);
 	if (!shell->env)
 		error_exit("env_init");
-	
 	init_shell(shell);	
-	
+	exit_code = shell->exit_code;
 	free_env_exec(shell->env);
 	free(shell); // fazer: free_shell();
 	
-	return (shell->exit_code);
+	return (exit_code);
 }
 
 static void	init_shell(t_shell *shell)
 {
 	char	*line;
 	t_cmd	*cmd;
-	
-	while (1)
+
+	while (!shell->should_exit)
 	{
 		line = ft_readline();
-		if (line == NULL || *line == '\n')
-			break;
-		add_history(line);
-		cmd = malloc(sizeof(t_cmd));
-		if (!cmd)
-			error_exit("malloc");
-		ft_bzero(cmd, sizeof(t_cmd));
-		cmd = parse(shell, line);
-		free(line);
-		exec_cmd(cmd, shell);
-		free_cmds(cmd);
-		if (shell->should_exit != 0)
+		if (!line)
 		{
-			//free_all(); por fazer
+			shell->should_exit = 1;
+			shell->exit_code = shell->last_status;
 			break ;
 		}
+		if (*line == '\0')
+		{
+			free(line);
+			continue ;
+		}
+		add_history(line);
+		cmd = parse(shell, line);
+		free(line);
+		if (!cmd)
+			continue ;
+		exec_cmd(cmd, shell);
+		free_cmds(cmd);
 	}
 }
 
+
 static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 {
-	if (cmd == NULL)
-	{
-		shell->should_exit = 1;
+	if (!cmd)
 		return ;
-	}
 	if (cmd->next != NULL)
 		exec_pipeline(cmd, shell);
 	else if (is_builtin(cmd) && is_parent_needed(cmd))
