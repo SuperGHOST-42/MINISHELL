@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 11:58:35 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/03 12:35:16 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/02/09 18:52:30 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,15 @@ typedef struct s_token
 	int						quoted; // "" ''
 	int						squoted; // ''
 	int						dquoted; // ""
+	int						preceded_by_space; // space before this token
 	struct s_token			*next;
 }	t_token;
+
+typedef struct s_arg_quote
+{
+	int						dquoted; // was double quoted
+	int						squoted; // was single quoted
+}	t_arg_quote;
 
 typedef struct s_redirs
 {
@@ -72,6 +79,7 @@ typedef struct s_redirs
 typedef struct s_cmd
 {
 	char 					**args;
+	t_arg_quote				**args_quote; // quote info for each arg
 	t_redirs		 		*redirs;
 	t_builtin				builtin;
 	pid_t					pid;

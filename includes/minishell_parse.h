@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 17:00:34 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/03 12:07:41 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/02/09 18:52:30 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,16 @@
 
 t_token* new_token(t_token_type type, char *value);
 void token_add_back(t_token **lst, t_token *node);
-void handle_word(t_token **tokens, char *line, int *i);
-int handle_quote(t_token **tokens, char *line, int *i);
-void handle_operator(t_token **tokens, char *line, int *i);
+void handle_word(t_token **tokens, char *line, int *i, int preceded_by_space);
+int handle_quote(t_token **tokens, char *line, int *i, int preceded_by_space);
+void handle_operator(t_token **tokens, char *line, int *i, int preceded_by_space);
 
 t_cmd* parse(t_shell *shell, char *line);
 t_token* tokenization(char *line);
 
 t_cmd* create_cmd_from_tokens(t_token *tokens);
 
-int append_arg(t_cmd *cmd, char *arg);
+int append_arg_with_quote(t_cmd *cmd, char *arg, int dquoted, int squoted);
 int add_redir(t_redirs **list, t_token_type type, char *target);
 t_cmd* parse_tokens_to_cmds(t_token *tokens);
 //void print_cmds(t_cmd *cmds);

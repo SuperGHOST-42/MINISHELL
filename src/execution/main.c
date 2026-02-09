@@ -8,6 +8,8 @@ static void print_cmds(t_cmd *cmds, t_shell *shell)
 {
 	int	cmd_num;
 
+	if (!cmds)
+		return;
 	cmd_num = 0;
 	while(cmds)
 	{
@@ -32,10 +34,17 @@ static void print_cmds(t_cmd *cmds, t_shell *shell)
 						env = env->next;
 					}
 				}
-				/*------------------------------------------------------*/
-
+				if (cmds->args_quote && cmds->args_quote[i])
+				{
+					if(cmds->args_quote[i]->dquoted)
+						printf("  Arg[%d]: \"%s\"\n", i, cmds->args[i]);
+					else if(cmds->args_quote[i]->squoted)
+						printf("  Arg[%d]: \'%s\'\n", i, cmds->args[i]);
+					else
+						printf("  Arg[%d]: %s\n", i, cmds->args[i]);
+				}
 				else
-				printf("  Arg[%d]: %s\n", i, cmds->args[i]);
+					printf("  Arg[%d]: %s (no quote info)\n", i, cmds->args[i]);
 				i++;
 			}
 			printf("  Builtin: %s\n", builtin_to_str(cmds->builtin));
@@ -116,7 +125,7 @@ static void	init_shell(t_shell *shell)
 	{
 		line = ft_readline();
 		if (line == NULL)
-		break;
+			break;
 		else
 		add_history(line);
 		cmd = malloc(sizeof(t_cmd));

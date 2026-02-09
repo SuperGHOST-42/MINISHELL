@@ -3,111 +3,132 @@
 /*                                                        :::      ::::::::   */
 /*   parse_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:27 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/01 19:37:17 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/02/09 18:52:30 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include "../../includes/minishell_parse.h"
 
-int append_arg(t_cmd *cmd, char *arg)
+// Append arg with quote tracking
+int append_arg_with_quote(t_cmd *cmd, char *arg, int dquoted, int squoted)
 {
-	char**new_args;
-	int	count;
-	int	i;
+	char			**new_args;
+	t_arg_quote		**new_quote;
+	t_arg_quote		*quote_info;
+	int				count;
+	int				i;
 
 	count = 0;
 	if (cmd->args)
 	{
 		while (cmd->args[count])
-		count++;
+			count++;
 	}
 	new_args = malloc((count + 2) * sizeof(char *));
 	if (!new_args)
 		return (1);
+	new_quote = malloc((count + 2) * sizeof(t_arg_quote *));
+	if (!new_quote)
+	{
+		free(new_args);
+		return (1);
+	}
 	i = 0;
 	while (i < count)
 	{
 		new_args[i] = cmd->args[i];
+		new_quote[i] = cmd->args_quote[i];
 		i++;
 	}
 	new_args[i] = ft_strdup(arg);
 	if (!new_args[i])
 	{
 		free(new_args);
+		free(new_quote);
 		return (1);
 	}
+	quote_info = malloc(sizeof(t_arg_quote));
+	if (!quote_info)
+	{
+		free(new_args[i]);
+		free(new_args);
+		free(new_quote);
+		return (1);
+	}
+	quote_info->dquoted = dquoted;
+	quote_info->squoted = squoted;
+	new_quote[i] = quote_info;
 	new_args[i + 1] = NULL;
+	new_quote[i + 1] = NULL;
 	if (cmd->args)
 		free(cmd->args);
+	if (cmd->args_quote)
+		free(cmd->args_quote);
 	cmd->args = new_args;
+	cmd->args_quote = new_quote;
 	return (0);
 }
 
-static char	**create_args_from_tokens(t_token *tokens, int count)
+static t_token	*process_word_sequence(t_cmd *cmd, t_token *tokens)
 {
-	char	**args;
-	int		i;
-	t_token	*tmp;
+	char	*concat;
+	char	*temp;
+	int		has_dquote;
+	int		has_squote;
 
-	args = malloc((count + 1) * sizeof(char *));
-	if (!args)
-		return (NULL);
-	i = 0;
-	tmp = tokens;
-	while (tmp && tmp->type == WORD)
+	concat = NULL;
+	has_dquote = 0;
+	has_squote = 0;
+
+	while (tokens && tokens->type == WORD)
 	{
-		args[i] = ft_strdup(tmp->value);
-		if (!args[i])
+		// If this token was preceded by space and we already have a concat, 
+		// finish the current argument and start a new one
+		if (concat && tokens->preceded_by_space)
 		{
-			while (i-- > 0)
-				free(args[i]);
-			free(args);
+			if (append_arg_with_quote(cmd, concat, has_dquote, has_squote))
+			{
+				free(concat);
+				return (NULL);
+			}
+			free(concat);
+			concat = NULL;
+			has_dquote = 0;
+			has_squote = 0;
+		}
+		
+		// Concatenate this token with current or start new
+		if (concat == NULL)
+			concat = ft_strdup(tokens->value);
+		else
+		{
+			temp = concat;
+			concat = ft_strjoin(concat, tokens->value);
+			free(temp);
+			if (!concat)
+				return (NULL);
+		}
+		if (tokens->dquoted)
+			has_dquote = 1;
+		if (tokens->squoted)
+			has_squote = 1;
+		tokens = tokens->next;
+	}
+
+	if (concat)
+	{
+		if (append_arg_with_quote(cmd, concat, has_dquote, has_squote))
+		{
+			free(concat);
 			return (NULL);
 		}
-		i++;
-		tmp = tmp->next;
+		free(concat);
 	}
-	args[i] = NULL;
-	return (args);
-}
-
-t_cmd	*create_cmd_from_tokens(t_token *tokens)
-{
-	int		count;
-	t_token	*tmp;
-	char	**args;
-	t_cmd	*cmd;
-	int		i;
-
-	count = 0;
-	tmp = tokens;
-	while (tmp && tmp->type == WORD)
-	{
-		count++;
-		tmp = tmp->next;
-	}
-	args = create_args_from_tokens(tokens, count);
-	if (!args)
-		return (NULL);
-	cmd = malloc(sizeof(t_cmd));
-	if (!cmd)
-	{
-		i = count;
-		while (i-- > 0)
-			free(args[i]);
-		free(args);
-		return (NULL);
-	}
-	cmd->args = args;
-	cmd->redirs = NULL;
-	cmd->builtin = BI_NONE;
-	cmd->pid = -1;
-	cmd->next = NULL;
-	return (cmd);
+	return (tokens);
 }
 
 static t_redirs	*new_redir(t_token_type type, char *target)
@@ -179,11 +200,10 @@ t_cmd	*parse_tokens_to_cmds(t_token *tokens)
 		}
 		if (tokens->type == WORD)
 		{
-			if (append_arg(cur, tokens->value))
-			{
-				free_cmds(head);
-				return (NULL);
-			}
+			tokens = process_word_sequence(cur, tokens);
+			// process_word_sequence returns NULL when all WORD tokens consumed
+			// This is OK - just continue to next iteration which will exit the loop
+			continue ;
 		}
 		if (ft_isredir(tokens->type))
 		{

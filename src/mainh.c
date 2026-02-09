@@ -1,23 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/30 18:50:32 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/03 11:46:59 by hgutterr         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../includes/minishell.h"
-
-volatile sig_atomic_t	g_sig;
+#include "../../includes/minishell.h"
+#include "../../includes/minishell_parse.h"
 
 char	*builtin_to_str(t_builtin builtin);
 char	*token_to_str(t_token_type type);
 
-void	test_args_builtins_env(t_cmd *cmds, t_shell *shell)
+static void print_cmds(t_cmd *cmds, t_shell *shell)
 {
 	int	cmd_num;
 
@@ -39,7 +26,7 @@ void	test_args_builtins_env(t_cmd *cmds, t_shell *shell)
 					{
 						if (strcmp(cmds->args[i] + 1, env->key) == 0)
 						{
-							printf("2  Arg[%d]: %s=%s\n", i, cmds->args[i], env->value);
+							printf("  Arg[%d]: %s=%s\n", i, cmds->args[i], env->value);
 							break ;
 						}
 						env = env->next;
@@ -71,6 +58,7 @@ void	test_args_builtins_env(t_cmd *cmds, t_shell *shell)
 		cmd_num++;
 	}
 }
+
 char	*builtin_to_str(t_builtin builtin)
 {
 	if (builtin == BI_ECHO)
@@ -108,40 +96,66 @@ char	*token_to_str(t_token_type type)
 }
 /*--------------------------------------------------------------------------------*/
 
-void	minishell(t_shell *shell)
+static void	exec_cmd(t_cmd *cmd, t_shell *shell)
+{
+	if (cmd->next != NULL)
+	exec_pipeline(cmd, shell);
+	else if (is_builtin(cmd) && is_parent_needed(cmd))
+	shell->last_status = exec_builtin(cmd, shell);
+	else
+	exec_child(cmd, shell);
+	return ;
+}
+
+static void	init_shell(t_shell *shell)
 {
 	char	*line;
-	t_cmd	*cmds;
-
-	while (shell->should_exit == 0)
+	t_cmd	*cmd;
+	
+	while (1)
 	{
-		line = readline("$> ");
-		if (!line)
-		{
-			rl_clear_history();
-			exit(0);
-		}
-		cmds = parse(shell, line);
-		//test_args_builtins_env(cmds, shell);
+		line = ft_readline();
+		if (line == NULL)
+		break;
+		else
+		add_history(line);
+		cmd = malloc(sizeof(t_cmd));
+		if (!cmd)
+		error_exit("malloc");
+		ft_bzero(cmd, sizeof(t_cmd));
+		
+		cmd = parse(shell, line);
 		free(line);
+		
+		//print_cmds(cmd, shell);
+		exec_cmd(cmd, shell);
+		
+		free_cmds(cmd);
+		if (shell->should_exit != 0)
+		break ;
 	}
 }
 
-int	main(int argc, char **argv, char **env)
+int	main(int argc, char **argv, char **envp)
 {
-	t_shell	shell;
-
-	if (argc != 1)
-		return (-1);
-	(void)argv;
 	(void)argc;
-	shell.env = env_init(env);
-	shell.env_backup = env_dup(shell.env);
-	shell.last_status = 0;
-	shell.should_exit = 0;
-	shell.exit_code = 0;
-	minishell(&shell);
-	env_free(shell.env);
-	env_free(shell.env_backup);
-	return (shell.exit_code);
+	(void)argv;
+	t_shell	*shell;
+
+	shell = malloc(sizeof(t_shell));
+	if (!shell)
+		error_exit("malloc");
+	
+	ft_bzero(shell, sizeof(t_shell));
+
+	shell->env = env_init_exec(envp);
+	if (!shell->env)
+		error_exit("env_init");
+	
+	init_shell(shell);	
+	
+	free_env_exec(shell->env);
+	free(shell); // fazer: free_shell();
+	
+	return (shell->exit_code);
 }

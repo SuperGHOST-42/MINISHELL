@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lex_line.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:37 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/01 22:27:14 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/02/09 18:52:30 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_cmd	*parse(t_shell *shell, char *line)
 		return (NULL);
 	}
 	if (!tokens)
-		printf("No tokens generated.\n");
+		return (NULL);
 	else
 	{
 		cmds = parse_tokens_to_cmds(tokens);

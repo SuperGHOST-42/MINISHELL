@@ -20,8 +20,8 @@ SRCS = src/execution/env_exec.c \
 	src/execution/list_utils.c \
 	src/execution/envp.c \
 	src/execution/env_to_envp.c \
-	src/execution/builtins_impl.c \
 	src/execution/builtins.c \
+	src/execution/builtins2.c \
 	src/execution/execute_builtin.c \
 	src/parsing/exit.c \
 	src/parsing/lex_line.c \
