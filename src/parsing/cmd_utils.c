@@ -21,6 +21,7 @@ t_cmd	*new_cmd(void)
 	if (!cmd)
 		return (NULL);
 	cmd->args = NULL;
+	cmd->args_quote = NULL;
 	cmd->redirs = NULL;
 	cmd->builtin = BI_NONE;
 	cmd->pid = -1;
@@ -61,6 +62,16 @@ void	free_cmd(t_cmd *cmd)
 			i++;
 		}
 		free(cmd->args);
+	}
+	if (cmd->args_quote)
+	{
+		i = 0;
+		while (cmd->args_quote[i])
+		{
+			free(cmd->args_quote[i]);
+			i++;
+		}
+		free(cmd->args_quote);
 	}
 	while (cmd->redirs)
 	{

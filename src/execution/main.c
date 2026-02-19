@@ -1,29 +1,16 @@
 #include "../../includes/minishell.h"
 #include "../../includes/minishell_parse.h"
 
-static void	exec_cmd(t_cmd *cmd, t_shell *shell);
-static void	init_shell(t_shell *shell);
-
-int	main(int argc, char **argv, char **envp)
+static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 {
-	(void)argc;
-	(void)argv;
-	t_shell	*shell;
-	int	exit_code;
-
-	shell = malloc(sizeof(t_shell));
-	if (!shell)
-		error_exit("malloc");
-	ft_bzero(shell, sizeof(t_shell));
-	shell->env = env_init_exec(envp);
-	if (!shell->env)
-		error_exit("env_init");
-	init_shell(shell);	
-	exit_code = shell->exit_code;
-	free_env_exec(shell->env);
-	free(shell); // fazer: free_shell();
-	
-	return (exit_code);
+	if (!cmd)
+		return ;
+	if (cmd->next != NULL)
+		exec_pipeline(cmd, shell);
+	else if (is_builtin(cmd) && is_parent_needed(cmd))
+		shell->last_status = exec_builtin_parent(cmd, shell);
+	else
+		exec_child(cmd, shell);
 }
 
 static void	init_shell(t_shell *shell)
@@ -55,16 +42,23 @@ static void	init_shell(t_shell *shell)
 	}
 }
 
-
-static void	exec_cmd(t_cmd *cmd, t_shell *shell)
+int	main(int argc, char **argv, char **envp)
 {
-	if (!cmd)
-		return ;
-	if (cmd->next != NULL)
-		exec_pipeline(cmd, shell);
-	else if (is_builtin(cmd) && is_parent_needed(cmd))
-		shell->last_status = exec_builtin(cmd, shell);
-	else
-		exec_child(cmd, shell);
-	return ;
+	t_shell	*shell;
+	int		exit_code;
+
+	(void)argc;
+	(void)argv;
+	shell = malloc(sizeof(t_shell));
+	if (!shell)
+		error_exit("malloc");
+	ft_bzero(shell, sizeof(t_shell));
+	shell->env = env_init_exec(envp);
+	if (!shell->env)
+		error_exit("env_init");
+	init_shell(shell);
+	exit_code = shell->exit_code;
+	free_env_exec(shell->env);
+	free(shell);
+	return (exit_code);
 }

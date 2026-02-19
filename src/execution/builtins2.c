@@ -29,8 +29,8 @@ int	ft_exit(t_shell *shell, char *exit_code_str)
 
 int	ft_echo(char **args)
 {
-	int i;
-	int print_newline;
+	int	i;
+	int	print_newline;
 
 	if (!args || !args[0])
 	{
@@ -41,9 +41,11 @@ int	ft_echo(char **args)
 	print_newline = 1;
 	while (args[i] && args[i][0] == '-' && args[i][1])
 	{
-		int j = 1;
-		int all_n = 1;
+		int	j;
+		int	all_n;
 
+		j = 1;
+		all_n = 1;
 		while (args[i][j])
 		{
 			if (args[i][j] != 'n')

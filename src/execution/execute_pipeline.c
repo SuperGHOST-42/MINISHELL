@@ -31,12 +31,20 @@ static void	child_setup_io(int prev_read, int fd[2], int has_next)
 {
 	if (prev_read >= 0)
 	{
-		dup2(prev_read, STDIN_FILENO);
+		if (dup2(prev_read, STDIN_FILENO) < 0)
+		{
+			perror("dup2 stdin");
+			exit(1);
+		}
 		close_fd(prev_read);
 	}
 	if (has_next)
 	{
-		dup2(fd[1], STDOUT_FILENO);
+		if (dup2(fd[1], STDOUT_FILENO) < 0)
+		{
+			perror("dup2 stdout");
+			exit(1);
+		}
 		close_fd(fd[0]);
 		close_fd(fd[1]);
 	}
@@ -59,7 +67,11 @@ static void	run_child(t_cmd *cmd, t_shell *shell)
 	char	*path;
 	char	**envp;
 
-	if (!cmd || !cmd->args || !cmd->args[0])
+	if (!cmd)
+		exit(1);
+	if (apply_redirs(cmd->redirs))
+		exit(1);
+	if (!cmd->args || !cmd->args[0])
 		exit(0);
 	if (cmd->builtin != BI_NONE)
 		exit(exec_builtin(cmd, shell));
@@ -68,9 +80,17 @@ static void	run_child(t_cmd *cmd, t_shell *shell)
 		exit(1);
 	path = resolve_path(shell->env, cmd->args[0]);
 	if (!path)
+	{
+		perror(cmd->args[0]);
+		free_envp(envp);
 		exit(127);
+	}
 	execve(path, cmd->args, envp);
+	perror(path);
 	free(path);
+	free_envp(envp);
+	if (errno == ENOENT)
+		exit(127);
 	exit(126);
 }
 

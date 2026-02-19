@@ -26,6 +26,12 @@ static void	run_child(t_cmd *cmd, t_shell *shell)
 	char	*path;
 	char	**envp;
 
+	if (!cmd)
+		exit(1);
+	if (apply_redirs(cmd->redirs))
+		exit(1);
+	if (!cmd->args || !cmd->args[0])
+		exit(0);
 	if (is_builtin(cmd))
 		exit(exec_builtin(cmd, shell));
 	envp = env_to_envp(shell->env);
@@ -35,13 +41,13 @@ static void	run_child(t_cmd *cmd, t_shell *shell)
 	if (!path)
 	{
 		perror(cmd->args[0]);
-		free(envp);
+		free_envp(envp);
 		exit(127);
 	}
 	execve(path, cmd->args, envp);
 	perror(path);
 	free(path);
-	free(envp);
+	free_envp(envp);
 	if (errno == ENOENT)
 		exit(127);
 	exit(126);

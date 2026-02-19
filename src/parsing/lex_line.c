@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lex_line.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:37 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/03 15:24:58 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/02/09 18:52:30 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ t_cmd	*parse(t_shell *shell, char *line)
 	(void)shell;
 	if (ft_isempty(line))
 		return (NULL);
-	//add_history(line);
 	tokens = tokenization(line);
 	if (syntax_check(tokens) == 1)
 	{
@@ -30,21 +29,16 @@ t_cmd	*parse(t_shell *shell, char *line)
 		shell->last_status = 2;
 		return (NULL);
 	}
-
 	if (!tokens)
-		printf("No tokens generated.\n");
-	else
+		return (NULL);
+	cmds = parse_tokens_to_cmds(tokens);
+	free_tokens(tokens);
+	current = cmds;
+	while (current)
 	{
-		cmds = parse_tokens_to_cmds(tokens);
-		free_tokens(tokens);
-		current = cmds;
-		while (current)
-		{
-			if (current->args && current->args[0])
-				current->builtin = get_builtin_type(current->args[0]);
-			current = current->next;
-		}
-		return (cmds);
+		if (current->args && current->args[0])
+			current->builtin = get_builtin_type(current->args[0]);
+		current = current->next;
 	}
-	return (NULL);
+	return (cmds);
 }

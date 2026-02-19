@@ -22,6 +22,10 @@ t_token	*new_token(t_token_type type, char *value)
 		return (NULL);
 	tok->type = type;
 	tok->value = value;
+	tok->quoted = 0;
+	tok->squoted = 0;
+	tok->dquoted = 0;
+	tok->preceded_by_space = 0;
 	tok->next = NULL;
 	return (tok);
 }
@@ -43,7 +47,7 @@ void	token_add_back(t_token **lst, t_token *node)
 	tmp->next = node;
 }
 
-void	handle_word(t_token **tokens, char *line, int *i)
+void	handle_word(t_token **tokens, char *line, int *i, int preceded_by_space)
 {
 	int		start;
 	t_token	*tok;
@@ -55,10 +59,11 @@ void	handle_word(t_token **tokens, char *line, int *i)
 	tok = new_token(WORD, ft_substr(line, start, *i - start));
 	if (!tok)
 		return;
+	tok->preceded_by_space = preceded_by_space;
 	token_add_back(tokens, tok);
 }
 
-int	handle_quote(t_token **tokens, char *line, int *i)
+int	handle_quote(t_token **tokens, char *line, int *i, int preceded_by_space)
 {
 	char	quote;
 	int		start;
@@ -74,13 +79,19 @@ int	handle_quote(t_token **tokens, char *line, int *i)
 	tok = new_token(WORD, ft_substr(line, start, *i - start));
 	if (!tok)
 		return (1);
+	tok->quoted = 1;
+	tok->preceded_by_space = preceded_by_space;
+	if (quote == '\'')
+		tok->squoted = 1;
+	else if (quote == '"')
+		tok->dquoted = 1;
 	token_add_back(tokens, tok);
 	if (line[*i] == quote)
 		(*i)++;
 	return (0);
 }
 
-void	handle_operator(t_token **tokens, char *line, int *i)
+void	handle_operator(t_token **tokens, char *line, int *i, int preceded_by_space)
 {
 	t_token	*tok;
 	char	*op;
@@ -116,7 +127,10 @@ void	handle_operator(t_token **tokens, char *line, int *i)
 		else if (op[0] == '>')
 			tok = new_token(R_OUT, ft_strdup(op));
 		if (tok)
+		{
+			tok->preceded_by_space = preceded_by_space;
 			token_add_back(tokens, tok);
+		}
 	}
 	(*i)++;
 }
@@ -125,29 +139,35 @@ t_token	*tokenization(char *line)
 {
 	t_token	*tokens;
 	int		i;
+	int		had_space;
 
 	if (!line)
 		return (NULL);
 	tokens = NULL;
 	i = 0;
+	had_space = 1;
 	while (line[i])
 	{
 		if (ft_isspace(line[i]))
 		{
+			had_space = 1;
 			i++;
 		}
 		else if (ft_isquote(line[i]))
 		{
-			if (handle_quote(&tokens, line, &i))
+			if (handle_quote(&tokens, line, &i, had_space))
 				return (NULL);
+			had_space = 0;
 		}
 		else if (ft_isoperator(line[i]))
 		{
-			handle_operator(&tokens, line, &i);
+			handle_operator(&tokens, line, &i, had_space);
+			had_space = 0;
 		}
 		else
 		{
-			handle_word(&tokens, line, &i);
+			handle_word(&tokens, line, &i, had_space);
+			had_space = 0;
 		}
 	}
 	return (tokens);
