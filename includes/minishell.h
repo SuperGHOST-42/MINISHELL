@@ -105,9 +105,11 @@ typedef struct s_shell
 //ghost
 int		is_parent_needed(t_cmd *cmd);
 int		exec_builtin(t_cmd *cmd, t_shell *shell);
+int		exec_builtin_parent(t_cmd *cmd, t_shell *shell);
 int		status_to_exit_code(int status);
 int		is_builtin(t_cmd *cmd);
 char	**env_to_envp(t_env *env);
+int		apply_redirs(t_redirs *redirs);
 
 //helpers
 void 	print_args(t_cmd *cmd);
