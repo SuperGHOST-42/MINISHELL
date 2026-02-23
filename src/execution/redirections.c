@@ -59,9 +59,11 @@ static int	apply_one_redir(t_redirs *redir)
 
 int	apply_redirs(t_redirs *redirs)
 {
-	if (!redirs)
-		return (0);
-	if (apply_redirs(redirs->next))
-		return (1);
-	return (apply_one_redir(redirs));
+	while (redirs)
+	{
+		if (apply_one_redir(redirs))
+			return (1);
+		redirs = redirs->next;
+	}
+	return (0);
 }
