@@ -39,38 +39,40 @@ static char	*join_path(const char *dir, const char *cmd)
 	return (full);
 }
 
-char	*resolve_path(t_env *env, char *cmd)
+static char	*find_in_path(char **dirs, char *cmd)
 {
-	char	*path;
-	char	**dirs;
 	char	*full;
 	int		i;
-
-	if (!cmd || !*cmd)
-		return (NULL);
-	if (has_slash(cmd))
-		return (ft_strdup(cmd));
-
-	path = get_env_exec(env, "PATH");
-	if (!path)
-		return (NULL);
-
-	dirs = ft_split(path, ':');
-	if (!dirs)
-		return (NULL);
 
 	i = 0;
 	while (dirs[i])
 	{
 		full = join_path(dirs[i], cmd);
 		if (full && access(full, X_OK) == 0)
-		{
-			free_split(dirs);
 			return (full);
-		}
 		free(full);
 		i++;
 	}
-	free_split(dirs);
 	return (NULL);
+}
+
+char	*resolve_path(t_env *env, char *cmd)
+{
+	char	*path;
+	char	**dirs;
+	char	*full;
+
+	if (!cmd || !*cmd)
+		return (NULL);
+	if (has_slash(cmd))
+		return (ft_strdup(cmd));
+	path = get_env_exec(env, "PATH");
+	if (!path)
+		return (NULL);
+	dirs = ft_split(path, ':');
+	if (!dirs)
+		return (NULL);
+	full = find_in_path(dirs, cmd);
+	free_split(dirs);
+	return (full);
 }

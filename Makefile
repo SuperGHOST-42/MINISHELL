@@ -13,20 +13,25 @@ LIBFT = $(LIBFT_DIR)/libft.a
 
 SRCS = src/execution/env_exec.c \
 	src/execution/execute_pipeline.c \
+	src/execution/execute_pipeline2.c \
 	src/execution/execute_single.c \
 	src/execution/helpers.c \
 	src/execution/main.c \
 	src/execution/resolve_path.c \
-	src/execution/list_utils.c \
 	src/execution/envp.c \
 	src/execution/env_to_envp.c \
 	src/execution/builtins.c \
+	src/execution/builtin_env_core.c \
+	src/execution/builtin_env_utils.c \
+	src/execution/builtin_export_unset.c \
+	src/execution/builtin_exit.c \
 	src/execution/builtins2.c \
 	src/execution/execute_builtin.c \
 	src/execution/redirections.c \
 	src/parsing/exit.c \
 	src/parsing/lex_line.c \
 	src/parsing/parse_cmd.c \
+	src/parsing/parse_words.c \
 	src/parsing/syntax_checker.c \
 	src/parsing/token.c \
 	src/parsing/cmd_utils.c \

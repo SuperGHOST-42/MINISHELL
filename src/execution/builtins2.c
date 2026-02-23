@@ -6,76 +6,92 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:55:00 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/03 13:48:42 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/02/23 18:12:28 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../includes/builtin_helpers.h"
+#include <limits.h>
 
-int	ft_exit(t_shell *shell, char *exit_code_str)
+static int	is_echo_n(char *arg)
 {
-	int	exit_code;
+	int	i;
 
-	exit_code = 0;
-	if (exit_code_str)
-		exit_code = ft_atoi(exit_code_str);
-	if (shell)
+	if (!arg || arg[0] != '-' || !arg[1])
+		return (0);
+	i = 1;
+	while (arg[i])
 	{
-		shell->should_exit = 1;
-		shell->exit_code = exit_code;
+		if (arg[i] != 'n')
+			return (0);
+		i++;
 	}
-	return (exit_code);
+	return (1);
+}
+
+static int	cd_change_dir(t_shell *shell, char *path)
+{
+	char	oldpwd[PATH_MAX];
+	char	cwd[PATH_MAX];
+
+	oldpwd[0] = '\0';
+	if (getcwd(oldpwd, sizeof(oldpwd)) == NULL)
+		oldpwd[0] = '\0';
+	if (chdir(path) < 0)
+	{
+		ft_putstr_fd("minishell: cd: ", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putendl_fd(strerror(errno), 2);
+		return (1);
+	}
+	if (oldpwd[0] && bt_set_env_value(&shell->env, "OLDPWD", oldpwd))
+		return (1);
+	if (getcwd(cwd, sizeof(cwd)) && bt_set_env_value(&shell->env, "PWD", cwd))
+		return (1);
+	return (0);
 }
 
 int	ft_echo(char **args)
 {
 	int	i;
-	int	print_newline;
+	int	nl;
 
 	if (!args || !args[0])
-	{
-		printf("\n");
-		return (1);
-	}
+		return (printf("\n"), 0);
 	i = 1;
-	print_newline = 1;
-	while (args[i] && args[i][0] == '-' && args[i][1])
+	nl = 1;
+	while (args[i] && is_echo_n(args[i]))
 	{
-		int	j;
-		int	all_n;
-
-		j = 1;
-		all_n = 1;
-		while (args[i][j])
-		{
-			if (args[i][j] != 'n')
-			{
-				all_n = 0;
-				break ;
-			}
-			j++;
-		}
-		if (!all_n)
-			break ;
-		print_newline = 0;
+		nl = 0;
 		i++;
 	}
 	while (args[i])
 	{
-		if (i > 1)
-			printf(" ");
 		printf("%s", args[i]);
+		if (args[i + 1])
+			printf(" ");
 		i++;
 	}
-	if (print_newline)
+	if (nl)
 		printf("\n");
 	return (0);
 }
 
-int	ft_cd(char *path)
+int	ft_cd(t_shell *shell, char **args)
 {
-	(void)path;
-	return (0);
+	char	*path;
+
+	if (!shell || !args)
+		return (1);
+	if (args[1] && args[2])
+		return (ft_putendl_fd("minishell: cd: too many arguments", 2), 1);
+	path = args[1];
+	if (!path)
+		path = get_env_exec(shell->env, "HOME");
+	if (!path)
+		return (ft_putendl_fd("minishell: cd: HOME not set", 2), 1);
+	return (cd_change_dir(shell, path));
 }
 
 int	ft_pwd(void)
@@ -89,18 +105,5 @@ int	ft_pwd(void)
 		perror("getcwd() error");
 		return (1);
 	}
-	return (0);
-}
-
-int	ft_export(char *key, char *value)
-{
-	(void)key;
-	(void)value;
-	return (0);
-}
-
-int	ft_unset(char *key)
-{
-	(void)key;
 	return (0);
 }

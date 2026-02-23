@@ -71,13 +71,11 @@ t_env	*env_init_exec(char **envp)
 	int		i;
 
 	env = NULL;
-	if (!envp)
-		return (NULL);
-	i = -1;
-	while (envp[++i])
+	i = 0;
+	while (envp[i])
 	{
 		equal = ft_strchr(envp[i], '=');
-		if (equal)
+		if (equal != NULL)
 		{
 			key = ft_substr(envp[i], 0, equal - envp[i]);
 			value = ft_strdup(equal + 1);
@@ -88,6 +86,7 @@ t_env	*env_init_exec(char **envp)
 		}
 		else
 			env_add_back(&env, env_new(envp[i], NULL));
+		i++;
 	}
 	return (env);
 }

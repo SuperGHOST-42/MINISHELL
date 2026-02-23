@@ -13,13 +13,18 @@
 #include "../../includes/minishell.h"
 #include "../../includes/minishell_parse.h"
 
+static int	parse_error(char *token)
+{
+	ft_putstr_fd("minishell: parse error near `", 2);
+	ft_putstr_fd(token, 2);
+	ft_putendl_fd("'", 2);
+	return (1);
+}
+
 static int	check_pipe(t_token *tokens)
 {
 	if (!tokens->next || tokens->next->type == PIPE)
-	{
-		printf("minishell: parse error near `|'\n");
-		return (1);
-	}
+		return (parse_error("|"));
 	return (0);
 }
 
@@ -28,10 +33,8 @@ static int	check_redir(t_token *tokens)
 	if (!tokens->next || tokens->next->type != WORD)
 	{
 		if (!tokens->next)
-			printf("minishell: parse error near `newline'\n");
-		else
-			printf("minishell: parse error near `%s'\n", tokens->value);
-		return (1);
+			return (parse_error("newline"));
+		return (parse_error(tokens->next->value));
 	}
 	return (0);
 }
@@ -41,10 +44,7 @@ int	syntax_check(t_token *tokens)
 	if (!tokens)
 		return (1);
 	if (tokens->type == PIPE)
-	{
-		printf("minishell: parse error near `|'\n");
-		return (1);
-	}
+		return (parse_error("|"));
 	while (tokens)
 	{
 		if (tokens->type == PIPE)

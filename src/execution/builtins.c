@@ -33,12 +33,21 @@ t_builtin	get_builtin_type(const char *cmd)
 	return (BI_NONE);
 }
 
-int	ft_env(t_shell *shell)
+int	ft_env(t_shell *shell, char **args)
 {
 	t_env	*current;
 
-	if (!shell || !shell->env)
+	if (!shell || !args)
 		return (1);
+	if (args[1])
+	{
+		ft_putstr_fd("minishell: env: ", 2);
+		ft_putstr_fd(args[1], 2);
+		ft_putendl_fd(": No such file or directory", 2);
+		return (127);
+	}
+	if (!shell->env)
+		return (0);
 	current = shell->env;
 	while (current)
 	{

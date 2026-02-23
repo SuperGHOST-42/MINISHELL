@@ -27,9 +27,9 @@ t_token* tokenization(char *line);
 t_cmd* create_cmd_from_tokens(t_token *tokens);
 
 int append_arg_with_quote(t_cmd *cmd, char *arg, int dquoted, int squoted);
+int process_word_sequence(t_cmd *cmd, t_token **tokens);
 int add_redir(t_redirs **list, t_token_type type, char *target);
 t_cmd* parse_tokens_to_cmds(t_token *tokens);
-//void print_cmds(t_cmd *cmds);
 
 t_cmd* new_cmd(void);
 void add_cmd(t_cmd **list, t_cmd *cmd);

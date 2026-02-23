@@ -20,28 +20,33 @@ static int	open_redir_fd(t_redirs *redir)
 	return (-1);
 }
 
+static int	load_redir_fd(t_redirs *redir)
+{
+	int	fd;
+
+	if (redir->type == R_HEREDOC)
+	{
+		if (redir->heredoc_fd < 0)
+			return (-1);
+		fd = redir->heredoc_fd;
+		redir->heredoc_fd = -1;
+		return (fd);
+	}
+	fd = open_redir_fd(redir);
+	if (fd < 0)
+		perror(redir->target);
+	return (fd);
+}
+
 static int	apply_one_redir(t_redirs *redir)
 {
 	int	fd;
 
 	if (!redir)
 		return (0);
-	if (redir->type == R_HEREDOC)
-	{
-		if (redir->heredoc_fd < 0)
-			return (1);
-		fd = redir->heredoc_fd;
-		redir->heredoc_fd = -1;
-	}
-	else
-	{
-		fd = open_redir_fd(redir);
-		if (fd < 0)
-		{
-			perror(redir->target);
-			return (1);
-		}
-	}
+	fd = load_redir_fd(redir);
+	if (fd < 0)
+		return (1);
 	if (dup2(fd, dup_target_fd(redir)) < 0)
 	{
 		perror("dup2");
@@ -52,16 +57,11 @@ static int	apply_one_redir(t_redirs *redir)
 	return (0);
 }
 
-static int	apply_redirs_rec(t_redirs *redirs)
+int	apply_redirs(t_redirs *redirs)
 {
 	if (!redirs)
 		return (0);
-	if (apply_redirs_rec(redirs->next))
+	if (apply_redirs(redirs->next))
 		return (1);
 	return (apply_one_redir(redirs));
-}
-
-int	apply_redirs(t_redirs *redirs)
-{
-	return (apply_redirs_rec(redirs));
 }

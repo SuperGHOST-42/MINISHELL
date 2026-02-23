@@ -49,13 +49,18 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
+	if (!envp)
+		error_exit("envp");
 	shell = malloc(sizeof(t_shell));
 	if (!shell)
 		error_exit("malloc");
 	ft_bzero(shell, sizeof(t_shell));
 	shell->env = env_init_exec(envp);
 	if (!shell->env)
+	{
+		free(shell);
 		error_exit("env_init");
+	}
 	init_shell(shell);
 	exit_code = shell->exit_code;
 	free_env_exec(shell->env);
