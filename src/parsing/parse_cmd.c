@@ -39,6 +39,7 @@ static t_redirs	*new_redir(t_token_type type, char *target)
 int	add_redir(t_redirs **list, t_token_type type, char *target)
 {
 	t_redirs	*r;
+	t_redirs	*cur;
 
 	if (!list || !target)
 		return (1);
@@ -50,8 +51,10 @@ int	add_redir(t_redirs **list, t_token_type type, char *target)
 		*list = r;
 		return (0);
 	}
-	r->next = *list;
-	*list = r;
+	cur = *list;
+	while (cur->next)
+		cur = cur->next;
+	cur->next = r;
 	return (0);
 }
 
