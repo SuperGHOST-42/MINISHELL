@@ -108,6 +108,7 @@ int		status_to_exit_code(int status);
 int		is_builtin(t_cmd *cmd);
 char	**env_to_envp(t_env *env);
 int		apply_redirs(t_redirs *redirs);
+int		prepare_heredoc(t_cmd *cmds, t_shell *shell);
 
 void 	error_exit(char *msg);
 char	*ft_readline(void);

@@ -5,6 +5,11 @@ static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd)
 		return ;
+	if (prepare_heredoc(cmd, shell))
+	{
+		shell->last_status = 1;
+		return ;
+	}
 	if (cmd->next != NULL)
 		exec_pipeline(cmd, shell);
 	else if (is_builtin(cmd) && is_parent_needed(cmd))

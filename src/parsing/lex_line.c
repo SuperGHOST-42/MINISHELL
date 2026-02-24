@@ -35,6 +35,8 @@ t_cmd	*parse(t_shell *shell, char *line)
 		return (shell->last_status = 2, NULL);
 	if (syntax_check(tokens))
 		return (free_tokens(tokens), shell->last_status = 2, NULL);
+	if (expand_tokens(shell, tokens))
+		return (free_tokens(tokens), shell->last_status = 1, NULL);
 	cmds = parse_tokens_to_cmds(tokens);
 	free_tokens(tokens);
 	set_builtin_flags(cmds);

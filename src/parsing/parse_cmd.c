@@ -13,7 +13,7 @@
 #include "../../includes/minishell.h"
 #include "../../includes/minishell_parse.h"
 
-static t_redirs	*new_redir(t_token_type type, char *target)
+static t_redirs	*new_redir(t_token_type type, char *target, int expand)
 {
 	t_redirs	*r;
 
@@ -27,23 +27,20 @@ static t_redirs	*new_redir(t_token_type type, char *target)
 		free(r);
 		return (NULL);
 	}
-	if (type == R_HEREDOC)
-		r->expand = 0;
-	else
-		r->expand = 1;
+	r->expand = expand;
 	r->heredoc_fd = -1;
 	r->next = NULL;
 	return (r);
 }
 
-int	add_redir(t_redirs **list, t_token_type type, char *target)
+int	add_redir(t_redirs **list, t_token_type type, char *target, int expand)
 {
 	t_redirs	*r;
 	t_redirs	*cur;
 
 	if (!list || !target)
 		return (1);
-	r = new_redir(type, target);
+	r = new_redir(type, target, expand);
 	if (!r)
 		return (1);
 	if (!*list)
@@ -58,19 +55,22 @@ int	add_redir(t_redirs **list, t_token_type type, char *target)
 	return (0);
 }
 
-static int	read_redir_target(t_token **tokens, char **target)
+static int	read_redir_target(t_token **tokens, char **target, int *quoted)
 {
 	char	*joined;
 	char	*tmp;
 
 	if (!*tokens || (*tokens)->type != WORD)
 		return (1);
+	*quoted = ((*tokens)->quoted || (*tokens)->squoted || (*tokens)->dquoted);
 	joined = ft_strdup((*tokens)->value);
 	if (!joined)
 		return (1);
 	*tokens = (*tokens)->next;
 	while (*tokens && (*tokens)->type == WORD && !(*tokens)->preceded_by_space)
 	{
+		*quoted |= ((*tokens)->quoted || (*tokens)->squoted
+				|| (*tokens)->dquoted);
 		tmp = joined;
 		joined = ft_strjoin(tmp, (*tokens)->value);
 		free(tmp);
@@ -85,6 +85,7 @@ static int	read_redir_target(t_token **tokens, char **target)
 static int	parse_token(t_cmd *cmd, t_token **tokens)
 {
 	char			*target;
+	int				quoted;
 	t_token_type	type;
 
 	if ((*tokens)->type == WORD)
@@ -96,9 +97,9 @@ static int	parse_token(t_cmd *cmd, t_token **tokens)
 	}
 	type = (*tokens)->type;
 	*tokens = (*tokens)->next;
-	if (read_redir_target(tokens, &target))
+	if (read_redir_target(tokens, &target, &quoted))
 		return (1);
-	if (add_redir(&cmd->redirs, type, target))
+	if (add_redir(&cmd->redirs, type, target, !(type == R_HEREDOC && quoted)))
 		return (free(target), 1);
 	free(target);
 	return (0);
