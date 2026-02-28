@@ -1,7 +1,7 @@
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Wextra #-Werror
+CFLAGS = -Wall -Wextra -Werror
 CFLAGS += -Iincludes -I$(LIBFT_DIR)
 CFLAGS += -I"$(shell brew --prefix readline)/include"
 
@@ -26,14 +26,17 @@ SRCS = src/execution/env_exec.c \
 	src/execution/builtin_export_unset.c \
 	src/execution/builtin_exit.c \
 	src/execution/builtins2.c \
+	src/execution/exec_external.c \
 	src/execution/execute_builtin.c \
 	src/execution/redirections.c \
 	src/execution/heredoc.c \
+	src/execution/signals.c \
 	src/parsing/exit.c \
 	src/parsing/lex_line.c \
 	src/parsing/expand_tokens.c \
 	src/parsing/parse_cmd.c \
 	src/parsing/parse_words.c \
+	src/parsing/parse_words2.c \
 	src/parsing/syntax_checker.c \
 	src/parsing/token.c \
 	src/parsing/cmd_utils.c \

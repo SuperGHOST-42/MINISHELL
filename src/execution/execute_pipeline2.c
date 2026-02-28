@@ -22,31 +22,6 @@ void	refresh_fds(int *prev_read, int fd[2], int has_next)
 		close_fd(fd[0]);
 }
 
-static void	run_external(t_cmd *cmd, t_shell *shell)
-{
-	char	*path;
-	char	**envp;
-
-	envp = env_to_envp(shell->env);
-	if (!envp)
-		exit(1);
-	path = resolve_path(shell->env, cmd->args[0]);
-	if (!path)
-	{
-		if (ft_strchr(cmd->args[0], '/'))
-			perror(cmd->args[0]);
-		else
-			dprintf(2, "minishell: %s: command not found\n", cmd->args[0]);
-		free_envp(envp);
-		exit(127);
-	}
-	execve(path, cmd->args, envp);
-	perror(cmd->args[0]);
-	free(path);
-	free_envp(envp);
-	exit((errno == ENOENT) + 126);
-}
-
 static void	run_pipeline_child(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd)
@@ -57,7 +32,7 @@ static void	run_pipeline_child(t_cmd *cmd, t_shell *shell)
 		exit(0);
 	if (cmd->builtin != BI_NONE)
 		exit(exec_builtin(cmd, shell));
-	run_external(cmd, shell);
+	exec_external_cmd(cmd, shell);
 }
 
 pid_t	open_process(t_cmd *cur, t_shell *shell, int prev_read, int fd[2])
@@ -73,6 +48,7 @@ pid_t	open_process(t_cmd *cur, t_shell *shell, int prev_read, int fd[2])
 	}
 	if (pid == 0)
 	{
+		setup_child_signals();
 		if (dup_prepare(fd, prev_read, (cur->next != NULL)) < 0)
 			exit(1);
 		run_pipeline_child(cur, shell);

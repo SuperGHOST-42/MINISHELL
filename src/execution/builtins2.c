@@ -6,7 +6,7 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:55:00 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/23 18:12:28 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/02/26 14:21:16 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,10 @@ int	ft_cd(t_shell *shell, char **args)
 	if (!shell || !args)
 		return (1);
 	if (args[1] && args[2])
-		return (ft_putendl_fd("minishell: cd: too many arguments", 2), 1);
+	{
+		//return (ft_putendl_fd("minishell: cd: too many arguments", 2), 0);
+		return (ft_putendl_fd("", 2), 0);
+	}
 	path = args[1];
 	if (!path)
 		path = get_env_exec(shell->env, "HOME");

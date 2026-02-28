@@ -16,6 +16,24 @@ static void	restore_stdio(int saved_in, int saved_out)
 	}
 }
 
+static int	backup_stdio(int *saved_in, int *saved_out)
+{
+	*saved_in = dup(STDIN_FILENO);
+	if (*saved_in < 0)
+	{
+		perror("dup");
+		return (1);
+	}
+	*saved_out = dup(STDOUT_FILENO);
+	if (*saved_out < 0)
+	{
+		close(*saved_in);
+		perror("dup");
+		return (1);
+	}
+	return (0);
+}
+
 int	exec_builtin(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd)
@@ -45,19 +63,8 @@ int	exec_builtin_parent(t_cmd *cmd, t_shell *shell)
 
 	if (!cmd)
 		return (1);
-	saved_in = dup(STDIN_FILENO);
-	if (saved_in < 0)
-	{
-		perror("dup");
+	if (backup_stdio(&saved_in, &saved_out))
 		return (1);
-	}
-	saved_out = dup(STDOUT_FILENO);
-	if (saved_out < 0)
-	{
-		close(saved_in);
-		perror("dup");
-		return (1);
-	}
 	if (apply_redirs(cmd->redirs))
 		status = 1;
 	else

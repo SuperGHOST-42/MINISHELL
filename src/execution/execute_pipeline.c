@@ -22,29 +22,25 @@ void	close_fd(int fd)
 
 int	dup_prepare(int fd[2], int prev_fd, int has_next)
 {
-	if (prev_fd >= 0)
+	if (prev_fd >= 0 && dup2(prev_fd, STDIN_FILENO) < 0)
 	{
-		if (dup2(prev_fd, STDIN_FILENO) < 0)
-		{
-			close_fd(fd[0]);
-			close_fd(fd[1]);
-			perror("dup2 stdin");
-			return (-1);
-		}
-		close_fd(prev_fd);
-	}
-	if (has_next)
-	{
-		if (dup2(fd[1], STDOUT_FILENO) < 0)
-		{
-			close_fd(fd[0]);
-			close_fd(fd[1]);
-			perror("dup2 stdout");
-			return (-1);
-		}
 		close_fd(fd[0]);
 		close_fd(fd[1]);
+		perror("dup2 stdin");
+		return (-1);
 	}
+	close_fd(prev_fd);
+	if (!has_next)
+		return (0);
+	if (dup2(fd[1], STDOUT_FILENO) < 0)
+	{
+		close_fd(fd[0]);
+		close_fd(fd[1]);
+		perror("dup2 stdout");
+		return (-1);
+	}
+	close_fd(fd[0]);
+	close_fd(fd[1]);
 	return (0);
 }
 
@@ -57,6 +53,7 @@ void	exec_pipeline(t_cmd *cmd, t_shell *shell)
 
 	prev_fd = -1;
 	cur = cmd;
+	setup_wait_signals();
 	while (cur)
 	{
 		if (pipe_prepare(fd, (cur->next != NULL)) < 0)
@@ -70,4 +67,5 @@ void	exec_pipeline(t_cmd *cmd, t_shell *shell)
 	}
 	close_fd(prev_fd);
 	wait_pipeline(cmd, shell);
+	setup_interactive_signals();
 }

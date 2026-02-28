@@ -3,11 +3,14 @@
 
 static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 {
+	int	hd_status;
+
 	if (!cmd)
 		return ;
-	if (prepare_heredoc(cmd, shell))
+	hd_status = prepare_heredoc(cmd, shell);
+	if (hd_status)
 	{
-		shell->last_status = 1;
+		shell->last_status = hd_status;
 		return ;
 	}
 	if (cmd->next != NULL)
@@ -18,32 +21,45 @@ static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 		exec_child(cmd, shell);
 }
 
+static void	handle_input_line(t_shell *shell, char *line)
+{
+	t_cmd	*cmd;
+
+	if (*line == '\0')
+	{
+		free(line);
+		return ;
+	}
+	add_history(line);
+	cmd = parse(shell, line);
+	free(line);
+	if (!cmd)
+		return ;
+	exec_cmd(cmd, shell);
+	free_cmds(cmd);
+}
+
 static void	init_shell(t_shell *shell)
 {
 	char	*line;
-	t_cmd	*cmd;
 
+	setup_interactive_signals();
 	while (!shell->should_exit)
 	{
 		line = ft_readline();
+		if (consume_sigint())
+		{
+			shell->last_status = 130;
+			free(line);
+			continue ;
+		}
 		if (!line)
 		{
 			shell->should_exit = 1;
 			shell->exit_code = shell->last_status;
 			break ;
 		}
-		if (*line == '\0')
-		{
-			free(line);
-			continue ;
-		}
-		add_history(line);
-		cmd = parse(shell, line);
-		free(line);
-		if (!cmd)
-			continue ;
-		exec_cmd(cmd, shell);
-		free_cmds(cmd);
+		handle_input_line(shell, line);
 	}
 }
 

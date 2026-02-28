@@ -59,16 +59,18 @@ static int	fill_heredoc(t_redirs *redir, t_shell *shell)
 
 	if (pipe(pfd) < 0)
 		return (perror("pipe"), 1);
-	while ((line = readline("> ")))
+	while (1)
 	{
-		if (ft_strncmp(line, redir->target, ft_strlen(redir->target) + 1) == 0)
-		{
-			free(line);
+		line = readline("> ");
+		if (consume_sigint())
+			return (free(line), close(pfd[0]), close(pfd[1]), 130);
+		if (!line || ft_strncmp(line, redir->target,
+				ft_strlen(redir->target) + 1) == 0)
 			break ;
-		}
 		if (process_line(redir, shell, pfd[1], line))
 			return (close(pfd[0]), close(pfd[1]), 1);
 	}
+	free(line);
 	if (redir->heredoc_fd >= 0)
 		close(redir->heredoc_fd);
 	close(pfd[1]);
@@ -79,14 +81,19 @@ static int	fill_heredoc(t_redirs *redir, t_shell *shell)
 int	prepare_heredoc(t_cmd *cmds, t_shell *shell)
 {
 	t_redirs	*redir;
+	int			status;
 
 	while (cmds)
 	{
 		redir = cmds->redirs;
 		while (redir)
 		{
-			if (redir->type == R_HEREDOC && fill_heredoc(redir, shell))
-				return (1);
+			if (redir->type == R_HEREDOC)
+			{
+				status = fill_heredoc(redir, shell);
+				if (status)
+					return (status);
+			}
 			redir = redir->next;
 		}
 		cmds = cmds->next;

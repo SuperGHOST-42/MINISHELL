@@ -59,7 +59,6 @@ static int	read_redir_target(t_token **tokens, char **target, int *quoted)
 {
 	char	*joined;
 	char	*tmp;
-
 	if (!*tokens || (*tokens)->type != WORD)
 		return (1);
 	*quoted = ((*tokens)->quoted || (*tokens)->squoted || (*tokens)->dquoted);
@@ -107,10 +106,9 @@ static int	parse_token(t_cmd *cmd, t_token **tokens)
 
 t_cmd	*parse_tokens_to_cmds(t_token *tokens)
 {
-	t_cmd	*head;
-	t_cmd	*cur;
-	head = NULL;
-	cur = NULL;
+	t_cmd	*head = NULL;
+	t_cmd	*cur = NULL;
+
 	while (tokens)
 	{
 		if (tokens->type == PIPE)

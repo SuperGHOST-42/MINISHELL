@@ -109,6 +109,10 @@ int		is_builtin(t_cmd *cmd);
 char	**env_to_envp(t_env *env);
 int		apply_redirs(t_redirs *redirs);
 int		prepare_heredoc(t_cmd *cmds, t_shell *shell);
+void	setup_interactive_signals(void);
+void	setup_wait_signals(void);
+void	setup_child_signals(void);
+int		consume_sigint(void);
 
 void 	error_exit(char *msg);
 char	*ft_readline(void);
@@ -117,6 +121,7 @@ char	*resolve_path(t_env *env, char *cmd);
 
 void	exec_child(t_cmd *cmd, t_shell *shell);
 void	exec_pipeline(t_cmd *cmds, t_shell *shell);
+void	exec_external_cmd(t_cmd *cmd, t_shell *shell);
 
 int		ft_echo(char **args);
 int		ft_cd(t_shell *shell, char **args);

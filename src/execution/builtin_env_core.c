@@ -57,7 +57,10 @@ int	bt_append_env(t_env **env, t_env *new)
 	if (!env || !new)
 		return (1);
 	if (!*env)
-		return (*env = new, 0);
+	{
+		*env = new;
+		return (0);
+	}
 	cur = *env;
 	while (cur->next)
 		cur = cur->next;
