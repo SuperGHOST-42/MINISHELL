@@ -34,11 +34,11 @@ void	add_cmd(t_cmd **list, t_cmd *cmd)
 	t_cmd	*tmp;
 
 	if (!list || !cmd)
-		return;
+		return ;
 	if (!*list)
 	{
 		*list = cmd;
-		return;
+		return ;
 	}
 	tmp = *list;
 	while (tmp->next)
@@ -46,13 +46,10 @@ void	add_cmd(t_cmd **list, t_cmd *cmd)
 	tmp->next = cmd;
 }
 
-void	free_cmd(t_cmd *cmd)
+static void handle_args(t_cmd *cmd)
 {
-	t_redirs	*tmp;
-	int			i;
+	int		i;
 
-	if (!cmd)
-		return;
 	if (cmd->args)
 	{
 		i = 0;
@@ -73,6 +70,15 @@ void	free_cmd(t_cmd *cmd)
 		}
 		free(cmd->args_quote);
 	}
+}
+
+void	free_cmd(t_cmd *cmd)
+{
+	t_redirs	*tmp;
+
+	if (!cmd)
+		return ;
+	handle_args(cmd);
 	while (cmd->redirs)
 	{
 		tmp = cmd->redirs;

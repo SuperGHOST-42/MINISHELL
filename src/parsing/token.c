@@ -35,11 +35,11 @@ void	token_add_back(t_token **lst, t_token *node)
 	t_token	*tmp;
 
 	if (!lst || !node)
-		return;
+		return ;
 	if (!*lst)
 	{
 		*lst = node;
-		return;
+		return ;
 	}
 	tmp = *lst;
 	while (tmp->next)
@@ -58,7 +58,7 @@ void	handle_word(t_token **tokens, char *line, int *i, int preceded_by_space)
 		(*i)++;
 	tok = new_token(WORD, ft_substr(line, start, *i - start));
 	if (!tok)
-		return;
+		return ;
 	tok->preceded_by_space = preceded_by_space;
 	token_add_back(tokens, tok);
 }

@@ -6,7 +6,7 @@
 /*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:50:27 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/09 18:52:30 by hgutterr         ###   ########.fr       */
+/*   Updated: 2026/03/04 15:34:33 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static int	read_redir_target(t_token **tokens, char **target, int *quoted)
 {
 	char	*joined;
 	char	*tmp;
+
 	if (!*tokens || (*tokens)->type != WORD)
 		return (1);
 	*quoted = ((*tokens)->quoted || (*tokens)->squoted || (*tokens)->dquoted);
@@ -106,9 +107,11 @@ static int	parse_token(t_cmd *cmd, t_token **tokens)
 
 t_cmd	*parse_tokens_to_cmds(t_token *tokens)
 {
-	t_cmd	*head = NULL;
-	t_cmd	*cur = NULL;
+	t_cmd	*head;
+	t_cmd	*cur;
 
+	head = NULL;
+	cur = NULL;
 	while (tokens)
 	{
 		if (tokens->type == PIPE)

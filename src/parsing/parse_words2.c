@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_words2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ghost <ghost@student.42lisboa.com>         +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 20:00:00 by ghost             #+#    #+#             */
-/*   Updated: 2026/02/26 20:00:00 by ghost            ###   ########.fr       */
+/*   Updated: 2026/03/04 15:29:43 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	process_word_sequence(t_cmd *cmd, t_token **tokens)
 	while (*tokens && (*tokens)->type == WORD)
 	{
 		if ((*tokens)->preceded_by_space && flush_concat(cmd, &concat,
-					&dquoted, &squoted))
+				&dquoted, &squoted))
 			return (1);
 		if (handle_word_piece(*tokens, &concat))
 			return (1);
