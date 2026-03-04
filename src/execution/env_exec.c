@@ -61,7 +61,7 @@ static void	env_add_back(t_env **env, t_env *new)
 		return ;
 	}
 	current = *env;
-	while (current->next)
+	while (current && current->next)
 		current = current->next;
 	current->next = new;
 }

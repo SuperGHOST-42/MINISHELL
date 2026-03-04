@@ -15,7 +15,7 @@ static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 	}
 	if (cmd->next != NULL)
 		exec_pipeline(cmd, shell);
-	else if (is_builtin(cmd) && is_parent_needed(cmd))
+	else if (is_builtin(cmd))
 		shell->last_status = exec_builtin_parent(cmd, shell);
 	else
 		exec_child(cmd, shell);
@@ -70,7 +70,7 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	if (!envp)
+	if (!envp || !(*envp))
 		error_exit("envp");
 	shell = malloc(sizeof(t_shell));
 	if (!shell)
