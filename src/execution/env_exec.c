@@ -12,6 +12,23 @@
 
 #include "../../includes/minishell.h"
 
+static int	env_set_value(t_env *new, char *value)
+{
+	if (value != NULL)
+	{
+		new->value = ft_strdup(value);
+		if (!new->value)
+			return (0);
+		new->has_value = 1;
+	}
+	else
+	{
+		new->value = NULL;
+		new->has_value = 0;
+	}
+	return (1);
+}
+
 static t_env	*env_new(char *key, char *value)
 {
 	t_env	*new;
@@ -21,25 +38,12 @@ static t_env	*env_new(char *key, char *value)
 		return (NULL);
 	new->key = ft_strdup(key);
 	if (!new->key)
+		return (free(new), NULL);
+	if (!env_set_value(new, value))
 	{
+		free(new->key);
 		free(new);
 		return (NULL);
-	}
-	if (value)
-	{
-		new->value = ft_strdup(value);
-		if (!new->value)
-		{
-			free(new->key);
-			free(new);
-			return (NULL);
-		}
-		new->has_value = 1;
-	}
-	else
-	{
-		new->value = NULL;
-		new->has_value = 0;
 	}
 	new->next = NULL;
 	return (new);
@@ -51,7 +55,7 @@ static void	env_add_back(t_env **env, t_env *new)
 
 	if (!env || !new)
 		return ;
-	if (!(*env))
+	if (*env == NULL)
 	{
 		*env = new;
 		return ;
