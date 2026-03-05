@@ -58,7 +58,7 @@ int	ft_echo(char **args)
 	int	nl;
 
 	if (!args || !args[0])
-		return (printf("\n"), 0);
+		return (ft_putstr_fd("\n", 1), 0);
 	i = 1;
 	nl = 1;
 	while (args[i] && is_echo_n(args[i]))
@@ -68,13 +68,13 @@ int	ft_echo(char **args)
 	}
 	while (args[i])
 	{
-		printf("%s", args[i]);
+		ft_putstr_fd(args[i], 1);
 		if (args[i + 1])
-			printf(" ");
+			ft_putstr_fd(" ", 1);
 		i++;
 	}
 	if (nl)
-		printf("\n");
+		ft_putstr_fd("\n", 1);
 	return (0);
 }
 
@@ -85,10 +85,7 @@ int	ft_cd(t_shell *shell, char **args)
 	if (!shell || !args)
 		return (1);
 	if (args[1] && args[2])
-	{
-		//return (ft_putendl_fd("minishell: cd: too many arguments", 2), 0);
 		return (ft_putendl_fd("", 2), 0);
-	}
 	path = args[1];
 	if (!path)
 		path = get_env_exec(shell->env, "HOME");
@@ -102,7 +99,7 @@ int	ft_pwd(void)
 	char	cwd[1024];
 
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("%s\n", cwd);
+		ft_putendl_fd(cwd, 1);
 	else
 	{
 		perror("getcwd() error");

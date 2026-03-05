@@ -1,5 +1,6 @@
 #include "../../includes/minishell.h"
 #include "../../includes/minishell_parse.h"
+#include <termios.h>
 
 static int	write_line(int fd, char *line)
 {
@@ -52,28 +53,99 @@ static int	process_line(t_redirs *redir, t_shell *shell, int fd, char *line)
 	return (0);
 }
 
-static int	fill_heredoc(t_redirs *redir, t_shell *shell)
+static void	heredoc_child(t_redirs *redir, t_shell *shell, int write_fd)
 {
-	int		pfd[2];
 	char	*line;
 
-	if (pipe(pfd) < 0)
-		return (perror("pipe"), 1);
 	while (1)
 	{
 		line = readline("> ");
-		if (consume_sigint())
-			return (free(line), close(pfd[0]), close(pfd[1]), 130);
 		if (!line || ft_strncmp(line, redir->target,
 				ft_strlen(redir->target) + 1) == 0)
+		{
+			free(line);
 			break ;
-		if (process_line(redir, shell, pfd[1], line))
-			return (close(pfd[0]), close(pfd[1]), 1);
+		}
+		if (process_line(redir, shell, write_fd, line))
+		{
+			close(write_fd);
+			exit(1);
+		}
 	}
-	free(line);
+	close(write_fd);
+	exit(0);
+}
+
+static void	reset_readline_state(void)
+{
+	setup_interactive_signals();
+}
+
+static int	wait_status(int status, int read_fd)
+{
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		return (write(STDOUT_FILENO, "\n", 1), close(read_fd), 130);
+	if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+		return (write(STDOUT_FILENO, "\n", 1), close(read_fd), 130);
+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+		return (close(read_fd), 1);
+	return (0);
+}
+
+static int	wait_heredoc(pid_t pid, int read_fd,
+		struct termios *saved_term, int has_term)
+{
+	int	status;
+
+	setup_wait_signals();
+	if (waitpid(pid, &status, 0) < 0)
+	{
+		reset_readline_state();
+		if (has_term)
+			tcsetattr(STDIN_FILENO, TCSANOW, saved_term);
+		close(read_fd);
+		perror("waitpid");
+		return (1);
+	}
+	reset_readline_state();
+	if (has_term)
+		tcsetattr(STDIN_FILENO, TCSANOW, saved_term);
+	return (wait_status(status, read_fd));
+}
+
+static pid_t	spawn_heredoc(t_redirs *redir, t_shell *shell, int pfd[2])
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		setup_child_signals();
+		close(pfd[0]);
+		heredoc_child(redir, shell, pfd[1]);
+	}
+	return (pid);
+}
+
+static int	fill_heredoc(t_redirs *redir, t_shell *shell)
+{
+	int				pfd[2];
+	pid_t			pid;
+	int				status;
+	struct termios	saved_term;
+	int				has_term;
+	has_term = (tcgetattr(STDIN_FILENO, &saved_term) == 0);
+	if (pipe(pfd) < 0)
+		return (perror("pipe"), 1);
+	pid = spawn_heredoc(redir, shell, pfd);
+	if (pid < 0)
+		return (close(pfd[0]), close(pfd[1]), perror("fork"), 1);
+	close(pfd[1]);
+	status = wait_heredoc(pid, pfd[0], &saved_term, has_term);
+	if (status)
+		return (status);
 	if (redir->heredoc_fd >= 0)
 		close(redir->heredoc_fd);
-	close(pfd[1]);
 	redir->heredoc_fd = pfd[0];
 	return (0);
 }

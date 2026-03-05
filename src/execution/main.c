@@ -42,16 +42,21 @@ static void	handle_input_line(t_shell *shell, char *line)
 static void	init_shell(t_shell *shell)
 {
 	char	*line;
+	int		interrupted;
 
 	setup_interactive_signals();
 	while (!shell->should_exit)
 	{
 		line = ft_readline();
-		if (consume_sigint())
+		interrupted = consume_sigint();
+		if (interrupted)
 		{
 			shell->last_status = 130;
-			free(line);
-			continue ;
+			if (!line || *line == '\0')
+			{
+				free(line);
+				continue ;
+			}
 		}
 		if (!line)
 		{
