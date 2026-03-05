@@ -9,10 +9,7 @@ static void	handle_sigint(int signo)
 	write(STDOUT_FILENO, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
-	if (!rl_prompt || !(rl_prompt[0] == '>' && rl_prompt[1] == ' '
-			&& rl_prompt[2] == '\0'))
-		rl_redisplay();
-	rl_done = 1;
+	rl_redisplay();
 }
 
 void	setup_interactive_signals(void)

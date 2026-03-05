@@ -93,12 +93,36 @@ static int	expand_word(t_shell *shell, char *word, char **expanded)
 	return (0);
 }
 
+static int	is_heredoc_delim_token(t_token *tok, int *in_delim)
+{
+	if (*in_delim && tok->type == WORD)
+	{
+		if (!tok->next || tok->next->type != WORD || tok->next->preceded_by_space)
+			*in_delim = 0;
+		return (1);
+	}
+	if (tok->type == R_HEREDOC)
+	{
+		*in_delim = 1;
+		return (1);
+	}
+	*in_delim = 0;
+	return (0);
+}
+
 int	expand_tokens(t_shell *shell, t_token *tokens)
 {
 	char	*new_value;
+	int		in_delim;
 
+	in_delim = 0;
 	while (tokens)
 	{
+		if (is_heredoc_delim_token(tokens, &in_delim))
+		{
+			tokens = tokens->next;
+			continue ;
+		}
 		if (tokens->type == WORD && !tokens->squoted)
 		{
 			if (expand_word(shell, tokens->value, &new_value))

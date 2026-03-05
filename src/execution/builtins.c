@@ -52,7 +52,11 @@ int	ft_env(t_shell *shell, char **args)
 	while (current)
 	{
 		if (current->has_value)
-			printf("%s=%s\n", current->key, current->value);
+		{
+			ft_putstr_fd(current->key, 1);
+			ft_putstr_fd("=", 1);
+			ft_putendl_fd(current->value, 1);
+		}
 		current = current->next;
 	}
 	return (0);

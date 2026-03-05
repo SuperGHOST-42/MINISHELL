@@ -7,10 +7,17 @@ char	*ft_readline(void)
 	char	*line;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		rl_already_prompted = 0;
 		return (readline(" > "));
+	}
 	prompt = ft_strjoin(cwd, " > ");
 	if (!prompt)
+	{
+		rl_already_prompted = 0;
 		return (readline(" > "));
+	}
+	rl_already_prompted = 0;
 	line = readline(prompt);
 	free(prompt);
 	return (line);

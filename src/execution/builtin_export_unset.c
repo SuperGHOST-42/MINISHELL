@@ -17,9 +17,18 @@ static void	print_export_list(t_env *env)
 	while (env)
 	{
 		if (env->has_value)
-			printf("declare -x %s=\"%s\"\n", env->key, env->value);
+		{
+			ft_putstr_fd("declare -x ", 1);
+			ft_putstr_fd(env->key, 1);
+			ft_putstr_fd("=\"", 1);
+			ft_putstr_fd(env->value, 1);
+			ft_putstr_fd("\"\n", 1);
+		}
 		else
-			printf("declare -x %s\n", env->key);
+		{
+			ft_putstr_fd("declare -x ", 1);
+			ft_putendl_fd(env->key, 1);
+		}
 		env = env->next;
 	}
 }
