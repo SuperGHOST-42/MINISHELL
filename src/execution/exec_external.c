@@ -1,4 +1,5 @@
 #include "../../includes/minishell.h"
+#include "../../includes/minishell_parse.h"
 
 static int	is_directory(char *path)
 {
@@ -18,13 +19,16 @@ static void	print_not_found(char *cmd)
 	ft_putendl_fd(": command not found", 2);
 }
 
-static void	exit_not_found(t_cmd *cmd, char **envp)
+static void	exit_not_found(t_cmd *cmd, char **envp, t_shell *shell)
 {
 	if (ft_strchr(cmd->args[0], '/'))
 		perror(cmd->args[0]);
 	else
 		print_not_found(cmd->args[0]);
+	free_cmd(cmd);
 	free_envp(envp);
+	free_env_exec(shell->env);
+	free(shell);
 	exit(127);
 }
 
@@ -48,10 +52,11 @@ void	exec_external_cmd(t_cmd *cmd, t_shell *shell)
 		exit(1);
 	path = resolve_path(shell->env, cmd->args[0]);
 	if (!path)
-		exit_not_found(cmd, envp);
+		exit_not_found(cmd, envp, shell);
 	if (is_directory(path))
 		exit_is_directory(cmd->args[0], path, envp);
 	execve(path, cmd->args, envp);
+	free_cmd(cmd);
 	perror(cmd->args[0]);
 	free(path);
 	free_envp(envp);

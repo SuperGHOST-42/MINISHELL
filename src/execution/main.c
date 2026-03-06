@@ -39,10 +39,9 @@ static void	handle_input_line(t_shell *shell, char *line)
 	free_cmds(cmd);
 }
 
-static void	init_shell(t_shell *shell)
+static void	init_shell(t_shell *shell, int interrupted)
 {
 	char	*line;
-	int		interrupted;
 
 	setup_interactive_signals();
 	while (!shell->should_exit)
@@ -60,6 +59,7 @@ static void	init_shell(t_shell *shell)
 		}
 		if (!line)
 		{
+			ft_putendl_fd("exit", 1);
 			shell->should_exit = 1;
 			shell->exit_code = shell->last_status;
 			break ;
@@ -72,7 +72,9 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_shell	*shell;
 	int		exit_code;
+	int		interrupted;
 
+	interrupted = 0;
 	(void)argc;
 	(void)argv;
 	if (!envp)
@@ -87,7 +89,7 @@ int	main(int argc, char **argv, char **envp)
 		free(shell);
 		error_exit("env_init");
 	}
-	init_shell(shell);
+	init_shell(shell, interrupted);
 	exit_code = shell->exit_code;
 	free_env_exec(shell->env);
 	free(shell);
