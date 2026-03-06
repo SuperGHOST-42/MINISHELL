@@ -25,7 +25,7 @@ static void	exit_not_found(t_cmd *cmd, char **envp, t_shell *shell)
 		perror(cmd->args[0]);
 	else
 		print_not_found(cmd->args[0]);
-	free_cmd(cmd);
+	free_cmds(cmd);
 	free_envp(envp);
 	free_env_exec(shell->env);
 	free(shell);
@@ -56,9 +56,11 @@ void	exec_external_cmd(t_cmd *cmd, t_shell *shell)
 	if (is_directory(path))
 		exit_is_directory(cmd->args[0], path, envp);
 	execve(path, cmd->args, envp);
-	free_cmd(cmd);
+	free_cmds(cmd);
 	perror(cmd->args[0]);
 	free(path);
 	free_envp(envp);
+	free_env_exec(shell->env);
+	free(shell);
 	exit((errno == ENOENT) + 126);
 }

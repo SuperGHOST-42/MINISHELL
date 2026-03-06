@@ -96,3 +96,4 @@ void	free_cmds(t_cmd *cmds)
 		free_cmd(tmp);
 	}
 }
+

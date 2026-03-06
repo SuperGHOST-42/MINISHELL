@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ghost <ghost@student.42lisboa.com>         +#+  +:+       +#+        */
+/*   By: hgutterr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 20:20:00 by ghost             #+#    #+#             */
-/*   Updated: 2026/02/19 20:20:00 by ghost            ###   ########.fr       */
+/*   Updated: 2026/03/06 22:57:20 by hgutterr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/execute_pipeline_utils.h"
+#include "../../includes/minishell_parse.h"
 
 void	refresh_fds(int *prev_read, int fd[2], int has_next)
 {
@@ -22,22 +23,24 @@ void	refresh_fds(int *prev_read, int fd[2], int has_next)
 		close_fd(fd[0]);
 }
 
-static void	run_pipeline_child(t_cmd *cmd, t_shell *shell)
+int		run_pipeline_child(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd)
-		exit(1);
+		return(1);
 	if (apply_redirs(cmd->redirs))
-		exit(1);
+		return(1);
 	if (!cmd->args || !cmd->args[0])
-		exit(0);
+		return(0);
 	if (cmd->builtin != BI_NONE)
-		exit(exec_builtin(cmd, shell));
+		return(exec_builtin(cmd, shell));
 	exec_external_cmd(cmd, shell);
+	return(0);
 }
 
 pid_t	open_process(t_cmd *cur, t_shell *shell, int prev_read, int fd[2])
 {
 	pid_t	pid;
+	int		r;
 
 	pid = fork();
 	if (pid < 0)
@@ -51,7 +54,11 @@ pid_t	open_process(t_cmd *cur, t_shell *shell, int prev_read, int fd[2])
 		setup_child_signals();
 		if (dup_prepare(fd, prev_read, (cur->next != NULL)) < 0)
 			exit(1);
-		run_pipeline_child(cur, shell);
+		r = run_pipeline_child(cur, shell);
+		free_cmds(cur);
+		free_env_exec(shell->env);
+		free(shell);
+		exit(r);
 	}
 	return (pid);
 }

@@ -53,7 +53,7 @@ static int	process_line(t_redirs *redir, t_shell *shell, int fd, char *line)
 	return (0);
 }
 
-static void	heredoc_child(t_redirs *redir, t_shell *shell, int write_fd)
+int		heredoc_child(t_redirs *redir, t_shell *shell, int write_fd)
 {
 	char	*line;
 
@@ -69,11 +69,11 @@ static void	heredoc_child(t_redirs *redir, t_shell *shell, int write_fd)
 		if (process_line(redir, shell, write_fd, line))
 		{
 			close(write_fd);
-			exit(1);
+			return (1);
 		}
 	}
 	close(write_fd);
-	exit(0);
+	return (0);
 }
 
 static void	reset_readline_state(void)
@@ -113,21 +113,26 @@ static int	wait_heredoc(pid_t pid, int read_fd,
 	return (wait_status(status, read_fd));
 }
 
-static pid_t	spawn_heredoc(t_redirs *redir, t_shell *shell, int pfd[2])
+static pid_t	spawn_heredoc(t_redirs *redir, t_shell *shell, int pfd[2], t_cmd *cmds)
 {
 	pid_t	pid;
+	int r;
 
 	pid = fork();
 	if (pid == 0)
 	{
 		setup_child_signals();
 		close(pfd[0]);
-		heredoc_child(redir, shell, pfd[1]);
+		r = heredoc_child(redir, shell, pfd[1]);
+		free_cmds(cmds);
+		free_env_exec(shell->env);
+		free(shell);
+		exit(r);
 	}
 	return (pid);
 }
 
-static int	fill_heredoc(t_redirs *redir, t_shell *shell)
+static int	fill_heredoc(t_redirs *redir, t_shell *shell, t_cmd *cmds)
 {
 	int				pfd[2];
 	pid_t			pid;
@@ -137,7 +142,7 @@ static int	fill_heredoc(t_redirs *redir, t_shell *shell)
 	has_term = (tcgetattr(STDIN_FILENO, &saved_term) == 0);
 	if (pipe(pfd) < 0)
 		return (perror("pipe"), 1);
-	pid = spawn_heredoc(redir, shell, pfd);
+	pid = spawn_heredoc(redir, shell, pfd, cmds);
 	if (pid < 0)
 		return (close(pfd[0]), close(pfd[1]), perror("fork"), 1);
 	close(pfd[1]);
@@ -154,7 +159,7 @@ int	prepare_heredoc(t_cmd *cmds, t_shell *shell)
 {
 	t_redirs	*redir;
 	int			status;
-
+	
 	while (cmds)
 	{
 		redir = cmds->redirs;
@@ -162,7 +167,7 @@ int	prepare_heredoc(t_cmd *cmds, t_shell *shell)
 		{
 			if (redir->type == R_HEREDOC)
 			{
-				status = fill_heredoc(redir, shell);
+				status = fill_heredoc(redir, shell, cmds);
 				if (status)
 					return (status);
 			}

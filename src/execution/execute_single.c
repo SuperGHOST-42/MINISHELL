@@ -1,11 +1,14 @@
 #include "../../includes/minishell.h"
+#include "../../includes/minishell_parse.h"
 
-static void	run_child(t_cmd *cmd, t_shell *shell);
+
+int	run_child(t_cmd *cmd, t_shell *shell);
 
 void	exec_child(t_cmd *cmd, t_shell *shell)
 {
 	pid_t	pid;
 	int		status;
+	int		r;
 
 	pid = fork();
 	if (pid < 0)
@@ -13,7 +16,11 @@ void	exec_child(t_cmd *cmd, t_shell *shell)
 	if (pid == 0)
 	{
 		setup_child_signals();
-		run_child(cmd, shell);
+		r = run_child(cmd, shell);
+		free_cmds(cmd);
+		free_env_exec(shell->env);
+		free(shell);
+		exit(r);
 	}
 	setup_wait_signals();
 	if (waitpid(pid, &status, 0) < 0)
@@ -27,15 +34,16 @@ void	exec_child(t_cmd *cmd, t_shell *shell)
 	shell->last_status = status_to_exit_code(status);
 }
 
-static void	run_child(t_cmd *cmd, t_shell *shell)
+int	run_child(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd)
-		exit(1);
+		return(1);
 	if (apply_redirs(cmd->redirs))
-		exit(1);
+		return(1);
 	if (!cmd->args || !cmd->args[0])
-		exit(0);
+		return(0);
 	if (is_builtin(cmd))
-		exit(exec_builtin(cmd, shell));
+		return(exec_builtin(cmd, shell));
 	exec_external_cmd(cmd, shell);
+	return(0);
 }
