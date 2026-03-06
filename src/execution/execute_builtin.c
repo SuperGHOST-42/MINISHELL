@@ -68,7 +68,11 @@ int	exec_builtin_parent(t_cmd *cmd, t_shell *shell)
 	if (apply_redirs(cmd->redirs))
 		status = 1;
 	else
+	{
+		if (cmd->builtin == BI_EXIT && isatty(STDIN_FILENO))
+			ft_putendl_fd("exit", 2);
 		status = exec_builtin(cmd, shell);
+	}
 	restore_stdio(saved_in, saved_out);
 	return (status);
 }
