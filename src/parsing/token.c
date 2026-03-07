@@ -75,7 +75,10 @@ int	handle_quote(t_token **tokens, char *line, int *i, int preceded_by_space)
 	while (line[*i] && line[*i] != quote)
 		(*i)++;
 	if (line[*i] != quote)
+	{
+		ft_putendl_fd("minishell: syntax error: unclosed quote", 2);
 		return (1);
+	}
 	tok = new_token(WORD, ft_substr(line, start, *i - start));
 	if (!tok)
 		return (1);
@@ -156,7 +159,10 @@ t_token	*tokenization(char *line)
 		else if (ft_isquote(line[i]))
 		{
 			if (handle_quote(&tokens, line, &i, had_space))
+			{
+				free_tokens(tokens);
 				return (NULL);
+			}
 			had_space = 0;
 		}
 		else if (ft_isoperator(line[i]))

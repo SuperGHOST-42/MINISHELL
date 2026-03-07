@@ -40,16 +40,10 @@ static char	*join_kv(t_env *node)
 	return (line);
 }
 
-char	**env_to_envp(t_env *env)
+static int	fill_envp(char **envp, t_env *env)
 {
-	char	**envp;
-	int		i;
-	int		n;
+	int	i;
 
-	n = env_count(env);
-	envp = ft_calloc(n + 1, sizeof(char *));
-	if (!envp)
-		return (NULL);
 	i = 0;
 	while (env)
 	{
@@ -57,14 +51,25 @@ char	**env_to_envp(t_env *env)
 		{
 			envp[i] = join_kv(env);
 			if (!envp[i])
-			{
-				free_envp(envp);
-				return (NULL);
-			}
+				return (1);
 			i++;
 		}
 		env = env->next;
 	}
 	envp[i] = NULL;
+	return (0);
+}
+
+char	**env_to_envp(t_env *env)
+{
+	char	**envp;
+	int		n;
+
+	n = env_count(env);
+	envp = ft_calloc(n + 1, sizeof(char *));
+	if (!envp)
+		return (NULL);
+	if (fill_envp(envp, env))
+		return (free_envp(envp), NULL);
 	return (envp);
 }

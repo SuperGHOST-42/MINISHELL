@@ -77,6 +77,8 @@ void	free_cmd(t_cmd *cmd)
 	{
 		tmp = cmd->redirs;
 		cmd->redirs = cmd->redirs->next;
+		if (tmp->heredoc_fd >= 0)
+			close(tmp->heredoc_fd);
 		free(tmp->target);
 		free(tmp);
 	}
@@ -94,3 +96,4 @@ void	free_cmds(t_cmd *cmds)
 		free_cmd(tmp);
 	}
 }
+
