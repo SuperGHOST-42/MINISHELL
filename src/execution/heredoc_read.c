@@ -64,6 +64,32 @@ static int	process_line(t_redirs *redir, t_shell *shell, int fd, char *line)
 	return (0);
 }
 
+static int	handle_line_result(t_redirs *redir, t_shell *shell,
+		int write_fd, char *line)
+{
+	if (sigint_take())
+	{
+		free(line);
+		close(write_fd);
+		child_cleanup_exit(shell, 130);
+	}
+	if (!line)
+	{
+		return (1);
+	}
+	if (ft_strncmp(line, redir->target, ft_strlen(redir->target) + 1) == 0)
+	{
+		free(line);
+		return (1);
+	}
+	if (process_line(redir, shell, write_fd, line))
+	{
+		close(write_fd);
+		child_cleanup_exit(shell, 1);
+	}
+	return (0);
+}
+
 void	run_heredoc_child(t_redirs *redir, t_shell *shell, int write_fd)
 {
 	char	*line;
@@ -71,17 +97,8 @@ void	run_heredoc_child(t_redirs *redir, t_shell *shell, int write_fd)
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || ft_strncmp(line, redir->target,
-				ft_strlen(redir->target) + 1) == 0)
-		{
-			free(line);
+		if (handle_line_result(redir, shell, write_fd, line))
 			break ;
-		}
-		if (process_line(redir, shell, write_fd, line))
-		{
-			close(write_fd);
-			child_cleanup_exit(shell, 1);
-		}
 	}
 	close(write_fd);
 	child_cleanup_exit(shell, 0);

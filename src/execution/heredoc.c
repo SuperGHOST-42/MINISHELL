@@ -33,7 +33,7 @@ static pid_t	spawn_heredoc(t_redirs *redir, t_shell *shell, int pfd[2])
 	pid = fork();
 	if (pid == 0)
 	{
-		signals_child();
+		signals_heredoc();
 		close(pfd[0]);
 		run_heredoc_child(redir, shell, pfd[1]);
 	}

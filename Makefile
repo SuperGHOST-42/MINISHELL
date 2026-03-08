@@ -32,6 +32,7 @@ SRCS = src/execution/env_exec.c \
 	src/execution/execute_builtin.c \
 	src/execution/redirections.c \
 	src/execution/heredoc.c \
+	src/execution/heredoc_signal.c \
 	src/execution/heredoc_read.c \
 	src/execution/heredoc_wait.c \
 	src/execution/signals.c \

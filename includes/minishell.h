@@ -113,6 +113,7 @@ int		prepare_heredoc(t_cmd *cmds, t_shell *shell);
 void	signals_prompt(void);
 void	signals_wait(void);
 void	signals_child(void);
+void	signals_heredoc(void);
 void	sigint_mark(void);
 int		sigint_take(void);
 

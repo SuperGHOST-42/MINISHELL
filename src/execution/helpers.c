@@ -51,8 +51,5 @@ void	child_cleanup_exit(t_shell *shell, int status)
 		free_env_exec(shell->env);
 		free(shell);
 	}
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	close(STDERR_FILENO);
 	exit(status);
 }
