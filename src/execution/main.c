@@ -15,8 +15,8 @@ static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 	}
 	if (cmd->next != NULL)
 		exec_pipeline(cmd, shell);
-	else if (is_builtin(cmd))
-		shell->last_status = exec_builtin_parent(cmd, shell);
+	else if (is_builtin(cmd) && is_parent_needed(cmd))
+			shell->last_status = exec_builtin_parent(cmd, shell);
 	else
 		exec_child(cmd, shell);
 }
@@ -52,7 +52,7 @@ static void	init_shell(t_shell *shell)
 		if (interrupted)
 		{
 			shell->last_status = 130;
-			if (!line || *line == '\0')
+			if (line && *line == '\0')
 			{
 				free(line);
 				continue ;

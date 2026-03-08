@@ -19,7 +19,8 @@ int		pipe_prepare(int fd[2], int has_next);
 void	close_fd(int fd);
 int		dup_prepare(int fd[2], int prev_fd, int has_next);
 void	refresh_fds(int *prev_read, int fd[2], int has_next);
-pid_t	open_process(t_cmd *cur, t_shell *shell, int prev_read, int fd[2]);
+pid_t	open_process(t_cmd *cmds, t_cmd *cur, t_shell *shell,
+			int prev_read, int fd[2]);
 void	wait_pipeline(t_cmd *cmd, t_shell *shell);
 
 #endif

@@ -53,7 +53,8 @@ static int	process_line(t_redirs *redir, t_shell *shell, int fd, char *line)
 	return (0);
 }
 
-static void	heredoc_child(t_redirs *redir, t_shell *shell, int write_fd)
+static void	heredoc_child(t_redirs *redir, t_shell *shell, int write_fd,
+		t_cmd *cmds)
 {
 	char	*line;
 
@@ -69,11 +70,11 @@ static void	heredoc_child(t_redirs *redir, t_shell *shell, int write_fd)
 		if (process_line(redir, shell, write_fd, line))
 		{
 			close(write_fd);
-			exit(1);
+			child_cleanup_exit(shell, cmds, 1);
 		}
 	}
 	close(write_fd);
-	exit(0);
+	child_cleanup_exit(shell, cmds, 0);
 }
 
 static void	reset_readline_state(void)
@@ -113,7 +114,8 @@ static int	wait_heredoc(pid_t pid, int read_fd,
 	return (wait_status(status, read_fd));
 }
 
-static pid_t	spawn_heredoc(t_redirs *redir, t_shell *shell, int pfd[2])
+static pid_t	spawn_heredoc(t_redirs *redir, t_shell *shell, int pfd[2],
+		t_cmd *cmds)
 {
 	pid_t	pid;
 
@@ -122,12 +124,12 @@ static pid_t	spawn_heredoc(t_redirs *redir, t_shell *shell, int pfd[2])
 	{
 		setup_child_signals();
 		close(pfd[0]);
-		heredoc_child(redir, shell, pfd[1]);
+		heredoc_child(redir, shell, pfd[1], cmds);
 	}
 	return (pid);
 }
 
-static int	fill_heredoc(t_redirs *redir, t_shell *shell)
+static int	fill_heredoc(t_redirs *redir, t_shell *shell, t_cmd *cmds)
 {
 	int				pfd[2];
 	pid_t			pid;
@@ -137,7 +139,7 @@ static int	fill_heredoc(t_redirs *redir, t_shell *shell)
 	has_term = (tcgetattr(STDIN_FILENO, &saved_term) == 0);
 	if (pipe(pfd) < 0)
 		return (perror("pipe"), 1);
-	pid = spawn_heredoc(redir, shell, pfd);
+	pid = spawn_heredoc(redir, shell, pfd, cmds);
 	if (pid < 0)
 		return (close(pfd[0]), close(pfd[1]), perror("fork"), 1);
 	close(pfd[1]);
@@ -154,7 +156,9 @@ int	prepare_heredoc(t_cmd *cmds, t_shell *shell)
 {
 	t_redirs	*redir;
 	int			status;
+	t_cmd		*head;
 
+	head = cmds;
 	while (cmds)
 	{
 		redir = cmds->redirs;
@@ -162,7 +166,7 @@ int	prepare_heredoc(t_cmd *cmds, t_shell *shell)
 		{
 			if (redir->type == R_HEREDOC)
 			{
-				status = fill_heredoc(redir, shell);
+				status = fill_heredoc(redir, shell, head);
 				if (status)
 					return (status);
 			}

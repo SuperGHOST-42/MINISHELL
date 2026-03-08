@@ -30,12 +30,13 @@ void	exec_child(t_cmd *cmd, t_shell *shell)
 static void	run_child(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd)
-		exit(1);
+		child_cleanup_exit(shell, NULL, 1);
 	if (apply_redirs(cmd->redirs))
-		exit(1);
+		child_cleanup_exit(shell, cmd, 1);
 	if (!cmd->args || !cmd->args[0])
-		exit(0);
+		child_cleanup_exit(shell, cmd, 0);
 	if (is_builtin(cmd))
-		exit(exec_builtin(cmd, shell));
-	exec_external_cmd(cmd, shell);
+		child_cleanup_exit(shell, cmd, exec_builtin(cmd, shell));
+	exec_external_cmd(cmd, shell, cmd);
+	child_cleanup_exit(shell, cmd, 1);
 }

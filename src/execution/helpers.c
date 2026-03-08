@@ -1,4 +1,5 @@
 #include "../../includes/minishell.h"
+#include "../../includes/minishell_parse.h"
 
 char	*ft_readline(void)
 {
@@ -27,6 +28,21 @@ void	error_exit(char *msg)
 {
 	perror(msg);
 	exit(EXIT_FAILURE);
+}
+
+void	child_cleanup_exit(t_shell *shell, t_cmd *cmds, int status)
+{
+	if (cmds)
+		free_cmds(cmds);
+	if (shell)
+	{
+		free_env_exec(shell->env);
+		free(shell);
+	}
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
+	exit(status);
 }
 
 int	is_parent_needed(t_cmd *cmd)

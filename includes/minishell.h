@@ -121,7 +121,8 @@ char	*resolve_path(t_env *env, char *cmd);
 
 void	exec_child(t_cmd *cmd, t_shell *shell);
 void	exec_pipeline(t_cmd *cmds, t_shell *shell);
-void	exec_external_cmd(t_cmd *cmd, t_shell *shell);
+void	exec_external_cmd(t_cmd *cmd, t_shell *shell, t_cmd *cmds);
+void	child_cleanup_exit(t_shell *shell, t_cmd *cmds, int status);
 
 int		ft_echo(char **args);
 int		ft_cd(t_shell *shell, char **args);

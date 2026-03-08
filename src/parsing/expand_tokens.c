@@ -81,10 +81,12 @@ static int	expand_word(t_shell *shell, char *word, char **expanded)
 	buf[1] = '\0';
 	while (word[i])
 	{
-		if (word[i] == '$' && append_var(shell, word, &i, &res))
-			return (free(res), 1);
 		if (word[i] == '$')
+		{
+			if (append_var(shell, word, &i, &res))
+				return (free(res), 1);
 			continue ;
+		}
 		buf[0] = word[i++];
 		if (append_chunk(&res, buf))
 			return (free(res), 1);

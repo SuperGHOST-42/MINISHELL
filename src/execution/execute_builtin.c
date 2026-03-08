@@ -63,6 +63,12 @@ int	exec_builtin_parent(t_cmd *cmd, t_shell *shell)
 
 	if (!cmd)
 		return (1);
+	if (!cmd->redirs)
+	{
+		if (cmd->builtin == BI_EXIT && isatty(STDIN_FILENO))
+			ft_putendl_fd("exit", 2);
+		return (exec_builtin(cmd, shell));
+	}
 	if (backup_stdio(&saved_in, &saved_out))
 		return (1);
 	if (apply_redirs(cmd->redirs))
