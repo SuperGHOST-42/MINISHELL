@@ -32,14 +32,13 @@ int				ft_tolower(int arg);
 int				ft_toupper(int arg);
 
 /* ************************************************************************** */
-/*                              	MINISHELL  		                          */
+/*                                MINISHELL                                  */
 /* ************************************************************************** */
 
 int				ft_isempty(const char *line);
 int				ft_isspace(char c);
 int				ft_isoperator(char c);
 int				ft_isquote(char c);
-
 
 /* ************************************************************************** */
 /*                                Memory Functions                            */

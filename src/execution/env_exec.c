@@ -12,6 +12,21 @@
 
 #include "../../includes/minishell.h"
 
+static int	set_env_value(t_env *new, char *value)
+{
+	if (!value)
+	{
+		new->value = NULL;
+		new->has_value = 0;
+		return (0);
+	}
+	new->value = ft_strdup(value);
+	if (!new->value)
+		return (1);
+	new->has_value = 1;
+	return (0);
+}
+
 static t_env	*env_new(char *key, char *value)
 {
 	t_env	*new;
@@ -25,22 +40,8 @@ static t_env	*env_new(char *key, char *value)
 		free(new);
 		return (NULL);
 	}
-	if (value)
-	{
-		new->value = ft_strdup(value);
-		if (!new->value)
-		{
-			free(new->key);
-			free(new);
-			return (NULL);
-		}
-		new->has_value = 1;
-	}
-	else
-	{
-		new->value = NULL;
-		new->has_value = 0;
-	}
+	if (set_env_value(new, value))
+		return (free(new->key), free(new), NULL);
 	new->next = NULL;
 	return (new);
 }
@@ -62,67 +63,44 @@ static void	env_add_back(t_env **env, t_env *new)
 	current->next = new;
 }
 
-t_env	*env_init_exec(char **envp)
+static int	add_env_entry(t_env **env, char *entry)
 {
-	t_env	*env;
 	char	*equal;
 	char	*key;
 	char	*value;
+	t_env	*new;
+
+	equal = ft_strchr(entry, '=');
+	if (equal != NULL)
+	{
+		key = ft_substr(entry, 0, equal - entry);
+		value = ft_strdup(equal + 1);
+		if (!key || !value)
+			return (free(key), free(value), 1);
+		new = env_new(key, value);
+		free(key);
+		free(value);
+	}
+	else
+		new = env_new(entry, NULL);
+	if (!new)
+		return (1);
+	env_add_back(env, new);
+	return (0);
+}
+
+t_env	*env_init_exec(char **envp)
+{
+	t_env	*env;
 	int		i;
 
 	env = NULL;
 	i = 0;
 	while (envp[i])
 	{
-		equal = ft_strchr(envp[i], '=');
-		if (equal != NULL)
-		{
-			key = ft_substr(envp[i], 0, equal - envp[i]);
-			value = ft_strdup(equal + 1);
-			if (key && value)
-				env_add_back(&env, env_new(key, value));
-			free(key);
-			free(value);
-		}
-		else
-			env_add_back(&env, env_new(envp[i], NULL));
+		if (add_env_entry(&env, envp[i]))
+			return (free_env_exec(env), NULL);
 		i++;
 	}
 	return (env);
-}
-
-char	*get_env_exec(t_env *env, const char *key)
-{
-	t_env	*cur;
-
-	if (!key)
-		return (NULL);
-	cur = env;
-	while (cur)
-	{
-		if (cur->key && ft_strncmp(cur->key, key, ft_strlen(key) + 1) == 0)
-		{
-			if (cur->value)
-				return (cur->value);
-			return (NULL);
-		}
-		cur = cur->next;
-	}
-	return (NULL);
-}
-
-void	free_env_exec(t_env *env)
-{
-	t_env	*current;
-	t_env	*temp;
-
-	current = env;
-	while (current)
-	{
-		temp = current->next;
-		free(current->key);
-		free(current->value);
-		free(current);
-		current = temp;
-	}
 }

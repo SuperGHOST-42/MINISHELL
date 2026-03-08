@@ -50,7 +50,7 @@ char	**ft_split(char const *s, char c)
 		len = 0;
 		while (s[i] == c)
 			i++;
-		if (s[i] != '\0') // Ariclenes Alexandre
+		if (s[i] != '\0')
 		{
 			while (s[i + len] != c && s[i + len] != '\0')
 				len++;
@@ -60,16 +60,3 @@ char	**ft_split(char const *s, char c)
 	}
 	return (splitted);
 }
-/*
-# include <stdio.h>
-
-int main(void)
-{
-	char **str;
-
-	str = ft_split("  Hello World    ", 'l');
-	for (int i = 0; str[i] != NULL; i++)
-	{
-		printf("%s\n", str[i]);
-	}
-}*/

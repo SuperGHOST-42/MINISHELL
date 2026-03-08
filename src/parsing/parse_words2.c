@@ -67,8 +67,8 @@ int	process_word_sequence(t_cmd *cmd, t_token **tokens)
 	squoted = 0;
 	while (*tokens && (*tokens)->type == WORD)
 	{
-		if ((*tokens)->preceded_by_space && flush_concat(cmd, &concat,
-					&dquoted, &squoted))
+		if ((*tokens)->preceded_by_space
+			&& flush_concat(cmd, &concat, &dquoted, &squoted))
 			return (1);
 		if (handle_word_piece(*tokens, &concat))
 			return (1);

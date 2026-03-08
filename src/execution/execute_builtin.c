@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_builtin.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
+/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static void	restore_stdio(int saved_in, int saved_out)

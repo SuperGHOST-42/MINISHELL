@@ -77,13 +77,13 @@ typedef struct s_redirs
 
 typedef struct s_cmd
 {
-	char 					**args;
+	char					**args;
 	t_arg_quote				**args_quote;
-	t_redirs		 		*redirs;
+	t_redirs				*redirs;
 	t_builtin				builtin;
 	pid_t					pid;
 	struct s_cmd			*next;
-}	t_cmd;	
+}	t_cmd;
 
 typedef struct s_env
 {
@@ -96,9 +96,10 @@ typedef struct s_env
 typedef struct s_shell
 {
 	t_env		*env;
+	t_cmd		*cmd_head;
 	int			last_status;
-	int 		should_exit;
-	int 		exit_code;
+	int			should_exit;
+	int			exit_code;
 }	t_shell;
 
 int		is_parent_needed(t_cmd *cmd);
@@ -112,17 +113,18 @@ int		prepare_heredoc(t_cmd *cmds, t_shell *shell);
 void	setup_interactive_signals(void);
 void	setup_wait_signals(void);
 void	setup_child_signals(void);
+void	set_sigint_flag(void);
 int		consume_sigint(void);
 
-void 	error_exit(char *msg);
+void	error_exit(char *msg);
 char	*ft_readline(void);
 
 char	*resolve_path(t_env *env, char *cmd);
 
 void	exec_child(t_cmd *cmd, t_shell *shell);
 void	exec_pipeline(t_cmd *cmds, t_shell *shell);
-void	exec_external_cmd(t_cmd *cmd, t_shell *shell, t_cmd *cmds);
-void	child_cleanup_exit(t_shell *shell, t_cmd *cmds, int status);
+void	exec_external_cmd(t_cmd *cmd, t_shell *shell);
+void	child_cleanup_exit(t_shell *shell, int status);
 
 int		ft_echo(char **args);
 int		ft_cd(t_shell *shell, char **args);

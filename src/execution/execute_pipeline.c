@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_pipeline.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
+/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/execute_pipeline_utils.h"
 
 int	pipe_prepare(int fd[2], int has_next)
@@ -58,7 +70,7 @@ void	exec_pipeline(t_cmd *cmd, t_shell *shell)
 	{
 		if (pipe_prepare(fd, (cur->next != NULL)) < 0)
 			break ;
-		pid = open_process(cmd, cur, shell, prev_fd, fd);
+		pid = open_process(cur, shell, prev_fd, fd);
 		if (pid < 0)
 			break ;
 		refresh_fds(&prev_fd, fd, (cur->next != NULL));

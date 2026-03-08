@@ -25,22 +25,21 @@ void	refresh_fds(int *prev_read, int fd[2], int has_next)
 	fd[0] = -1;
 }
 
-static void	run_pipeline_child(t_cmd *cmds, t_cmd *cmd, t_shell *shell)
+static void	run_pipeline_child(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd)
-		child_cleanup_exit(shell, cmds, 1);
+		child_cleanup_exit(shell, 1);
 	if (apply_redirs(cmd->redirs))
-		child_cleanup_exit(shell, cmds, 1);
+		child_cleanup_exit(shell, 1);
 	if (!cmd->args || !cmd->args[0])
-		child_cleanup_exit(shell, cmds, 0);
+		child_cleanup_exit(shell, 0);
 	if (cmd->builtin != BI_NONE)
-		child_cleanup_exit(shell, cmds, exec_builtin(cmd, shell));
-	exec_external_cmd(cmd, shell, cmds);
-	child_cleanup_exit(shell, cmds, 1);
+		child_cleanup_exit(shell, exec_builtin(cmd, shell));
+	exec_external_cmd(cmd, shell);
+	child_cleanup_exit(shell, 1);
 }
 
-pid_t	open_process(t_cmd *cmds, t_cmd *cur, t_shell *shell,
-		int prev_read, int fd[2])
+pid_t	open_process(t_cmd *cur, t_shell *shell, int prev_read, int fd[2])
 {
 	pid_t	pid;
 
@@ -55,8 +54,8 @@ pid_t	open_process(t_cmd *cmds, t_cmd *cur, t_shell *shell,
 	{
 		setup_child_signals();
 		if (dup_prepare(fd, prev_read, (cur->next != NULL)) < 0)
-			child_cleanup_exit(shell, cmds, 1);
-		run_pipeline_child(cmds, cur, shell);
+			child_cleanup_exit(shell, 1);
+		run_pipeline_child(cur, shell);
 	}
 	return (pid);
 }

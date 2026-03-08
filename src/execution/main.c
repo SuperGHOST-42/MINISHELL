@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
+/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 #include "../../includes/minishell_parse.h"
 
@@ -16,7 +28,7 @@ static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 	if (cmd->next != NULL)
 		exec_pipeline(cmd, shell);
 	else if (is_builtin(cmd) && is_parent_needed(cmd))
-			shell->last_status = exec_builtin_parent(cmd, shell);
+		shell->last_status = exec_builtin_parent(cmd, shell);
 	else
 		exec_child(cmd, shell);
 }
@@ -35,8 +47,10 @@ static void	handle_input_line(t_shell *shell, char *line)
 	free(line);
 	if (!cmd)
 		return ;
+	shell->cmd_head = cmd;
 	exec_cmd(cmd, shell);
 	free_cmds(cmd);
+	shell->cmd_head = NULL;
 }
 
 static void	init_shell(t_shell *shell)

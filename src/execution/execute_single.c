@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_single.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
+/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static void	run_child(t_cmd *cmd, t_shell *shell);
@@ -30,13 +42,13 @@ void	exec_child(t_cmd *cmd, t_shell *shell)
 static void	run_child(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd)
-		child_cleanup_exit(shell, NULL, 1);
+		child_cleanup_exit(shell, 1);
 	if (apply_redirs(cmd->redirs))
-		child_cleanup_exit(shell, cmd, 1);
+		child_cleanup_exit(shell, 1);
 	if (!cmd->args || !cmd->args[0])
-		child_cleanup_exit(shell, cmd, 0);
+		child_cleanup_exit(shell, 0);
 	if (is_builtin(cmd))
-		child_cleanup_exit(shell, cmd, exec_builtin(cmd, shell));
-	exec_external_cmd(cmd, shell, cmd);
-	child_cleanup_exit(shell, cmd, 1);
+		child_cleanup_exit(shell, exec_builtin(cmd, shell));
+	exec_external_cmd(cmd, shell);
+	child_cleanup_exit(shell, 1);
 }

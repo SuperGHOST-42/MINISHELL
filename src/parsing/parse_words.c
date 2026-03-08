@@ -49,11 +49,12 @@ static int	alloc_arg_arrays(char ***args, t_arg_quote ***quotes, int n)
 	return (0);
 }
 
-static int	set_new_arg(char **args, t_arg_quote **quotes, int n,
-		char *arg, t_arg_quote *src)
+static int	set_new_arg(char **args, t_arg_quote **quotes, char *arg, int *meta)
 {
 	t_arg_quote	*info;
+	int			n;
 
+	n = meta[0];
 	args[n] = ft_strdup(arg);
 	info = malloc(sizeof(t_arg_quote));
 	if (!args[n] || !info)
@@ -62,8 +63,8 @@ static int	set_new_arg(char **args, t_arg_quote **quotes, int n,
 		free(info);
 		return (1);
 	}
-	info->dquoted = src->dquoted;
-	info->squoted = src->squoted;
+	info->dquoted = meta[1];
+	info->squoted = meta[2];
 	quotes[n] = info;
 	args[n + 1] = NULL;
 	quotes[n + 1] = NULL;
@@ -74,16 +75,17 @@ int	append_arg_with_quote(t_cmd *cmd, char *arg, int dquoted, int squoted)
 {
 	char		**args;
 	t_arg_quote	**quotes;
-	t_arg_quote	info;
+	int			meta[3];
 	int			n;
 
 	n = arg_count(cmd);
 	if (alloc_arg_arrays(&args, &quotes, n))
 		return (1);
 	copy_old_args(cmd, args, quotes, n);
-	info.dquoted = dquoted;
-	info.squoted = squoted;
-	if (set_new_arg(args, quotes, n, arg, &info))
+	meta[0] = n;
+	meta[1] = dquoted;
+	meta[2] = squoted;
+	if (set_new_arg(args, quotes, arg, meta))
 	{
 		free(args);
 		free(quotes);
