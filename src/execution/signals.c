@@ -15,14 +15,14 @@
 static void	handle_sigint(int signo)
 {
 	(void)signo;
-	set_sigint_flag();
+	sigint_mark();
 	write(STDOUT_FILENO, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
 }
 
-void	setup_interactive_signals(void)
+void	signals_prompt(void)
 {
 	struct sigaction	sa;
 
@@ -35,7 +35,7 @@ void	setup_interactive_signals(void)
 	sigaction(SIGQUIT, &sa, NULL);
 }
 
-void	setup_wait_signals(void)
+void	signals_wait(void)
 {
 	struct sigaction	sa;
 
@@ -46,7 +46,7 @@ void	setup_wait_signals(void)
 	sigaction(SIGQUIT, &sa, NULL);
 }
 
-void	setup_child_signals(void)
+void	signals_child(void)
 {
 	struct sigaction	sa;
 

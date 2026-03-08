@@ -39,13 +39,20 @@ t_env	*bt_new_env_node(const char *key, const char *value, int has_value)
 		return (NULL);
 	new->key = ft_strdup((char *)key);
 	if (!new->key)
-		return (free(new), NULL);
+	{
+		free(new);
+		return (NULL);
+	}
 	new->has_value = has_value;
 	if (has_value)
 	{
 		new->value = ft_strdup((char *)value);
 		if (!new->value)
-			return (free(new->key), free(new), NULL);
+		{
+			free(new->key);
+			free(new);
+			return (NULL);
+		}
 	}
 	return (new);
 }

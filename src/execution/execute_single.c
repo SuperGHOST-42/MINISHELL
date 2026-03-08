@@ -24,18 +24,18 @@ void	exec_child(t_cmd *cmd, t_shell *shell)
 		error_exit("fork");
 	if (pid == 0)
 	{
-		setup_child_signals();
+		signals_child();
 		run_child(cmd, shell);
 	}
-	setup_wait_signals();
+	signals_wait();
 	if (waitpid(pid, &status, 0) < 0)
 	{
 		perror("waitpid");
-		setup_interactive_signals();
+		signals_prompt();
 		shell->last_status = 1;
 		return ;
 	}
-	setup_interactive_signals();
+	signals_prompt();
 	shell->last_status = status_to_exit_code(status);
 }
 

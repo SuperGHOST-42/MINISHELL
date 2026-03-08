@@ -41,7 +41,11 @@ static t_env	*env_new(char *key, char *value)
 		return (NULL);
 	}
 	if (set_env_value(new, value))
-		return (free(new->key), free(new), NULL);
+	{
+		free(new->key);
+		free(new);
+		return (NULL);
+	}
 	new->next = NULL;
 	return (new);
 }
@@ -67,19 +71,18 @@ static int	add_env_entry(t_env **env, char *entry)
 {
 	char	*equal;
 	char	*key;
-	char	*value;
 	t_env	*new;
 
 	equal = ft_strchr(entry, '=');
-	if (equal != NULL)
+	if (equal)
 	{
 		key = ft_substr(entry, 0, equal - entry);
-		value = ft_strdup(equal + 1);
-		if (!key || !value)
-			return (free(key), free(value), 1);
-		new = env_new(key, value);
+		if (!key)
+		{
+			return (1);
+		}
+		new = env_new(key, equal + 1);
 		free(key);
-		free(value);
 	}
 	else
 		new = env_new(entry, NULL);
@@ -99,7 +102,10 @@ t_env	*env_init_exec(char **envp)
 	while (envp[i])
 	{
 		if (add_env_entry(&env, envp[i]))
-			return (free_env_exec(env), NULL);
+		{
+			free_env_exec(env);
+			return (NULL);
+		}
 		i++;
 	}
 	return (env);

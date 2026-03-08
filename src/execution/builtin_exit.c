@@ -28,37 +28,41 @@ static int	parse_sign(const char *s, int *i, int *sign)
 	return (1);
 }
 
-static void	set_exit_value(int sign, unsigned long long num, long long *out)
+static int	append_digit(long long *value, int sign, int digit)
 {
-	if (sign < 0 && num == (unsigned long long)LLONG_MAX + 1ULL)
-		*out = LLONG_MIN;
+	if (sign > 0)
+	{
+		if (*value > (LLONG_MAX - digit) / 10)
+			return (0);
+		*value = (*value * 10) + digit;
+	}
 	else
-		*out = (long long)(num * sign);
+	{
+		if (*value < (LLONG_MIN + digit) / 10)
+			return (0);
+		*value = (*value * 10) - digit;
+	}
+	return (1);
 }
 
 static int	parse_exit_number(const char *s, long long *out)
 {
-	int					i;
-	int					sign;
-	unsigned long long	num;
-	unsigned long long	limit;
+	int			i;
+	int			sign;
+	long long	value;
 
 	if (!parse_sign(s, &i, &sign))
 		return (0);
-	num = 0;
-	limit = (unsigned long long)LLONG_MAX;
-	if (sign < 0)
-		limit = (unsigned long long)LLONG_MAX + 1ULL;
+	value = 0;
 	while (ft_isdigit(s[i]))
 	{
-		if (num > (limit - (unsigned long long)(s[i] - '0')) / 10ULL)
+		if (!append_digit(&value, sign, s[i] - '0'))
 			return (0);
-		num = (num * 10ULL) + (unsigned long long)(s[i] - '0');
 		i++;
 	}
 	if (s[i] != '\0')
 		return (0);
-	set_exit_value(sign, num, out);
+	*out = value;
 	return (1);
 }
 
@@ -85,6 +89,9 @@ int	ft_exit(t_shell *shell, char **args)
 		return (set_shell_exit(shell, 255));
 	}
 	if (args[2])
-		return (ft_putendl_fd("minishell: exit: too many arguments", 2), 1);
+	{
+		ft_putendl_fd("minishell: exit: too many arguments", 2);
+		return (1);
+	}
 	return (set_shell_exit(shell, (unsigned char)code));
 }

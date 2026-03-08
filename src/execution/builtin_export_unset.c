@@ -63,7 +63,10 @@ int	ft_export(t_shell *shell, char **args)
 	if (!shell || !args)
 		return (1);
 	if (!args[1])
-		return (print_export_list(shell->env), 0);
+	{
+		print_export_list(shell->env);
+		return (0);
+	}
 	i = 1;
 	status = 0;
 	while (args[i])

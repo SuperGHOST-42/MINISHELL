@@ -110,11 +110,11 @@ int		is_builtin(t_cmd *cmd);
 char	**env_to_envp(t_env *env);
 int		apply_redirs(t_redirs *redirs);
 int		prepare_heredoc(t_cmd *cmds, t_shell *shell);
-void	setup_interactive_signals(void);
-void	setup_wait_signals(void);
-void	setup_child_signals(void);
-void	set_sigint_flag(void);
-int		consume_sigint(void);
+void	signals_prompt(void);
+void	signals_wait(void);
+void	signals_child(void);
+void	sigint_mark(void);
+int		sigint_take(void);
 
 void	error_exit(char *msg);
 char	*ft_readline(void);

@@ -65,7 +65,7 @@ void	exec_pipeline(t_cmd *cmd, t_shell *shell)
 
 	prev_fd = -1;
 	cur = cmd;
-	setup_wait_signals();
+	signals_wait();
 	while (cur)
 	{
 		if (pipe_prepare(fd, (cur->next != NULL)) < 0)
@@ -79,5 +79,5 @@ void	exec_pipeline(t_cmd *cmd, t_shell *shell)
 	}
 	close_fd(prev_fd);
 	wait_pipeline(cmd, shell);
-	setup_interactive_signals();
+	signals_prompt();
 }

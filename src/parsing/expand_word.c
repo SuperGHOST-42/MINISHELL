@@ -68,6 +68,12 @@ static int	append_var(t_shell *shell, char *s, int *i, char **out)
 	return (append_named_var(shell, s, i, out));
 }
 
+static int	free_and_fail(char *res)
+{
+	free(res);
+	return (1);
+}
+
 int	expand_word_value(t_shell *shell, char *word, char **expanded)
 {
 	char	*res;
@@ -84,12 +90,12 @@ int	expand_word_value(t_shell *shell, char *word, char **expanded)
 		if (word[i] == '$')
 		{
 			if (append_var(shell, word, &i, &res))
-				return (free(res), 1);
+				return (free_and_fail(res));
 			continue ;
 		}
 		buf[0] = word[i++];
 		if (append_chunk(&res, buf))
-			return (free(res), 1);
+			return (free_and_fail(res));
 	}
 	*expanded = res;
 	return (0);

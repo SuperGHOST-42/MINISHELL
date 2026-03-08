@@ -52,7 +52,7 @@ pid_t	open_process(t_cmd *cur, t_shell *shell, int prev_read, int fd[2])
 	}
 	if (pid == 0)
 	{
-		setup_child_signals();
+		signals_child();
 		if (dup_prepare(fd, prev_read, (cur->next != NULL)) < 0)
 			child_cleanup_exit(shell, 1);
 		run_pipeline_child(cur, shell);

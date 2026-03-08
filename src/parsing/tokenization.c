@@ -48,7 +48,10 @@ t_token	*tokenization(char *line)
 			continue ;
 		}
 		if (read_one_token(&tokens, line, &i, &had_space))
-			return (free_tokens(tokens), NULL);
+		{
+			free_tokens(tokens);
+			return (NULL);
+		}
 	}
 	return (tokens);
 }

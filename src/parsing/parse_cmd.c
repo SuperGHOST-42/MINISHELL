@@ -82,7 +82,7 @@ static int	read_redir_target(t_token **tokens, char **target, int *quoted)
 	return (0);
 }
 
-static int	parse_token(t_cmd *cmd, t_token **tokens)
+int	parse_cmd_token(t_cmd *cmd, t_token **tokens)
 {
 	char			*target;
 	int				quoted;
@@ -100,35 +100,10 @@ static int	parse_token(t_cmd *cmd, t_token **tokens)
 	if (read_redir_target(tokens, &target, &quoted))
 		return (1);
 	if (add_redir(&cmd->redirs, type, target, !(type == R_HEREDOC && quoted)))
-		return (free(target), 1);
+	{
+		free(target);
+		return (1);
+	}
 	free(target);
 	return (0);
-}
-
-t_cmd	*parse_tokens_to_cmds(t_token *tokens)
-{
-	t_cmd	*head;
-	t_cmd	*cur;
-
-	head = NULL;
-	cur = NULL;
-	while (tokens)
-	{
-		if (tokens->type == PIPE)
-		{
-			cur = NULL;
-			tokens = tokens->next;
-			continue ;
-		}
-		if (!cur)
-		{
-			cur = new_cmd();
-			if (!cur)
-				return (free_cmds(head), NULL);
-			add_cmd(&head, cur);
-		}
-		if (parse_token(cur, &tokens))
-			return (free_cmds(head), NULL);
-	}
-	return (head);
 }

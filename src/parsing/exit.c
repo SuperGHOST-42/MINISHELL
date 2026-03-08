@@ -25,10 +25,3 @@ void	free_tokens(t_token *tokens)
 		free(tmp);
 	}
 }
-
-int	exit_shell(t_token *tokens, int exit_code)
-{
-	free_tokens(tokens);
-	printf("Exiting shell with code %d\n", exit_code);
-	return (exit_code);
-}

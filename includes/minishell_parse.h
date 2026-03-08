@@ -6,7 +6,7 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 17:00:34 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/23 20:18:33 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/03/08 19:25:27 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ void		free_cmds(t_cmd *cmds);
 int			syntax_check(t_token *tokens);
 int			ft_isredir(t_token_type type);
 
-int			exit_shell(t_token *tokens, int exit_code);
 void		free_tokens(t_token *tokens);
 
 t_builtin	get_builtin_type(const char *cmd);

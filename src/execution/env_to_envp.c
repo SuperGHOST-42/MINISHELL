@@ -82,6 +82,9 @@ char	**env_to_envp(t_env *env)
 	if (!envp)
 		return (NULL);
 	if (fill_envp(envp, env))
-		return (free_envp(envp), NULL);
+	{
+		free_envp(envp);
+		return (NULL);
+	}
 	return (envp);
 }

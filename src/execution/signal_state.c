@@ -19,12 +19,12 @@ static volatile sig_atomic_t	*sigint_state(void)
 	return ((volatile sig_atomic_t *)&sigint_flag);
 }
 
-void	set_sigint_flag(void)
+void	sigint_mark(void)
 {
 	*sigint_state() = 1;
 }
 
-int	consume_sigint(void)
+int	sigint_take(void)
 {
 	volatile sig_atomic_t	*sigint_flag;
 

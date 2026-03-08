@@ -41,6 +41,7 @@ SRCS = src/execution/env_exec.c \
 	src/parsing/expand_tokens.c \
 	src/parsing/expand_word.c \
 	src/parsing/parse_cmd.c \
+	src/parsing/parse_cmd_build.c \
 	src/parsing/parse_words.c \
 	src/parsing/parse_words2.c \
 	src/parsing/syntax_checker.c \

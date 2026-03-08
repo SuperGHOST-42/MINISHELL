@@ -58,7 +58,10 @@ int	ft_echo(char **args)
 	int	nl;
 
 	if (!args || !args[0])
-		return (ft_putstr_fd("\n", 1), 0);
+	{
+		ft_putstr_fd("\n", 1);
+		return (0);
+	}
 	i = 1;
 	nl = 1;
 	while (args[i] && is_echo_n(args[i]))
@@ -85,12 +88,18 @@ int	ft_cd(t_shell *shell, char **args)
 	if (!shell || !args)
 		return (1);
 	if (args[1] && args[2])
-		return (ft_putendl_fd("", 2), 0);
+	{
+		ft_putendl_fd("", 2);
+		return (0);
+	}
 	path = args[1];
 	if (!path)
 		path = get_env_exec(shell->env, "HOME");
 	if (!path)
-		return (ft_putendl_fd("minishell: cd: HOME not set", 2), 1);
+	{
+		ft_putendl_fd("minishell: cd: HOME not set", 2);
+		return (1);
+	}
 	return (cd_change_dir(shell, path));
 }
 

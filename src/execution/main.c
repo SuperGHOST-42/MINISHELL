@@ -58,11 +58,11 @@ static void	init_shell(t_shell *shell)
 	char	*line;
 	int		interrupted;
 
-	setup_interactive_signals();
+	signals_prompt();
 	while (!shell->should_exit)
 	{
 		line = ft_readline();
-		interrupted = consume_sigint();
+		interrupted = sigint_take();
 		if (interrupted)
 		{
 			shell->last_status = 130;

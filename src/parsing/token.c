@@ -50,7 +50,10 @@ int	handle_quote(t_token **tokens, char *line, int *i, int preceded_by_space)
 	while (line[*i] && line[*i] != quote)
 		(*i)++;
 	if (line[*i] != quote)
-		return (ft_putendl_fd("minishell: syntax error: unclosed quote", 2), 1);
+	{
+		ft_putendl_fd("minishell: syntax error: unclosed quote", 2);
+		return (1);
+	}
 	tok = new_token(WORD, ft_substr(line, start, *i - start));
 	if (!tok)
 		return (1);
@@ -65,9 +68,15 @@ static t_token	*build_operator_token(char *line, int *i)
 	if (line[*i] == '|')
 		return (new_token(PIPE, ft_strdup("|")));
 	if (line[*i] == '<' && line[*i + 1] == '<')
-		return ((*i)++, new_token(R_HEREDOC, ft_strdup("<<")));
+	{
+		(*i)++;
+		return (new_token(R_HEREDOC, ft_strdup("<<")));
+	}
 	if (line[*i] == '>' && line[*i + 1] == '>')
-		return ((*i)++, new_token(R_APP, ft_strdup(">>")));
+	{
+		(*i)++;
+		return (new_token(R_APP, ft_strdup(">>")));
+	}
 	if (line[*i] == '<')
 		return (new_token(R_IN, ft_strdup("<")));
 	if (line[*i] == '>')
