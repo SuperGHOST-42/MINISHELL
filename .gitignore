@@ -58,6 +58,7 @@ dkms.conf
 /src/test/
 /minishell_tester
 /src/execution/main.c
+valgrind_cases/
 
 # MacOS junk
 .DS_Store
