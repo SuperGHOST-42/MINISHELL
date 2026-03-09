@@ -6,7 +6,7 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 11:58:35 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/23 17:12:22 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/03/09 21:32:00 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,9 +135,9 @@ int		ft_unset(t_shell *shell, char **args);
 int		ft_env(t_shell *shell, char **args);
 int		ft_exit(t_shell *shell, char **args);
 
-t_env	*env_init_exec(char **envp);
-char	*get_env_exec(t_env *env, const char *key);
-void	free_env_exec(t_env *env);
-void	free_envp(char **envp);
+t_env	*envp_to_env(char **envp);
+char	*get_env(t_env *env, const char *key);
+void	free_env(t_env *env);
+void	free_split(char **arr);
 
 #endif

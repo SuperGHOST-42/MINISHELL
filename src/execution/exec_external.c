@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_external.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*   Updated: 2026/03/09 21:33:42 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	exit_not_found(t_cmd *cmd, t_shell *shell, char **envp)
 		perror(cmd->args[0]);
 	else
 		print_not_found(cmd->args[0]);
-	free_envp(envp);
+	free_split(envp);
 	child_cleanup_exit(shell, 127);
 }
 
@@ -47,7 +47,7 @@ static void	exit_is_directory(char *cmd, char *path, t_shell *shell,
 	ft_putstr_fd(cmd, 2);
 	ft_putendl_fd(": is a directory", 2);
 	free(path);
-	free_envp(envp);
+	free_split(envp);
 	child_cleanup_exit(shell, 126);
 }
 
@@ -67,6 +67,6 @@ void	exec_external_cmd(t_cmd *cmd, t_shell *shell)
 	execve(path, cmd->args, envp);
 	perror(cmd->args[0]);
 	free(path);
-	free_envp(envp);
+	free_split(envp);
 	child_cleanup_exit(shell, (errno == ENOENT) + 126);
 }

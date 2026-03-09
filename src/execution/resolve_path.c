@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   resolve_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*   Updated: 2026/03/09 21:31:35 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	has_slash(const char *s)
 	return (0);
 }
 
-static void	free_split(char **arr)
+void	free_split(char **arr)
 {
 	int	i;
 
@@ -78,7 +78,7 @@ char	*resolve_path(t_env *env, char *cmd)
 		return (NULL);
 	if (has_slash(cmd))
 		return (ft_strdup(cmd));
-	path = get_env_exec(env, "PATH");
+	path = get_env(env, "PATH");
 	if (!path)
 		return (NULL);
 	dirs = ft_split(path, ':');

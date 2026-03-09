@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*   Updated: 2026/03/09 21:13:36 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	child_cleanup_exit(t_shell *shell, int status)
 	{
 		if (shell->cmd_head)
 			free_cmds(shell->cmd_head);
-		free_env_exec(shell->env);
+		free_env(shell->env);
 		free(shell);
 	}
 	close_if_open(STDIN_FILENO);

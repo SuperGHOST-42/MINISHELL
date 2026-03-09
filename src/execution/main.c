@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*   Updated: 2026/03/09 21:10:51 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int	main(int argc, char **argv, char **envp)
 	if (!shell)
 		error_exit("malloc");
 	ft_bzero(shell, sizeof(t_shell));
-	shell->env = env_init_exec(envp);
+	shell->env = envp_to_env(envp);
 	if (!shell->env)
 	{
 		free(shell);
@@ -103,7 +103,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	init_shell(shell);
 	exit_code = shell->exit_code;
-	free_env_exec(shell->env);
+	free_env(shell->env);
 	free(shell);
 	return (exit_code);
 }

@@ -6,7 +6,7 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 18:55:00 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/02/26 14:21:16 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/03/09 21:24:57 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	ft_cd(t_shell *shell, char **args)
 	}
 	path = args[1];
 	if (!path)
-		path = get_env_exec(shell->env, "HOME");
+		path = get_env(shell->env, "HOME");
 	if (!path)
 	{
 		ft_putendl_fd("minishell: cd: HOME not set", 2);

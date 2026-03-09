@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   env_exec_access.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:20:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/08 15:20:00 by ariclenes        ###   ########.fr       */
+/*   Updated: 2026/03/09 21:23:11 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*get_env_exec(t_env *env, const char *key)
+char	*get_env(t_env *env, const char *key)
 {
 	t_env	*cur;
 
@@ -32,7 +32,7 @@ char	*get_env_exec(t_env *env, const char *key)
 	return (NULL);
 }
 
-void	free_env_exec(t_env *env)
+void	free_env(t_env *env)
 {
 	t_env	*current;
 	t_env	*temp;
