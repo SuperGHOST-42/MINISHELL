@@ -42,6 +42,17 @@ void	error_exit(char *msg)
 	exit(EXIT_FAILURE);
 }
 
+static void	close_if_open(int fd)
+{
+	int	fd_check;
+
+	fd_check = dup(fd);
+	if (fd_check < 0)
+		return ;
+	close(fd_check);
+	close(fd);
+}
+
 void	child_cleanup_exit(t_shell *shell, int status)
 {
 	if (shell)
@@ -51,5 +62,8 @@ void	child_cleanup_exit(t_shell *shell, int status)
 		free_env_exec(shell->env);
 		free(shell);
 	}
+	close_if_open(STDIN_FILENO);
+	close_if_open(STDOUT_FILENO);
+	close_if_open(STDERR_FILENO);
 	exit(status);
 }
