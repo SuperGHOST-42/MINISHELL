@@ -3,15 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*   Updated: 2026/03/10 17:20:12 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include "../../includes/minishell_parse.h"
+
+static char	**get_default_envp(void)
+{
+	char	**new_envp;
+	char	cwd[BUFSIZ];
+	char	*tmp;
+
+	new_envp = malloc(8 * sizeof(char *));
+	if (!new_envp)
+		return (NULL);
+	tmp = ft_strdup("PWD=");
+	if (getcwd(cwd, sizeof(cwd)) == 0)
+	{
+		free(new_envp);
+		return (NULL);
+	}
+	new_envp[0] = ft_strjoin(tmp, cwd);
+	free(tmp);
+	new_envp[1] = ft_strdup("SHLVL=0");
+	new_envp[2] = ft_strdup("_=/usr/bin/env");
+	new_envp[3] = NULL;
+	return (new_envp);
+}
 
 static void	exec_cmd(t_cmd *cmd, t_shell *shell)
 {
@@ -86,24 +109,25 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_shell	*shell;
 	int		exit_code;
+	char	**new_envp;
 
 	(void)argc;
 	(void)argv;
-	if (!envp)
-		error_exit("envp");
+	new_envp = get_default_envp();
 	shell = malloc(sizeof(t_shell));
 	if (!shell)
 		error_exit("malloc");
 	ft_bzero(shell, sizeof(t_shell));
-	shell->env = env_init_exec(envp);
+	if (!envp[0])
+		shell->env = envp_to_env(new_envp);
+	else
+		shell->env = envp_to_env(envp);
+	free_split(new_envp);
 	if (!shell->env)
-	{
 		free(shell);
-		error_exit("env_init");
-	}
 	init_shell(shell);
 	exit_code = shell->exit_code;
-	free_env_exec(shell->env);
+	free_env(shell->env);
 	free(shell);
 	return (exit_code);
 }

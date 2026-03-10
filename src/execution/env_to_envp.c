@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_to_envp.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*   Updated: 2026/03/09 21:32:47 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ char	**env_to_envp(t_env *env)
 		return (NULL);
 	if (fill_envp(envp, env))
 	{
-		free_envp(envp);
+		free_split(envp);
 		return (NULL);
 	}
 	return (envp);

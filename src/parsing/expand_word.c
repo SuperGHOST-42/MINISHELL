@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_word.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:20:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/08 15:20:00 by ariclenes        ###   ########.fr       */
+/*   Updated: 2026/03/09 21:25:21 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	append_named_var(t_shell *shell, char *s, int *i, char **out)
 	name = ft_substr(s, start, *i - start);
 	if (!name)
 		return (1);
-	value = get_env_exec(shell->env, name);
+	value = get_env(shell->env, name);
 	free(name);
 	if (!value)
 		return (0);

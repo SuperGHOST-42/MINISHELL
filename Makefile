@@ -11,8 +11,8 @@ LDLIBS = -lreadline -lhistory -lncurses
 LIBFT_DIR = includes/libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRCS = src/execution/env_exec.c \
-	src/execution/env_exec_access.c \
+SRCS = src/execution/envp_to_env.c \
+	src/execution/envp_to_env_utils.c \
 	src/execution/execute_pipeline.c \
 	src/execution/execute_pipeline2.c \
 	src/execution/execute_single.c \
@@ -20,7 +20,6 @@ SRCS = src/execution/env_exec.c \
 	src/execution/status_utils.c \
 	src/execution/main.c \
 	src/execution/resolve_path.c \
-	src/execution/envp.c \
 	src/execution/env_to_envp.c \
 	src/execution/builtins.c \
 	src/execution/builtin_env_core.c \
