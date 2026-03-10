@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_read.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:20:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/08 15:20:00 by ariclenes        ###   ########.fr       */
+/*   Updated: 2026/03/09 22:28:02 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static int	process_line(t_redirs *redir, t_shell *shell, int fd, char *line)
 	return (0);
 }
 
-static int	handle_line_result(t_redirs *redir, t_shell *shell,
+static int	handle_line_heredoc(t_redirs *redir, t_shell *shell,
 		int write_fd, char *line)
 {
 	if (sigint_take())
@@ -97,7 +97,7 @@ void	run_heredoc_child(t_redirs *redir, t_shell *shell, int write_fd)
 	while (1)
 	{
 		line = readline("> ");
-		if (handle_line_result(redir, shell, write_fd, line))
+		if (handle_line_heredoc(redir, shell, write_fd, line))
 			break ;
 	}
 	close(write_fd);

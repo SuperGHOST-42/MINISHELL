@@ -6,7 +6,7 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/09 21:33:42 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/03/10 00:10:08 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	print_not_found(char *cmd)
 	ft_putendl_fd(": command not found", 2);
 }
 
-static void	exit_not_found(t_cmd *cmd, t_shell *shell, char **envp)
+static void	path_not_found(t_cmd *cmd, t_shell *shell, char **envp)
 {
 	if (ft_strchr(cmd->args[0], '/'))
 		perror(cmd->args[0]);
@@ -61,7 +61,7 @@ void	exec_external_cmd(t_cmd *cmd, t_shell *shell)
 		child_cleanup_exit(shell, 1);
 	path = resolve_path(shell->env, cmd->args[0]);
 	if (!path)
-		exit_not_found(cmd, shell, envp);
+		path_not_found(cmd, shell, envp);
 	if (is_directory(path))
 		exit_is_directory(cmd->args[0], path, shell, envp);
 	execve(path, cmd->args, envp);

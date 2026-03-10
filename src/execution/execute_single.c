@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_single.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariclenes <ariclenes@student.42lisboa.com> +#+  +:+       +#+        */
+/*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/08 15:05:00 by ariclenes        ###   ########.fr       */
+/*   Updated: 2026/03/10 01:49:22 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ void	exec_child(t_cmd *cmd, t_shell *shell)
 
 static void	run_child(t_cmd *cmd, t_shell *shell)
 {
+	int	status;
+
 	if (!cmd)
 		child_cleanup_exit(shell, 1);
 	if (apply_redirs(cmd->redirs))
@@ -48,7 +50,10 @@ static void	run_child(t_cmd *cmd, t_shell *shell)
 	if (!cmd->args || !cmd->args[0])
 		child_cleanup_exit(shell, 0);
 	if (is_builtin(cmd))
-		child_cleanup_exit(shell, exec_builtin(cmd, shell));
+	{
+		status = exec_builtin(cmd, shell);
+		child_cleanup_exit(shell, status);
+	}
 	exec_external_cmd(cmd, shell);
 	child_cleanup_exit(shell, 1);
 }
