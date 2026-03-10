@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_exec.c                                         :+:      :+:    :+:   */
+/*   envp_to_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 17:17:06 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/03/09 21:12:57 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/03/10 17:17:14 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,10 @@ static void	env_add_back(t_env **env, t_env *new)
 	current->next = new;
 }
 
-static int	add_env_entry(t_env **env, char *entry)
+static int	add_env_entry(t_env **env, char *entry, char *key
+	, char *equal)
 {
-	char	*equal;
-	char	*key;
+	char	*tmp;
 	t_env	*new;
 
 	equal = ft_strchr(entry, '=');
@@ -78,10 +78,15 @@ static int	add_env_entry(t_env **env, char *entry)
 	{
 		key = ft_substr(entry, 0, equal - entry);
 		if (!key)
-		{
 			return (1);
+		if (ft_strncmp(key, "SHLVL", 5) == 0)
+		{
+			tmp = ft_itoa(ft_atoi(equal + 1));
+			new = env_new(key, tmp + 1);
+			free(tmp);
 		}
-		new = env_new(key, equal + 1);
+		else
+			new = env_new(key, equal + 1);
 		free(key);
 	}
 	else
@@ -101,7 +106,7 @@ t_env	*envp_to_env(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		if (add_env_entry(&env, envp[i]))
+		if (add_env_entry(&env, envp[i], NULL, NULL))
 		{
 			free_env(env);
 			return (NULL);
