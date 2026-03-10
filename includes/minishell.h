@@ -6,14 +6,14 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 11:58:35 by hgutterr          #+#    #+#             */
-/*   Updated: 2026/03/10 02:18:15 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/03/10 02:20:37 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # define _GNU_SOURCE
-
+a
 # include "libft/libft.h"
 # include <unistd.h>
 # include <stdio.h>
