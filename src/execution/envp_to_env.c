@@ -6,7 +6,11 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 17:17:06 by hgutterr          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2026/03/10 17:30:26 by arpereir         ###   ########.fr       */
+=======
+/*   Updated: 2026/03/11 01:56:09 by arpereir         ###   ########.fr       */
+>>>>>>> ghost
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +85,8 @@ static int	add_env_entry(t_env **env, char *entry, char *key
 			return (1);
 		if (ft_strncmp(key, "SHLVL", 5) == 0)
 		{
-			tmp = ft_itoa(ft_atoi(equal) + 1);
-			new = env_new(key, tmp);
+			tmp = ft_itoa(ft_atoi(equal + 1) + 1);
+			new = env_new(key, tmp + 1);
 			free(tmp);
 		}
 		else
