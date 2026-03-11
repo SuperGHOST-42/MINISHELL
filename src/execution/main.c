@@ -6,7 +6,7 @@
 /*   By: arpereir <arpereir@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 15:05:00 by ariclenes         #+#    #+#             */
-/*   Updated: 2026/03/10 17:20:12 by arpereir         ###   ########.fr       */
+/*   Updated: 2026/03/11 01:54:49 by arpereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static char	**get_default_envp(void)
 	char	cwd[BUFSIZ];
 	char	*tmp;
 
-	new_envp = malloc(8 * sizeof(char *));
+	new_envp = malloc(4 * sizeof(char *));
 	if (!new_envp)
 		return (NULL);
 	tmp = ft_strdup("PWD=");
